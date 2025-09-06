@@ -15,4 +15,11 @@ public class Constants {
     public static final double MAX_RPM = 6000; // Revolutions per minute
     public static final double MAX_MOTOR_WHEEL_VELOCITY =
             (MAX_RPM / 60) * GEAR_RATIO * WHEEL_CIRCUMFERENCE;
+
+    public static final RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIRECTION =
+            RevHubOrientationOnRobot.LogoFacingDirection.UP;
+    public static final RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIRECTION =
+            RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+    public static RevHubOrientationOnRobot HUB_ORIENTATION =
+            new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
 }

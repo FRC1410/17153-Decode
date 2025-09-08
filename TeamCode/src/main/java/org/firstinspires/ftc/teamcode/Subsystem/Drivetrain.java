@@ -15,20 +15,26 @@ import static org.firstinspires.ftc.teamcode.Util.IDs.*;
 import static org.firstinspires.ftc.teamcode.Util.Constants.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
 
 public class Drivetrain {
-
     private DcMotorEx motorFL;
     private DcMotorEx motorFR;
     private DcMotorEx motorBL;
     private DcMotorEx motorBR;
-
     private VoltageSensor controlHubVoltageSensor;
     private IMU imu;
     private double[] wheelSpeeds = new double[4];
     private double maxPower = 1;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
+    private VisionPortal visionPortal;
+    private AprilTagProcessor aprilTag;
 
     public void init(HardwareMap hardwareMap) {
 
@@ -60,7 +66,11 @@ public class Drivetrain {
         this.controlHubVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.imu = hardwareMap.get(IMU.class, CONTROL_HUB_IMU);
         this.imu.initialize(new IMU.Parameters(HUB_ORIENTATION));
+
+        this.aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+        this.visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
     }
+
 
 //    public void autoInit(HardwareMap hardwareMap) {
 //
@@ -86,6 +96,25 @@ public class Drivetrain {
             double turnSpeed,
             boolean isHalfSpeed)
     {
+
+        List<AprilTagDetection> detections = this.aprilTag.getDetections();
+        double targetDist = 0;
+        double targetBearing = 0;
+        boolean tagFound = true;
+
+        for (AprilTagDetection detection : detections){
+            double range = detection.ftcPose.range;
+            double bearing = detection.ftcPose.bearing;
+
+            targetDist = range;
+            targetBearing = bearing;
+            tagFound = true;
+            break;
+        }
+        if (tagFound) {
+            System.out.println(targetDist);
+            System.out.println(targetBearing);
+        }
 
         Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);
 

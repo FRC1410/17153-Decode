@@ -50,16 +50,15 @@ public class Drivetrain {
     }
 
     public void tankDrive(
-            double forwardSpeed,
-            double turnSpeed,
+            double leftSpeed,
+            double rightSpeed,
             boolean isHalfSpeed)
     {
-        forwardSpeed = Range.clip(forwardSpeed, -1, 1);
-        turnSpeed = Range.clip(turnSpeed, -1, 1);
+        leftSpeed = Range.clip(leftSpeed, -1, 1);
+        rightSpeed = Range.clip(rightSpeed, -1, 1);
 
-        // Calculate left and right wheel speeds for tank drive
-        this.wheelSpeeds[0] = forwardSpeed + turnSpeed; // Left
-        this.wheelSpeeds[1] = forwardSpeed - turnSpeed; // Right
+        this.wheelSpeeds[0] = leftSpeed;
+        this.wheelSpeeds[1] = rightSpeed;
 
         double voltageCorrection = 12 / controlHubVoltageSensor.getVoltage();
 

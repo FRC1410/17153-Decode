@@ -19,84 +19,47 @@ import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class Drivetrain {
 
-    private DcMotorEx motorFL;
-    private DcMotorEx motorFR;
-    private DcMotorEx motorBL;
-    private DcMotorEx motorBR;
+    private DcMotorEx tankL;
+    private DcMotorEx tankR;
 
     private VoltageSensor controlHubVoltageSensor;
     private IMU imu;
-    private double[] wheelSpeeds = new double[4];
+    private double[] wheelSpeeds = new double[2];
     private double maxPower = 1;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
 
     public void init(HardwareMap hardwareMap) {
+        this.tankR = hardwareMap.get(DcMotorEx.class, TANK_RIGHT_ID);
+        this.tankL = hardwareMap.get(DcMotorEx.class, TANK_LEFT_ID);
 
-        this.motorFL = hardwareMap.get(DcMotorEx.class, FRONT_LEFT_MOTOR_ID);
-        this.motorBL = hardwareMap.get(DcMotorEx.class, BACK_LEFT_MOTOR_ID);
-        this.motorFR = hardwareMap.get(DcMotorEx.class, FRONT_RIGHT_MOTOR_ID);
-        this.motorBR = hardwareMap.get(DcMotorEx.class, BACK_RIGHT_MOTOR_ID);
+        this.tankL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.tankR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        this.motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.tankL.setDirection(FORWARD);
+        this.tankR.setDirection(FORWARD);
 
-        this.motorFL.setDirection(FORWARD);
-        this.motorFR.setDirection(FORWARD);
-        this.motorBL.setDirection(FORWARD);
-        this.motorBR.setDirection(REVERSE);
+        this.tankL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.tankR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        this.motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.tankL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.tankR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.controlHubVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.imu = hardwareMap.get(IMU.class, CONTROL_HUB_IMU);
         this.imu.initialize(new IMU.Parameters(HUB_ORIENTATION));
     }
 
-//    public void autoInit(HardwareMap hardwareMap) {
-//
-//        this.motorFL.setDirection(REVERSE);
-//        this.motorFR.setDirection(FORWARD);
-//        this.motorBL.setDirection(REVERSE);
-//        this.motorBR.setDirection(REVERSE);
-//
-//        this.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//
-//        this.motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        this.motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//    }
-
-    public void mechanumDrive(
-            double strafeSpeed,
+    public void tankDrive(
             double forwardSpeed,
             double turnSpeed,
             boolean isHalfSpeed)
     {
-
-        Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);
-
-        strafeSpeed = Range.clip(input.x, -1, 1);
-        forwardSpeed = Range.clip(input.y, -1, 1);
+        forwardSpeed = Range.clip(forwardSpeed, -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
-        this.wheelSpeeds[0] = forwardSpeed - strafeSpeed - turnSpeed;
-        this.wheelSpeeds[1] = -forwardSpeed - strafeSpeed - turnSpeed;
-        this.wheelSpeeds[2] = forwardSpeed + strafeSpeed - turnSpeed;
-        this.wheelSpeeds[3] = -forwardSpeed + strafeSpeed - turnSpeed;
+        // Calculate left and right wheel speeds for tank drive
+        this.wheelSpeeds[0] = forwardSpeed + turnSpeed; // Left
+        this.wheelSpeeds[1] = forwardSpeed - turnSpeed; // Right
 
         double voltageCorrection = 12 / controlHubVoltageSensor.getVoltage();
 
@@ -106,13 +69,11 @@ public class Drivetrain {
                     (this.wheelSpeeds[i] + Math.signum(this.wheelSpeeds[i]) * 0.085) * voltageCorrection;
         }
 
-        for(double wheelSpeeds : wheelSpeeds) maxPower = Math.max(maxPower, Math.abs(wheelSpeeds));
+        maxPower = Math.max(Math.abs(this.wheelSpeeds[0]), Math.abs(this.wheelSpeeds[1]));
 
         if (maxPower > 1) {
             this.wheelSpeeds[0] /= maxPower;
             this.wheelSpeeds[1] /= maxPower;
-            this.wheelSpeeds[2] /= maxPower;
-            this.wheelSpeeds[3] /= maxPower;
         }
 
         if (isHalfSpeed) {
@@ -121,38 +82,10 @@ public class Drivetrain {
             this.setDrivetrainMode(RobotStates.Drivetrain.FULL_SPEED);
         }
 
-        if (this.getDrivetrainMode() == RobotStates.Drivetrain.HALF_SPEED) {
-            this.motorFL.setPower(this.wheelSpeeds[0]);
-            this.motorFR.setPower(this.wheelSpeeds[1]);
-            this.motorBL.setPower(this.wheelSpeeds[2]);
-            this.motorBR.setPower(this.wheelSpeeds[3]);
-        } else {
-            this.motorFL.setPower(this.wheelSpeeds[0] * 2);
-            this.motorFR.setPower(this.wheelSpeeds[1] * 2);
-            this.motorBL.setPower(this.wheelSpeeds[2] * 2);
-            this.motorBR.setPower(this.wheelSpeeds[3] * 2);
-        }
-    }
+        double speedMultiplier = (this.getDrivetrainMode() == RobotStates.Drivetrain.HALF_SPEED) ? 1.0 : 2.0;
 
-    // These parameters are in Inches per second
-    public void autoDriveStraight(double forwardDistance, double velocity) {
-        double encoderDistance = this.distanceToEncoderCount(forwardDistance);
-        double encoderVelocity = this.velocityToEncoderCount(velocity);
-
-        int currentFLPosition = this.motorFL.getCurrentPosition();
-        int currentFRPosition = this.motorFR.getCurrentPosition();
-        int currentBLPosition = this.motorBL.getCurrentPosition();
-        int currentBRPosition = this.motorBR.getCurrentPosition();
-
-        this.motorFL.setTargetPosition(currentFLPosition + (int) encoderDistance);
-        this.motorFR.setTargetPosition(currentFRPosition + (int) encoderDistance);
-        this.motorBL.setTargetPosition(currentBLPosition + (int) encoderDistance);
-        this.motorBR.setTargetPosition(currentBRPosition + (int) encoderDistance);
-
-        this.motorFL.setVelocity(encoderVelocity);
-        this.motorBL.setVelocity(encoderVelocity);
-        this.motorFR.setVelocity(encoderVelocity);
-        this.motorBR.setVelocity(encoderVelocity);
+        this.tankL.setPower(this.wheelSpeeds[0] * speedMultiplier);
+        this.tankR.setPower(this.wheelSpeeds[1] * speedMultiplier);
     }
 
     public RobotStates.Drivetrain getDrivetrainMode() {
@@ -165,12 +98,9 @@ public class Drivetrain {
 
     //Returns in ticks per second
     public double getCurrentVelocity() {
-        double currentFLVelocity = this.motorFL.getVelocity();
-        double currentFRVelocity = this.motorFR.getVelocity();
-        double currentBLVelocity = this.motorBL.getVelocity();
-        double currentBRVelocity = this.motorBR.getVelocity();
-
-        return (currentFLVelocity + currentFRVelocity + currentBRVelocity + currentBLVelocity) / 4;
+        double currentLVelocity = this.tankL.getVelocity();
+        double currentRVelocity = this.tankR.getVelocity();
+        return (currentLVelocity + currentRVelocity) / 2;
     }
 
     // In inches
@@ -184,15 +114,10 @@ public class Drivetrain {
     }
 
     public void drivetrainData(Telemetry telemetry) {
-        telemetry.addData("Front Left: ", this.motorFL.getCurrentPosition() * -1);
-        telemetry.addData("Front Right: ", this.motorFR.getCurrentPosition());
-        telemetry.addData("Back Left: ", this.motorBL.getCurrentPosition() * -1);
-        telemetry.addData("Back Right: ", this.motorBR.getCurrentPosition());
-
-        telemetry.addData("Velocity FL: ", this.motorFL.getVelocity());
-        telemetry.addData("Velocity FR:", this.motorBR.getVelocity());
-        telemetry.addData("Velocity BL: ", this.motorBL.getVelocity());
-        telemetry.addData("Velocity BR: ", this.motorBR.getVelocity());
+        telemetry.addData("Left: ", this.tankL.getCurrentPosition());
+        telemetry.addData("Right: ", this.tankR.getCurrentPosition());
+        telemetry.addData("Velocity L: ", this.tankL.getVelocity());
+        telemetry.addData("Velocity R:", this.tankR.getVelocity());
         telemetry.update();
     }
 }

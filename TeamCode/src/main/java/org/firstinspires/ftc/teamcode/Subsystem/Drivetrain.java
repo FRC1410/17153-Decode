@@ -33,8 +33,6 @@ public class Drivetrain {
     private double[] wheelSpeeds = new double[4];
     private double maxPower = 1;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
-    private VisionPortal visionPortal;
-    private AprilTagProcessor aprilTag;
 
     public void init(HardwareMap hardwareMap) {
 
@@ -66,9 +64,6 @@ public class Drivetrain {
         this.controlHubVoltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.imu = hardwareMap.get(IMU.class, CONTROL_HUB_IMU);
         this.imu.initialize(new IMU.Parameters(HUB_ORIENTATION));
-
-        this.aprilTag = AprilTagProcessor.easyCreateWithDefaults();
-        this.visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
     }
 
 
@@ -97,22 +92,6 @@ public class Drivetrain {
             boolean isHalfSpeed)
     {
 
-        List<AprilTagDetection> detections = this.aprilTag.getDetections();
-        double range = 0;
-        double bearing = 0;
-        boolean tagFound = false;
-
-        for (AprilTagDetection detection : detections) {
-            range = detection.ftcPose.range;
-            bearing = detection.ftcPose.bearing;
-
-            tagFound = true;
-            break;
-        }
-        if (tagFound) {
-            System.out.println(range);
-            System.out.println(bearing);
-        }
 
         Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);
 

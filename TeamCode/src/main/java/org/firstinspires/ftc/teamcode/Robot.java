@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Util.Toggle;
 @TeleOp
 public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
-
     private final Toggle drivetrainToggle = new Toggle();
     private final Toggle raiseToggle = new Toggle();
     

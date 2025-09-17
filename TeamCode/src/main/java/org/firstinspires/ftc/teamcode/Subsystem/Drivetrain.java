@@ -98,22 +98,20 @@ public class Drivetrain {
     {
 
         List<AprilTagDetection> detections = this.aprilTag.getDetections();
-        double targetDist = 0;
-        double targetBearing = 0;
-        boolean tagFound = true;
+        double range = 0;
+        double bearing = 0;
+        boolean tagFound = false;
 
-        for (AprilTagDetection detection : detections){
-            double range = detection.ftcPose.range;
-            double bearing = detection.ftcPose.bearing;
+        for (AprilTagDetection detection : detections) {
+            range = detection.ftcPose.range;
+            bearing = detection.ftcPose.bearing;
 
-            targetDist = range;
-            targetBearing = bearing;
             tagFound = true;
             break;
         }
         if (tagFound) {
-            System.out.println(targetDist);
-            System.out.println(targetBearing);
+            System.out.println(range);
+            System.out.println(bearing);
         }
 
         Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);

@@ -13,12 +13,11 @@ public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
     private final Toggle drivetrainToggle = new Toggle();
     private final Toggle raiseToggle = new Toggle();
-    private final aprilTags aprilTags = new aprilTags();
-    
+    private aprilTags aprilTags;
+
     public void init() {
         this.drivetrain.init(hardwareMap);
-
-        this.aprilTags.init();
+        this.aprilTags = new aprilTags(hardwareMap);
     }
 
     @Override
@@ -31,7 +30,11 @@ public class Robot extends OpMode {
                 drivetrainToggle.toggleButton(gamepad1.a)
         );
 
-        this.aprilTags.loop();
+        double[] tagData = aprilTags.getTagData();
+        telemetry.addData("Range", tagData[0]);
+        telemetry.addData("Bearing", tagData[1]);
+        telemetry.addData("Tag ID", tagData[2]);
+        telemetry.update();
 
     }
 }

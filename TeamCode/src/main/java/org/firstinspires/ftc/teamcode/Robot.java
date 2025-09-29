@@ -16,7 +16,7 @@ public class Robot extends OpMode {
     private final aprilTags aprilTags = new aprilTags();
     
     public void init() {
-        this.drivetrain.init(hardwareMap);
+//        this.drivetrain.init(hardwareMap);
 
         this.aprilTags.init();
     }
@@ -24,12 +24,12 @@ public class Robot extends OpMode {
     @Override
     public void loop() {
 
-        this.drivetrain.mechanumDrive(
-                gamepad1.left_stick_x,
-                gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                drivetrainToggle.toggleButton(gamepad1.a)
-        );
+//        this.drivetrain.mechanumDrive(
+//                gamepad1.left_stick_x,
+//                gamepad1.left_stick_y,
+//                gamepad1.right_stick_x,
+//                drivetrainToggle.toggleButton(gamepad1.a)
+//        );
 
         this.aprilTags.loop();
 

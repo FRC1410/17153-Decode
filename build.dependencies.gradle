@@ -1,9 +1,14 @@
 repositories {
+    maven { url = 'https://maven.pedropathing.com' }
+    maven { url = "https://mymaven.bylazar.com/releases" }
     mavenCentral()
     google() // Needed for androidx
 }
 
 dependencies {
+    implementation 'com.pedropathing:ftc:2.0.1'
+    implementation 'com.pedropathing:telemetry:0.0.6'
+    implementation 'com.bylazar:fullpanels:1.0.2'
     implementation 'org.firstinspires.ftc:Inspection:10.3.0'
     implementation 'org.firstinspires.ftc:Blocks:10.3.0'
     implementation 'org.firstinspires.ftc:RobotCore:10.3.0'

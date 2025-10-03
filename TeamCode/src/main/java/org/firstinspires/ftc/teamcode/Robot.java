@@ -13,7 +13,7 @@ public class Robot extends OpMode {
 
     private final Toggle drivetrainToggle = new Toggle();
     private final Toggle raiseToggle = new Toggle();
-    
+
     public void init() {
         this.drivetrain.init(hardwareMap);
 

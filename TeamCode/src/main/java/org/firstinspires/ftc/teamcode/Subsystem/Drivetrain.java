@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -45,7 +44,7 @@ public class Drivetrain {
         this.motorFL.setDirection(FORWARD);
         this.motorFR.setDirection(FORWARD);
         this.motorBL.setDirection(FORWARD);
-        this.motorBR.setDirection(FORWARD);
+        this.motorBR.setDirection(REVERSE);
 
         this.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -87,10 +86,6 @@ public class Drivetrain {
             boolean isHalfSpeed)
     {
 
-        Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);
-
-        strafeSpeed = Range.clip(input.x, -1, 1);
-        forwardSpeed = Range.clip(input.y, -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
         this.wheelSpeeds[0] = forwardSpeed - strafeSpeed - turnSpeed;

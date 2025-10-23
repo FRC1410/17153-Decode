@@ -22,4 +22,11 @@ public class Constants {
             RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
     public static RevHubOrientationOnRobot HUB_ORIENTATION =
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
+
+    //Susan
+    public static final double SUSAN_POS_1 = 0;
+    public static final double SUSAN_POS_2 = 1;
+    public static final double SUSAN_POS_3 = 2;
+    public static final double SUSAN_CLAW_POS_UP = 0.4;
+    public static final double SUSAN_CLAW_POS_DOWN = 1;
 }

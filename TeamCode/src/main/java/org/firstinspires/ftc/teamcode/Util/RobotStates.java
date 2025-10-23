@@ -5,4 +5,8 @@ public class RobotStates {
         FULL_SPEED,
         HALF_SPEED
     }
+    public enum Turret {
+        MANUAL,
+        AUTO_AIM
+    }
 }

@@ -22,4 +22,11 @@ public class Constants {
             RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
     public static RevHubOrientationOnRobot HUB_ORIENTATION =
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
+
+    //Turret constants
+    public static final double MAX_TRACKING_POWER = 0.8;
+    public static final double MIN_TRACKING_POWER = 0.05;
+    public static final double ACCEPTED_BEARING = 2.0; //This is in degrees
+
+    public static final double TURRET_TICKS_PER_DEGREE = 4.0 / 3.0;
 }

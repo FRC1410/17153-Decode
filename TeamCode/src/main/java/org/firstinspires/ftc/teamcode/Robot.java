@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
-import org.firstinspires.ftc.teamcode.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
-
+import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 @TeleOp
 public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
@@ -28,6 +27,7 @@ public class Robot extends OpMode {
                 gamepad1.right_stick_x,
                 drivetrainToggle.toggleButton(gamepad1.a)
         );
+
 
     }
 }

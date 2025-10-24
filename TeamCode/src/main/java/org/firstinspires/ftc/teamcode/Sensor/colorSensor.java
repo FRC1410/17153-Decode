@@ -31,7 +31,8 @@ public class colorSensor {
     }
 
     public void colourData(Telemetry telemetry) {
-        telemetry.addData("Colour: ", this.detectColour());
+        updateRGB();
+        telemetry.addData("RGB", "(%d, %d, %d)", colourRed, colourGre, colourBlu);
         telemetry.update();
 
     }

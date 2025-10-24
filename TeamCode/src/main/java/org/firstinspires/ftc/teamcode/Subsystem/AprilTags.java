@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 
 import android.util.Size;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,18 +9,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-public class aprilTags {
-    public VisionPortal visionPortal;
-    public AprilTagProcessor aprilTag;
+public class AprilTags {
+    public VisionPortal vision_portal;
+    public AprilTagProcessor april_tag;
 
-    public aprilTags(HardwareMap hardwareMapCool) {
+    public AprilTags(HardwareMap hardwareMapCool) {
+        // NOTE: The values/configs here are very finicky, don't change them unless absolutely necessary
         try {
-            this.aprilTag = new AprilTagProcessor.Builder()
+            // This is the camera data, and where we get said data.
+            this.april_tag = new AprilTagProcessor.Builder()
                     .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                     .setDrawAxes(true)
                     .setDrawCubeProjection(true)
@@ -31,9 +30,10 @@ public class aprilTags {
                     .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                     .build();
 
-            this.visionPortal = new VisionPortal.Builder()
+            // This is the connection to the physical camera, including the id
+            this.vision_portal = new VisionPortal.Builder()
                     .setCamera(hardwareMapCool.get(WebcamName.class, "Webcam 1"))
-                    .addProcessor(this.aprilTag)
+                    .addProcessor(this.april_tag)
                     .setCameraResolution(new Size(1280, 800))
                     .enableLiveView(true)
                     .setAutoStopLiveView(false)
@@ -42,8 +42,13 @@ public class aprilTags {
             throw new RuntimeException("Camera init failed: " + e.getMessage());
         }
     }
+
+    /**
+     * Gets tag data on the distance to the tag, the angle, and the ID of the tag
+     * @return Range, Bearing, Tag ID in a double[]
+     */
     public double[] getTagData() {
-        List<AprilTagDetection> detections = this.aprilTag.getDetections();
+        List<AprilTagDetection> detections = this.april_tag.getDetections();
 
         // Return detection count as first value for debugging
         if (detections.isEmpty()) {

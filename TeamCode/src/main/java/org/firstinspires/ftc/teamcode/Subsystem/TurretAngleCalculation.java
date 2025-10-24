@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
-import java.util.List;
-
-public class math {
+public class TurretAngleCalculation {
     private static final double gravity = 9.80665;
     private static final double air_density = 1.225;
     private static final double drag_coefficient = 0.3;

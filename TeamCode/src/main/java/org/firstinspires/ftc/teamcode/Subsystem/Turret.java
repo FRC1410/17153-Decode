@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Util.PIDController;
 public class Turret {
 
     DcMotorEx turretMotor;
-    private aprilTags aprilTagSystem;
+    private AprilTags aprilTagSystem;
     private int targetAprilTagID = 22;
     private PIDController trackingPID;
 
@@ -23,7 +23,7 @@ public class Turret {
         this.turretMotor.setDirection(FORWARD);
         this.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.aprilTagSystem = new aprilTags(hardwareMap);
+        this.aprilTagSystem = new AprilTags(hardwareMap);
         this.trackingPID = new PIDController(TURRET_P, TURRET_I, TURRET_D);
     }
 

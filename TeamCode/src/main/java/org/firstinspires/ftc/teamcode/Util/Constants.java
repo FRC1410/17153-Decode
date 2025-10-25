@@ -30,27 +30,5 @@ public class Constants {
 
     public static final double TURRET_TICKS_PER_DEGREE = 4.0 / 3.0;
 
-    //Shooter Constants
-    public static final double G = 9.80665;
-    public static final double RHO = 1.225;
-    public static final double CD = 0.30;
-    public static final double MASS = 0.0748;
-    public static final double DIAMETER = 0.127;
-    public static final double RADIUS = DIAMETER / 2;
-    public static final double AREA = Math.PI * RADIUS * RADIUS;
-    public static final double OMEGA = 2 * Math.PI * (60.0 / 60.0);
-    public static final double CL_BASE = 0.195;
-    public static final double V0 = 8.2829;
-    public static final double Y0 = 0.3302;
-    public static final double Y_GOAL = 0.98425;
-
-    public static final double DT = 0.001;
-    public static final double MAX_TIME = 3.0;
-    public static final double INCHES_TO_METERS = 0.0254;
-
-
-    public static final int MAX_ITERATIONS = 25;
-    public static final double MIN_ANGLE = 5.0;
-    public static final double MAX_ANGLE = 60.0;
 
 }

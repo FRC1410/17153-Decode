@@ -18,7 +18,7 @@ public class colorSensor {
     public void init(HardwareMap hardwareMap, String COLOUR_SENSOR_ID) {
         sensor = hardwareMap.get(NormalizedColorSensor.class, COLOUR_SENSOR_ID);
     }
-    private int detectColour() {
+    public int detectColour() {
         int colour = sensor.getNormalizedColors().toColor();
         return colour;
 

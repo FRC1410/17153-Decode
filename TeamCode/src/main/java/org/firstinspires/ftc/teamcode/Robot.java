@@ -24,13 +24,13 @@ public class Robot extends OpMode {
     public void loop() {
         this.colour.detectColour();
         this.colour.updateRGB();
+        this.colour.colourData(telemetry);
 //        this.drivetrain.mechanumDrive(
 //                gamepad1.left_stick_x,
 //                gamepad1.left_stick_y,
 //                gamepad1.right_stick_x,
 //                drivetrainToggle.toggleButton(gamepad1.a)
 //        );
-    telemetry.update();
 
     }
 }

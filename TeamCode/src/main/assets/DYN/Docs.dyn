@@ -1,0 +1,56 @@
+'''
+this document assumes that you know basic python and lua syntax.
+
+TODO:
+while loop start/end commands
+for loop start/end commands
+stop auto command
+define field coordinate command
+define field position command
+define number command
+define bool variable
+define list command
+define json command
+arithmetic commands
+trig calculations
+path command sequence definer start/end command
+'''
+
+
+'''
+BASIC MOVEMENT COMMANDS:
+    turnTo: (WIP)
+        syntax:
+            turnTo(headingInDegree, deg/s)
+        args:
+            headingInDegree:
+                this is the heading angle that we want to end with after the
+            deg/s:
+                this argument defines how fast to turn th robot in degrees per second
+    goTo: (WIP)
+        syntax:
+            goTo(field coordinate/position)
+        args:
+            field coordinate/position:
+                this argument tells the auto to go to the given point in a straight line
+    followBezier: (WIP)
+        syntax:
+            followBezier(midPose/Cord... ,endPos)
+        args:
+            midPos/Cord:
+                these args define all of the weight points in the bezier curve from start to finish.
+            endPos:
+                this defines where the bot should end after the bezier curve.
+STARTING DECLARATIONS:
+    PathStartPoint: (WIP)
+        Syntax:
+            PathStartPoint = pos
+        Usage:
+            pos = a position on the field, this defines where the robot starts in the auto sequence.
+LOOPS:
+    while: (WIP)
+        syntax:
+            while Bool start ... end
+        usage:
+
+'''

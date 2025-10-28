@@ -1,18 +1,28 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 
-@Autonomous
-public class Auto extends LinearOpMode {
+import java.util.Timer;
 
+@Autonomous(name="Pedro Pathing Test", group="Tests")
+public class Auto extends LinearOpMode {
+    private Follower follower;
+    private Timer pathTimer, actionTimer, opmodeTimer;
+    private int pathState;
+    private Path autoPath;
     private final Drivetrain drivetrain = new Drivetrain();
 
     private final Toggle drivetrainToggle = new Toggle();
+
+    public void buildPaths(){
+        // take the paths from dynamite and build them.
+    }
 
     @Override
     public void runOpMode() {

@@ -45,7 +45,7 @@ public class colorSensor {
         if (max < 0.01f) {
 
             colourRed = (int)(r * 2550);
-            colourGre = (int)(g * 2550);
+            colourGre = (int)(g * 1275); //default 2550, changed do deescalate green. 1275 is 255 * 5
             colourBlu = (int)(b * 2550);
         } else {
 

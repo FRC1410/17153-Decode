@@ -1,23 +1,114 @@
-'''
-this document assumes that you know basic python and lua syntax.
 
-TODO:
-while loop start/end commands
-for loop start/end commands
-stop auto command
-define field coordinate command
-define field position command
-define number command
-define bool variable
-define list command
-define json command
-arithmetic commands
-trig calculations
-path command sequence definer start/end command
-'''
-
+//this document assumes that you know basic python, lua, and java syntax and variables to a minimal extent.
 
 '''
+VARIABLE DEFINITION/CREATION CREATION:
+    FieldCoord: (WIP)
+        Syntax:
+            FieldCoord name (x,y)
+        Usage:
+            'name' is the name given to the variable
+            and (x,y) is the defined position when making the variable
+            if the name is alredy defined, it will be updated to the new given value.
+    FieldPos: (WIP)
+        Syntax:
+            FieldPos name (x,y, h)
+        Usage:
+            'name' is the name of the variable
+            x and y are the coordinates of the position.
+            and h is the heading where 0 or 360 is facing towards the obelisk
+    Num: (WIP)
+        Syntax:
+            Num name value
+        usage:
+            name is the name of the variable.
+            the value follows the same rules as a java double.
+    Bool: (WIP)
+        Syntax:
+            Bool name true/false
+        Usage:
+            how do you not know what this is. its either true or false.
+            how much simpler could it be?
+    List: (WIP)
+        Syntax:
+            List name [...]
+        Usage:
+            may contain any assortment of different variables.
+            may be as long as you want.
+            has the functions: .get(index), .insert(index, data), .append(data) and .remove(index)
+    Json: (WIP)
+        Syntax:
+            Json name {"id":value, id:value}
+        Usage:
+            as said many times before, the name is the name of the variable.
+            works just like normal json. to get a value with an id use the .id(id) method to
+MATH OPERATIONS:
+    SUB: (WIP)
+        Syntax:
+            SUB val1 val2 to var
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    MUX: (WIP)
+        Syntax:
+            MUX val1 val2 to var
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    DIV: (WIP)
+        Syntax:
+            DIV val1 val2 to var
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    POW: (WIP)
+        Syntax:
+            POW val1 val2 to var
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    SQR: (WIP)
+        Syntax:
+            SQR val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    SIN: (WIP)
+        Syntax:
+            SIN val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invSIN: (WIP)
+        Syntax:
+            invSIN val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    COS: (WIP)
+        Syntax:
+            COS val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invCOS: (WIP)
+        Syntax:
+            invCOS val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    TAN: (WIP)
+        Syntax:
+            TAN val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invTAN: (WIP)
+        Syntax:
+            invTAN val to var
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
 BASIC MOVEMENT COMMANDS:
     turnTo: (WIP)
         syntax:
@@ -47,10 +138,32 @@ STARTING DECLARATIONS:
             PathStartPoint = pos
         Usage:
             pos = a position on the field, this defines where the robot starts in the auto sequence.
+ENDING DECLARATIONS:
+    autoPath: (WIP)
+        Syntax:
+            autoPath pathName
+        Usage:
+            pathName is the name of the path function that will be ran when this config is used
 LOOPS:
     while: (WIP)
         syntax:
-            while Bool start ... end
+            while Bool Wstart ... Wend
         usage:
-
+            the code in the while loop will be ran until the given Bool becomes false
+    for: (WIP)
+        syntax:
+            for
+PATH DECLARATORS:
+    def_path: (WIP)
+        syntax:
+            def_path main start ... end
+        Usage:
+            main = the name of the function, will throw a fit if the name is already used as a function name beforehand in the script
+            between the start and end lines put the code you want to run during auto.
+TELEMETRY:
+    output2telem: (WIP)
+        syntax:
+            output2telem var
+        Usage:
+            the var is any variable, its data will be added to telemetry output the next time it is updated.
 '''

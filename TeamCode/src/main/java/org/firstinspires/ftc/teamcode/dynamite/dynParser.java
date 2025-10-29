@@ -26,7 +26,3 @@ public class dynParser {
         }
     }
 }
-
-class DynData{
-
-}

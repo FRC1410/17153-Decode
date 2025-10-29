@@ -36,14 +36,16 @@ public class colorSensor {
         float r = colors.red;
         float g = colors.green;
         float b = colors.blue;
+        float a = colors.alpha;
 
 
         float max = Math.max(r, Math.max(g, b));
+        float avg = (r + g + b)/3;
 
         if (max < 0.01f) {
 
             colourRed = (int)(r * 2550);
-            colourGre = (int)(g * 1275); //default 2550, changed to deescalate green. 1275 is 255 * 5
+            colourGre = (int)(g * 2550); //default 2550, changed to deescalate green. 1275 is 255 * 5
             colourBlu = (int)(b * 2550);
         } else {
 
@@ -67,7 +69,7 @@ public class colorSensor {
         updateRGB();
         NormalizedRGBA colors = sensor.getNormalizedColors();
         telemetry.addData("Raw Values", "(%.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue);
-        telemetry.addData("RGB", "(%d, %d, %d)", colourRed, colourGre, colourBlu);
+        telemetry.addData("RGBA", "(%d, %d, %d, %d)", colourRed, colourGre, colourBlu);
         telemetry.update();
     }
 }

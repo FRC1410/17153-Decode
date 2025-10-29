@@ -22,7 +22,6 @@ public class Robot extends OpMode {
 
     @Override
     public void loop() {
-        this.colour.detectColour();
         this.colour.updateRGB();
         this.colour.colourData(telemetry);
 //        this.drivetrain.mechanumDrive(

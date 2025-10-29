@@ -15,18 +15,16 @@ public class colorSensor {
 
     public void init(HardwareMap hardwareMap, String COLOUR_SENSOR_ID) {
         sensor = hardwareMap.get(NormalizedColorSensor.class, COLOUR_SENSOR_ID);
-        // Try to enable LED if it's a Rev Color Sensor V3
         try {
             RevColorSensorV3 revSensor = hardwareMap.get(RevColorSensorV3.class, COLOUR_SENSOR_ID);
             revSensor.enableLed(true);
         } catch (Exception e) {
-            // Sensor doesn't support LED control, continue without it
+
         }
     }
 
     public int detectColour() {
         updateRGB();
-        // Simple color detection based on which channel is strongest
         if (colourRed > colourGre && colourRed > colourBlu) return 1; // RED
         if (colourGre > colourRed && colourGre > colourBlu) return 2; // GREEN
         if (colourBlu > colourRed && colourBlu > colourGre) return 3; // BLUE
@@ -39,7 +37,7 @@ public class colorSensor {
         float g = colors.green;
         float b = colors.blue;
 
-        // Find the maximum channel value
+
         float max = Math.max(r, Math.max(g, b));
 
         if (max < 0.01f) {
@@ -66,7 +64,6 @@ public class colorSensor {
     }
 
     public void colourData(Telemetry telemetry) {
-        telemetry.addData("------",1);
         updateRGB();
         NormalizedRGBA colors = sensor.getNormalizedColors();
         telemetry.addData("Raw Values", "(%.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue);

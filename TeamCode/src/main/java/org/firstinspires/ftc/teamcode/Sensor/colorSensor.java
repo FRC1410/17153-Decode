@@ -13,6 +13,8 @@ public class colorSensor {
     public static int colourBlu;
     public static int colourGre;
 
+    public static int colourAlp;
+
     public void init(HardwareMap hardwareMap, String COLOUR_SENSOR_ID) {
         sensor = hardwareMap.get(NormalizedColorSensor.class, COLOUR_SENSOR_ID);
         try {
@@ -47,29 +49,33 @@ public class colorSensor {
             colourRed = (int)(r * 2550);
             colourGre = (int)(g * 2550); //default 2550, changed to deescalate green. 1275 is 255 * 5
             colourBlu = (int)(b * 2550);
+            colourAlp = (int)(a * 2550); //idk if I should keep this here, just here to be here.
         } else {
 
             float normalizedR = r / max;
             float normalizedG = g / max;
             float normalizedB = b / max;
+            float normalizedA = a / max; // same here with colourAlp int
 
 
             colourRed = (int)(normalizedR * 255);
             colourGre = (int)(normalizedG * 255);
             colourBlu = (int)(normalizedB * 255);
+            colourAlp = (int)(normalizedA * 255);
         }
 
 
         colourRed = Math.min(colourRed, 255);
         colourGre = Math.min(colourGre, 255);
         colourBlu = Math.min(colourBlu, 255);
+        colourAlp = Math.min(colourAlp, 255);
     }
 
     public void colourData(Telemetry telemetry) {
         updateRGB();
         NormalizedRGBA colors = sensor.getNormalizedColors();
-        telemetry.addData("Raw Values", "(%.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue);
-        telemetry.addData("RGBA", "(%d, %d, %d, %d)", colourRed, colourGre, colourBlu);
+        telemetry.addData("Raw Values", "(%.3f, %.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue, colors.alpha);
+        telemetry.addData("RGBA", "(%d, %d, %d, %d, %d)", colourRed, colourGre, colourBlu, colourAlp);
         telemetry.update();
     }
 }

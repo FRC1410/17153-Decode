@@ -40,35 +40,30 @@ public class colorSensor {
         float b = colors.blue;
         float a = colors.alpha;
 
-
-        float max = Math.max(r, Math.max(g, b));
-        float avg = (r + g + b)/3;
-
-        if (max < 0.01f) {
-
-            colourRed = (int)(r * 2550);
-            colourGre = (int)(g * 2550); //default 2550, changed to deescalate green. 1275 is 255 * 5
-            colourBlu = (int)(b * 2550);
-            colourAlp = (int)(a * 2550); //idk if I should keep this here, just here to be here.
-        } else {
-
-            float normalizedR = r / max;
-            float normalizedG = g / max;
-            float normalizedB = b / max;
-            float normalizedA = a / max; // same here with colourAlp int
+        if (a < 0.01f) {
+            float normalizedR = r / a;
+            float normalizedG = g / a;
+            float normalizedB = b / a;
 
 
             colourRed = (int)(normalizedR * 255);
             colourGre = (int)(normalizedG * 255);
             colourBlu = (int)(normalizedB * 255);
-            colourAlp = (int)(normalizedA * 255);
+            colourAlp = (int)(a * 255);
+
+        } else {
+            colourRed = 0;
+            colourGre = 0;
+            colourBlu = 0;
+            colourAlp = 0;
+
         }
 
 
-        colourRed = Math.min(colourRed, 255);
-        colourGre = Math.min(colourGre, 255);
-        colourBlu = Math.min(colourBlu, 255);
-        colourAlp = Math.min(colourAlp, 255);
+        colourRed = Math.max(0, Math.min(colourRed, 255));
+        colourGre = Math.max(0, Math.min(colourGre, 255));
+        colourBlu = Math.max(0, Math.min(colourBlu, 255));
+        colourAlp = Math.max(0, Math.min(colourAlp, 255));
     }
 
     public void colourData(Telemetry telemetry) {

@@ -12,6 +12,9 @@ public class dynParser {
     public String configName = "";
     public InputStream is;
     public BufferedReader reader;
+
+    // this keeps track of lines of which a loop/function start command is placed
+    private final int[] funcLoopDepthData = new int[]{};
     public void init(){
         try {
             is = hardwareMap.appContext.getAssets().open(configName);
@@ -23,6 +26,7 @@ public class dynParser {
             reader.close();
         } catch (IOException e){
             telemetry.addData("IOException when reading .dyn files",e);
+            telemetry.update();
         }
     }
     private void ParseLine(String line){

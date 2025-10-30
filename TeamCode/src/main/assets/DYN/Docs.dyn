@@ -1,6 +1,14 @@
 PathStartPoint (0,0)
 //this document assumes that you know basic python, lua, and java syntax and variables to a minimal extent.
 
+// this programming lang has the following groups of commands
+// Basic variables, and ones for FTC autos.
+// Mathematical operations
+// FTC movement commands
+// Starting/Ending declarations
+// loop declarators
+// auto function declarators
+
 '''
 VARIABLE DEFINITION/CREATION CREATION:
     FieldCoord: (WIP)
@@ -29,6 +37,11 @@ VARIABLE DEFINITION/CREATION CREATION:
         Usage:
             how do you not know what this is. its either true or false.
             how much simpler could it be?
+    String:
+        Syntax:
+            String "tee hee"
+        Usage:
+            anything between the the DOUBLE QUOTES will be part of the strings contents
     List: (WIP)
         Syntax:
             List name [...]
@@ -154,8 +167,8 @@ LOOPS:
         syntax:
             for number/list as value start ... end
         Usage:
-            the number MUST be a whole number with no decimals.
-            the list will
+            the number MUST be a whole number with no decimals, and the value will be set to the current loop count.
+            the list will be processed element by element and the value will be set to the current element
 PATH DECLARATORS:
     def_path: (WIP)
         syntax:
@@ -169,4 +182,6 @@ TELEMETRY:
             output2telem var
         Usage:
             the var is any variable, its data will be added to telemetry output the next time it is updated.
+
+The rest of this program is a systems test for the language interpriter
 '''

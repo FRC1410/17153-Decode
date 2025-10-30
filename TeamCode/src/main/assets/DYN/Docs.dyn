@@ -1,4 +1,4 @@
-
+PathStartPoint (0,0)
 //this document assumes that you know basic python, lua, and java syntax and variables to a minimal extent.
 
 '''
@@ -152,7 +152,10 @@ LOOPS:
             the code in the while loop will be ran until the given Bool becomes false
     for: (WIP)
         syntax:
-            for
+            for number/list as value start ... end
+        Usage:
+            the number MUST be a whole number with no decimals.
+            the list will
 PATH DECLARATORS:
     def_path: (WIP)
         syntax:

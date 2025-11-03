@@ -43,6 +43,10 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive()){
             // move the robot forward like 10in
             follower.followPath(pathChain);
+            while (follower.isBusy()){
+                // do nothing
+            }
+            telemetry.addData("DONE","With Test Path");
         }
     }
 }

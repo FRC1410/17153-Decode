@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.dynamite;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import android.animation.IntArrayEvaluator;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,31 +15,34 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class DynParser {
+    private Telemetry telemetry;
     // the following variables are here to allow us to index them into a json
     private final Consumer<String[]> VarDec = line -> ParseVarDec(line);
     private final Consumer<String[]> MathOp = line -> ParseMathOp(line);
     private final Consumer<String[]> MoveOp = line -> ParseMoveOp(line);
     private final Consumer<String[]> SoEDec = line -> ParseSoEstatements(line);
     private final Consumer<String[]> Teleme = line -> ParseTelemetry(line);
-    private final Consumer<String[]> doLoop = line -> ParseLoop(line);
-    private final Consumer<String[]> doFunc = line -> ParseFunc(line);
+    private final BiConsumer<String[], Integer> doLoop = (line, lineIndex) -> ParseLoop(line, lineIndex);
+    private final BiConsumer<String[], Integer> doFunc = (line, lineIndex) -> ParseFunc(line, lineIndex);
     public String configName = "";
     public InputStream is;
     public BufferedReader reader;
     // this keeps track of lines of which a loop/function start command is placed
-    private final int[] funcLoopDepthData = new int[]{};
+    private final List<Integer> funcLoopDepthData = new ArrayList<>();
 
     private final JSONObject dynFuncLookup = new JSONObject();
     public void init(Telemetry telemetry){
+        this.telemetry = telemetry;
         try {
             RAWinit();
         } catch (JSONException e) {
             // output to telemetry
-            telemetry.addData("ERROR PROCESSING JSON FOR DYN:",e);
-            telemetry.update();
+            this.telemetry.addData("ERROR PROCESSING JSON FOR DYN:",e);
+            this.telemetry.update();
             throw new RuntimeException(e);
         }
     }
@@ -46,12 +51,20 @@ public class DynParser {
         try {
             is = hardwareMap.appContext.getAssets().open(configName);
             reader = new BufferedReader(new InputStreamReader(is));
+            int lineIndex = 1;
             String line;
             String[] lineData;
             while ((line = reader.readLine())!=null){
                 lineData = splitLine(line);
-                Consumer<String[]> func = (Consumer<String[]>) dynFuncLookup.get(lineData[0]);
-                func.accept(lineData);
+                if (lineData[0] == "while" || lineData[0] == "for" || lineData[0] == "def_path"){
+                    BiConsumer<String[],Integer> func = (BiConsumer<String[],Integer>) dynFuncLookup.get(lineData[0]);
+                    func.accept(lineData, lineIndex);
+                }
+                else {
+                    Consumer<String[]> func = (Consumer<String[]>) dynFuncLookup.get(lineData[0]);
+                    func.accept(lineData);
+                }
+                lineIndex++;
             }
             reader.close();
         } catch (IOException | JSONException e){
@@ -122,12 +135,21 @@ public class DynParser {
 
     }
     private void ParseTelemetry(String[] line) {
-
+        telemetry.addData("DYN telemetry", line[1]);
     }
-    private void ParseLoop(String[] line){
+    private void ParseLoop(String[] line, int lineIndex){
+        // process while loop
+        if (line[1] == "while"){
+            funcLoopDepthData.add(lineIndex);
+            //
+        }
+        // process for loop
+        else if (line[1] == "for"){
+            funcLoopDepthData.add(lineIndex);
 
+        }
     }
-    private void ParseFunc(String[] line){
+    private void ParseFunc(String[] line, int lineIndex){
 
     }
 }

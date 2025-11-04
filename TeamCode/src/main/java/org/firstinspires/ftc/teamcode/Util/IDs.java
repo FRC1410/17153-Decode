@@ -10,4 +10,6 @@ public class IDs {
     public static final String CONTROL_HUB_IMU = "IMU";
     public static final String COLOUR_SENSOR_ID = "Colour";
 
+    public static final String COLOUR_SENSOR_ID2 = "Colour2";
+
 }

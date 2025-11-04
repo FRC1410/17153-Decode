@@ -9,17 +9,24 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class colorSensor {
     NormalizedColorSensor sensor;
+    NormalizedColorSensor sensor2;
     public static int colourRed;
     public static int colourBlu;
     public static int colourGre;
-
     public static int colourAlp;
 
-    public void init(HardwareMap hardwareMap, String COLOUR_SENSOR_ID) {
+    public void init(HardwareMap hardwareMap, String COLOUR_SENSOR_ID, String COLOUR_SENSOR_ID_2) {
         sensor = hardwareMap.get(NormalizedColorSensor.class, COLOUR_SENSOR_ID);
+        sensor2 = hardwareMap.get(NormalizedColorSensor.class, COLOUR_SENSOR_ID_2);
         try {
             RevColorSensorV3 revSensor = hardwareMap.get(RevColorSensorV3.class, COLOUR_SENSOR_ID);
             revSensor.enableLed(true);
+        } catch (Exception e) {
+
+        }
+        try {
+            RevColorSensorV3 revSensor2 = hardwareMap.get(RevColorSensorV3.class, COLOUR_SENSOR_ID_2);
+            revSensor2.enableLed(true);
         } catch (Exception e) {
 
         }
@@ -27,24 +34,25 @@ public class colorSensor {
 
     public int detectColour() {
         updateRGB();
-        if (colourRed > colourGre && colourRed > colourBlu) return 1; // RED
-        if (colourGre > colourRed && colourGre > colourBlu) return 2; // GREEN
-        if (colourBlu > colourRed && colourBlu > colourGre) return 3; // BLUE
+        if (colourRed > colourGre && colourRed > colourBlu) return 1;
+        if (colourGre > colourRed && colourGre > colourBlu) return 2;
+        if (colourBlu > colourRed && colourBlu > colourGre) return 3;
         return 0;
     }
 
     public void updateRGB() {
         NormalizedRGBA colors = sensor.getNormalizedColors();
-        float r = colors.red;
-        float g = colors.green;
-        float b = colors.blue;
-        float a = colors.alpha;
+        NormalizedRGBA colors2 = sensor2.getNormalizedColors();
+
+        float r = (colors.red + colors2.red) / 2;
+        float g = (colors.green + colors2.green) / 2;
+        float b = (colors.blue + colors2.blue) / 2;
+        float a = (colors.alpha + colors2.alpha) / 2;
 
         if (a < 0.01f) {
             float normalizedR = r / a;
             float normalizedG = g / a;
             float normalizedB = b / a;
-
 
             colourRed = (int)(normalizedR * 255);
             colourGre = (int)(normalizedG * 255);
@@ -59,7 +67,6 @@ public class colorSensor {
 
         }
 
-
         colourRed = Math.max(0, Math.min(colourRed, 255));
         colourGre = Math.max(0, Math.min(colourGre, 255));
         colourBlu = Math.max(0, Math.min(colourBlu, 255));
@@ -69,8 +76,11 @@ public class colorSensor {
     public void colourData(Telemetry telemetry) {
         updateRGB();
         NormalizedRGBA colors = sensor.getNormalizedColors();
-        telemetry.addData("Raw Values", "(%.3f, %.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue, colors.alpha);
-        telemetry.addData("RGBA", "(%d, %d, %d, %d, %d)", colourRed, colourGre, colourBlu, colourAlp);
+        NormalizedRGBA colors2 = sensor2.getNormalizedColors();
+        telemetry.addData("Raw Values Sensor 1", "(%.3f, %.3f, %.3f, %.3f)", colors.red, colors.green, colors.blue, colors.alpha);
+        telemetry.addData("Raw Values Sensor 2", "(%.3f, %.3f, %.3f, %.3f)", colors2.red, colors2.green, colors2.blue, colors2.alpha);
+        telemetry.addData("RGB", "(%d, %d, %d)", colourRed, colourGre, colourBlu);
+        telemetry.addData("Alpha: ", colourAlp);
         telemetry.update();
     }
 }

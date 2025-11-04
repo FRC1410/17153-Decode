@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID;
+import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID2;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,7 +17,7 @@ public class Robot extends OpMode {
     
     public void init() {
 //        this.drivetrain.init(hardwareMap);
-        this.colour.init(hardwareMap, COLOUR_SENSOR_ID);
+        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
     }
 

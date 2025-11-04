@@ -31,7 +31,7 @@ public class Auto extends OpMode {
     private final Toggle drivetrainToggle = new Toggle();
 
     private final Pose startPose = new Pose(0,0, Math.toRadians(90));
-    private final Pose endPose = new Pose(1,1, Math.toRadians(0));
+    private final Pose endPose = new Pose(10,10, Math.toRadians(0));
     private PathChain pathChain = new PathChain();
 
     public void initialize() {

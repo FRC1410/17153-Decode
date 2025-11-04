@@ -41,24 +41,17 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.REVERSE)
             .robotWidth(16.5)
             .robotLength(17)
-            .forwardTicksToInches(0.007520888208677659)
-            .strafeTicksToInches(0.04691369575535688)
-            .turnTicksToInches(0.013536993233681677);
+            .forwardTicksToInches(0.004880721498724319)
+            .strafeTicksToInches(0.0046481890386523665)
+            .turnTicksToInches(0.01119074420705601);
     public static FollowerConstants followerConstants = new FollowerConstants().mass(7)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
             .lateralZeroPowerAcceleration(-67.342491844080064)
             .translationalPIDFCoefficients(new PIDFCoefficients(
-                    0.03,
+                    0.12,
                     0,
                     0,
-                    0.015
-            ))
-            .translationalPIDFSwitch(4)
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(
-                    0.4,
-                    0,
-                    0.005,
-                    0.0006
+                    0.03
             ))
             .headingPIDFCoefficients(new PIDFCoefficients(
                     0.8,

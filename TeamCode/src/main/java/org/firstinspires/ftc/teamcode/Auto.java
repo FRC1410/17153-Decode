@@ -24,14 +24,14 @@ public class Auto extends OpMode {
     private boolean pathComplete = false;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
-    private int pathState;
+    private int pathState = 0;
     private Path autoPath;
     private final Drivetrain drivetrain = new Drivetrain();
 
     private final Toggle drivetrainToggle = new Toggle();
 
     private final Pose startPose = new Pose(0,0, Math.toRadians(90));
-    private final Pose endPose = new Pose(0,40, Math.toRadians(90));
+    private final Pose endPose = new Pose(1,1, Math.toRadians(0));
     private PathChain pathChain = new PathChain();
 
     public void initialize() {
@@ -44,9 +44,16 @@ public class Auto extends OpMode {
     }
 
     public void runPath(){
-        if (!follower.isBusy() && !pathComplete){
-            follower.followPath(pathChain);
-            pathComplete = true;
+        switch (pathState) {
+            case 0:
+                follower.followPath(pathChain);
+                pathState = 1;
+                break;
+            case 1:
+                if (!follower.isBusy()){
+                    pathState = -1;
+                }
+                break;
         }
     }
 
@@ -57,9 +64,19 @@ public class Auto extends OpMode {
         follower.setStartingPose(startPose);
         runPath();
     }
-    public void stop(){}
+    public void stop(){
+        telemetry.addData("X: ",follower.getPose().getX());
+        telemetry.addData("Y: ",follower.getPose().getY());
+        telemetry.addData("X: ",follower.getPose().getHeading());
+        telemetry.update();
+    }
 
     public void loop(){
+        if (!follower.isBusy()){
+            stop();
+        } else {
+            telemetry.addData("Follower status: ","Busy");
+        }
         follower.update();
         runPath();
         telemetry.addData("X: ",follower.getPose().getX());

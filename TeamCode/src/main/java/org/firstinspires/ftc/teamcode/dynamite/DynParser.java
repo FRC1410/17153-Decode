@@ -141,7 +141,6 @@ public class DynParser {
         // process while loop
         if (line[1] == "while"){
             funcLoopDepthData.add(lineIndex);
-            //
         }
         // process for loop
         else if (line[1] == "for"){

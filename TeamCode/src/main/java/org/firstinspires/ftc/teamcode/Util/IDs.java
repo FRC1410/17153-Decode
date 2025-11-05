@@ -10,7 +10,7 @@ public class IDs {
     public static final String CONTROL_HUB_IMU = "Control hub IMU";
 
     //SusanLift
-    public static final String SUSAN_SPIN_MOTOR = "SusanLift Spin Motor";
-    public static final String SUSAN_LIFT_SERVO = "SusanLift Lift Servo";
+    public static final String SUSAN_SPIN_MOTOR = "Susan Spin Motor";
+    public static final String SUSAN_LIFT_SERVO = "Susan Lift Servo";
 
 }

@@ -4,30 +4,33 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
-import org.firstinspires.ftc.teamcode.Util.RobotStates;
+import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 
 @TeleOp
 public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
+    private final LazySusan lazySusan = new LazySusan();
 
     private final Toggle drivetrainToggle = new Toggle();
     private final Toggle raiseToggle = new Toggle();
     
     public void init() {
-        this.drivetrain.init(hardwareMap);
-
+//        this.drivetrain.init(hardwareMap);
+        this.lazySusan.init(hardwareMap);
     }
 
     @Override
     public void loop() {
 
-        this.drivetrain.mechanumDrive(
-                gamepad1.left_stick_x,
-                gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                drivetrainToggle.toggleButton(gamepad1.a)
-        );
+//        this.drivetrain.mechanumDrive(
+//                gamepad1.left_stick_x,
+//                gamepad1.left_stick_y,
+//                gamepad1.right_stick_x,
+//                drivetrainToggle.toggleButton(gamepad1.a)
+//        );
+
+        this.lazySusan.loop(gamepad1.a, gamepad1.b, gamepad1.x, gamepad1.right_bumper);
 
     }
 }

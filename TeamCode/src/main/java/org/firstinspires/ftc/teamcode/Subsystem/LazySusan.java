@@ -8,12 +8,13 @@ import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_P;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_1;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_2;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_3;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_CLAW_POS_UP;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_CLAW_POS_DOWN;
+import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_UP;
+import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_DOWN;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
@@ -24,12 +25,13 @@ public class LazySusan {
     // me when i am motivationally challenged and
     private DcMotor spin_motor;
     private ServoImplEx lift_servo;
+    private PwmControl.PwmRange pwm_range;
 
     private double servo_pos;
     private double susan_pos;
-    private RobotStates.SusanLift current_servo_state;
+    private RobotStates.SusanLift current_servo_state = RobotStates.SusanLift.DOWN;
 
-    private RobotStates.SusanSpin desired_susan_state;
+    private RobotStates.SusanSpin desired_susan_state = RobotStates.SusanSpin.ONE;
 
     private PIDController susan_PID_controller;
 
@@ -40,9 +42,12 @@ public class LazySusan {
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.spin_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        this.spin_motor.setTargetPosition(0);
+        this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.lift_servo.setDirection(Servo.Direction.FORWARD);
+
+        this.pwm_range = new PwmControl.PwmRange(600, 2400, 20000);
 
         this.susan_PID_controller = new PIDController(SUSAN_P, SUSAN_I, SUSAN_D);
     }
@@ -76,11 +81,11 @@ public class LazySusan {
     public double getServoPos(RobotStates.SusanLift desiredClawState) {
         switch (desiredClawState) {
             case UP:
-                this.servo_pos = SUSAN_CLAW_POS_UP;
+                this.servo_pos = SUSAN_LIFT_POS_UP;
                 break;
 
             case DOWN:
-                this.servo_pos = SUSAN_CLAW_POS_DOWN;
+                this.servo_pos = SUSAN_LIFT_POS_DOWN;
                 break;
         }
         return servo_pos;
@@ -140,6 +145,7 @@ public class LazySusan {
 
     /**
      * Have Susan attempt to go to the current desired state using the pid controller
+     * @return Power output
      */
     public double susanGoToState() {
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
@@ -147,5 +153,24 @@ public class LazySusan {
         double output = this.susan_PID_controller.calculate(desiredSusanPos, this.getActualSusanState());
         this.spin_motor.setPower(output);
         return output;
+    }
+
+    public void loop(boolean a, boolean b, boolean x, boolean rb) {
+        if (a) {
+            setDesired_susan_state(RobotStates.SusanSpin.ONE);
+        } else if (b) {
+            setDesired_susan_state(RobotStates.SusanSpin.TWO);
+        } else if (x) {
+            setDesired_susan_state(RobotStates.SusanSpin.THREE);
+        }
+
+        if (rb) {
+            setCurrent_servo_state(RobotStates.SusanLift.UP);
+        } else {
+            setCurrent_servo_state(RobotStates.SusanLift.DOWN);
+        }
+
+        servoGoToState();
+        System.out.println(susanGoToState());
     }
 }

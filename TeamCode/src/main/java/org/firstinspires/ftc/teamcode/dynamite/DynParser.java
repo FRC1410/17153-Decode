@@ -18,6 +18,13 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+// THE BASIC PROCESS FOR DYNAMITE SYSTEM
+// 1. parse into commands
+// 2. process variables
+// 3. process loops
+// 4. process functions
+// 5. convert into pedroPath
+
 public class DynParser {
     private Telemetry telemetry;
     // the following variables are here to allow us to index them into a json

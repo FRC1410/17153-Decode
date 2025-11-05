@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
+import android.annotation.SuppressLint;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,16 +57,38 @@ class DynVarString{
 // list
 class DynVarList{
     public String name  = "";
-    // this ones gonna be fun :)
-    private List<DynVarFieldCords> FieldCords;
-    private List<DynVarFieldPos> FieldPoses;
-    private List<DynVarNumber> Numbers;
-    private List<DynVarBoolean> Booleans;
-    private List<DynVarString> Strings;
-    private List<DynVarList> Lists;
+
+    private final AdaptiveList indexLookup = new AdaptiveList();
+
+    public <T> T get(int index){return (T) indexLookup.get(index);}
+
+    public void append(DynVarFieldCords value){indexLookup.append(value);}
+    public void append(DynVarFieldPos value){indexLookup.append(value);}
+    public void append(DynVarNumber value){indexLookup.append(value);}
+    public void append(DynVarBoolean value){indexLookup.append(value);}
+    public void append(DynVarString value){indexLookup.append(value);}
+    public void append(DynVarList value){indexLookup.append(value);}
+
+    public void set(int index, DynVarFieldCords value){indexLookup.set(index, value);}
+    public void set(int index, DynVarFieldPos value){indexLookup.set(index, value);}
+    public void set(int index, DynVarNumber value){indexLookup.set(index, value);}
+    public void set(int index, DynVarBoolean value){indexLookup.set(index, value);}
+    public void set(int index, DynVarString value){indexLookup.set(index, value);}
+    public void set(int index, DynVarList value){indexLookup.set(index, value);}
+
+    public void rm(int index){indexLookup.remove(index);}
 }
 // json
 class DynVarJson{
     public String name  = "";
     // this one too =)
+}
+
+// to be used here for now for list thingy of dyn variables
+class AdaptiveList<T> {
+    private ArrayList<T> list = new ArrayList<>();
+    public void append(T item) {list.add(item);}
+    public void remove(int index) {list.remove(index);}
+    public void set(int index, T item) {list.set(index, item);}
+    public T get(int index) {return list.get(index);}
 }

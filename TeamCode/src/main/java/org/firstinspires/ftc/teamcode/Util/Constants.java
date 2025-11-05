@@ -22,4 +22,35 @@ public class Constants {
             RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
     public static RevHubOrientationOnRobot HUB_ORIENTATION =
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
+
+    //ball color ranges
+    public static int PURPLE_LOWER_RED = 115;
+    public static int PURPLE_UPPER_RED = 150;
+
+    public static int PURPLE_LOWER_GREEN = 50;
+    public static int PURPLE_UPPER_GREEN = 90;
+
+    public static int PURPLE_LOWER_BLUE = 90;
+    public static int PURPLE_UPPER_BLUE = 120;
+
+    public static int GREEN_LOWER_RED = 115;
+    public static int GREEN_UPPER_RED = 140;
+
+    public static int GREEN_LOWER_GREEN = 200;
+    public static int GREEN_UPPER_GREEN = 255;
+
+    public static int GREEN_LOWER_BLUE = 115;
+    public static int GREEN_UPPER_BLUE = 140;
 }
+
+//purple balls
+// R: 115 - 150
+// G: 50 - 90
+// B: 90 - 120
+
+//green balls
+// R: 115 - 140
+// G: 200 - 255
+// B: 115 - 140
+
+

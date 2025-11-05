@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Sensor;
 
+import static org.firstinspires.ftc.teamcode.Util.Constants.*;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -73,6 +75,21 @@ public class colorSensor {
         colourAlp = Math.max(0, Math.min(colourAlp, 255));
     }
 
+    public boolean isPurple(){
+        if (((colourRed > PURPLE_LOWER_RED) && (colourRed < PURPLE_UPPER_RED)) && ((colourGre > PURPLE_LOWER_GREEN) && (colourGre < PURPLE_UPPER_GREEN)) && ((colourBlu > PURPLE_LOWER_BLUE) && (colourBlu < PURPLE_UPPER_BLUE))){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isGreen(){
+        if (((colourRed > GREEN_LOWER_RED) && (colourRed < GREEN_UPPER_RED)) && ((colourGre > GREEN_LOWER_GREEN) && (colourGre < GREEN_UPPER_GREEN)) && ((colourBlu > GREEN_LOWER_BLUE) && (colourBlu < GREEN_UPPER_BLUE))){
+            return true;
+        }
+        return false;
+    }
+
+
     public void colourData(Telemetry telemetry) {
         updateRGB();
         NormalizedRGBA colors = sensor.getNormalizedColors();
@@ -81,6 +98,8 @@ public class colorSensor {
         telemetry.addData("Raw Values Sensor 2", "(%.3f, %.3f, %.3f, %.3f)", colors2.red, colors2.green, colors2.blue, colors2.alpha);
         telemetry.addData("RGB", "(%d, %d, %d)", colourRed, colourGre, colourBlu);
         telemetry.addData("Alpha: ", colourAlp);
+        telemetry.addData("IsPurple: ", isPurple());
+        telemetry.addData("IsGreen: ", isGreen());
         telemetry.update();
     }
 }

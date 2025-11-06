@@ -75,9 +75,9 @@ public class colorSensor {
             float normalizedG = g / a;
             float normalizedB = b / a;
 
-            colourRed = (int)(normalizedR * 255);
-            colourGre = (int)(normalizedG * 255);
-            colourBlu = (int)(normalizedB * 255);
+            colourRed = (int)(normalizedR * 2550);
+            colourGre = (int)(normalizedG * 2550);
+            colourBlu = (int)(normalizedB * 2550);
             colourAlp = (int)(a * 255);
         } else {
 

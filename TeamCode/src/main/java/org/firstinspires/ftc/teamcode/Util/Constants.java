@@ -41,16 +41,11 @@ public class Constants {
 
     public static int GREEN_LOWER_BLUE = 115;
     public static int GREEN_UPPER_BLUE = 140;
+
+    //Controller
+
+    public static double MATCH_HALF_TIME = 60.0; //Seconds
 }
 
-//purple balls
-// R: 115 - 150
-// G: 50 - 90
-// B: 90 - 120
-
-//green balls
-// R: 115 - 140
-// G: 200 - 255
-// B: 115 - 140
 
 

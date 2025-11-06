@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
+import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
@@ -21,6 +22,7 @@ public class Robot extends OpMode {
     
     public void init() {
         this.drivetrain.init(hardwareMap);
+        ControlScheme.init(gamepad1);
 
 
     }
@@ -28,13 +30,13 @@ public class Robot extends OpMode {
     @Override
     public void loop() {
         this.drivetrain.mechanumDrive(
-                gamepad1.left_stick_x,
-                gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                drivetrainToggle.toggleButton(gamepad1.a)
+            ControlScheme.DRIVE_STRAFE.get(),
+                ControlScheme.DRIVE_FB.get(),
+                ControlScheme.DRIVE_ROTATE.get(),
+                drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
 
-        rumbler.rumble();
+        rumbler.halfimeRumble();
 
     }
 }

@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.Subsystem;
 import static org.firstinspires.ftc.teamcode.Util.IDs.*;
 import static org.firstinspires.ftc.teamcode.Util.Constants.*;
@@ -23,11 +22,7 @@ public class Intake {
 
         this.intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);}
 
-public void run(double intake, double outtake){
-    this.intake.setPower((outtake) - (intake));
-        }
-
-    public void run(float leftTrigger, float rightTrigger) {
+    public void run(double intake, double outtake){
+        this.intake.setPower((outtake) - (intake));
     }
 }
-

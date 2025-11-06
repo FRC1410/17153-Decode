@@ -78,7 +78,7 @@ public class colorSensor {
             colourRed = (int)(normalizedR * 2550);
             colourGre = (int)(normalizedG * 2550);
             colourBlu = (int)(normalizedB * 2550);
-            colourAlp = (int)(a * 255);
+            colourAlp = (int)(a * 2550);
         } else {
 
             colourRed = (int)(r * 255);

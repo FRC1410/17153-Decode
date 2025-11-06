@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID2;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
@@ -26,6 +27,11 @@ public class Robot extends OpMode {
 
 
     }
+    public void getTelemetry(){
+        this.drivetrain.drivetrainData(telemetry);
+
+        telemetry.update();
+    }
 
     @Override
     public void loop() {
@@ -36,7 +42,8 @@ public class Robot extends OpMode {
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
 
-        rumbler.halfimeRumble();
+        this.rumbler.halfimeRumble();
 
+    getTelemetry();
     }
 }

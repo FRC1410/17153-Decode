@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Util.PIDController;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
@@ -171,6 +172,9 @@ public class LazySusan {
         }
 
         servoGoToState();
-        System.out.println(susanGoToState());
+        susanGoToState();
+
+//        telemetry.addData("Motor encoder value", this.getActualSusanState());
+//        telemetry.addData("Desired encoder value", getSusanPos(this.desired_susan_state));
     }
 }

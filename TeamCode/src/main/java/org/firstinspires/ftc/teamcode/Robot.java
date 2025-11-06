@@ -30,7 +30,7 @@ public class Robot extends OpMode {
 //                drivetrainToggle.toggleButton(gamepad1.a)
 //        );
 
-        this.lazySusan.loop(gamepad1.a, gamepad1.b, gamepad1.x, gamepad1.right_bumper);
+        this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
 
     }
 }

@@ -44,7 +44,7 @@ public class Constants {
 
     //Controller
 
-    public static double MATCH_HALF_TIME = 60.0; //Seconds
+    public static double MATCH_HALF_TIME = 10.0; //Seconds
 }
 
 

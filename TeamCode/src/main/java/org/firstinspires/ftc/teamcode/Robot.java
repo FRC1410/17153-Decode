@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
 @TeleOp
 public class Robot extends OpMode {
-    private final Drivetrain drivetrain = new Drivetrain();
+//    private final Drivetrain drivetrain = new Drivetrain();
 
     private final Rumbler rumbler = new Rumbler();
 
@@ -22,25 +22,25 @@ public class Robot extends OpMode {
 
     
     public void init() {
-        this.drivetrain.init(hardwareMap);
-        ControlScheme.init(gamepad1);
+//        this.drivetrain.init(hardwareMap);
+//        ControlScheme.init(gamepad1);
 
 
     }
     public void getTelemetry(){
-        this.drivetrain.drivetrainData(telemetry);
+//        this.drivetrain.drivetrainData(telemetry);
 
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        this.drivetrain.mechanumDrive(
-            ControlScheme.DRIVE_STRAFE.get(),
-                ControlScheme.DRIVE_FB.get(),
-                ControlScheme.DRIVE_ROTATE.get(),
-                drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
-        );
+//        this.drivetrain.mechanumDrive(
+//            ControlScheme.DRIVE_STRAFE.get(),
+//                ControlScheme.DRIVE_FB.get(),
+//                ControlScheme.DRIVE_ROTATE.get(),
+//                drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
+//        );
 
         this.rumbler.halfimeRumble();
 

@@ -5,4 +5,10 @@ public class RobotStates {
         FULL_SPEED,
         HALF_SPEED
     }
+    public enum ShooterStates{
+        FORWARD,
+        NEUTRAL,
+        BACKWARD,
+        HALF_POWER
+    }
 }

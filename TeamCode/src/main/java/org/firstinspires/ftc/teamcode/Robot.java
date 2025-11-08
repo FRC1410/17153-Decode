@@ -31,7 +31,8 @@ public class Robot extends OpMode {
                 gamepad1.right_stick_x,
                 drivetrainToggle.toggleButton(gamepad1.a)
         );
-        this.shooter.run(RobotStates.ShooterStates.FORWARD);
 
+
+        this.shooter.cycle(telemetry);
     }
 }

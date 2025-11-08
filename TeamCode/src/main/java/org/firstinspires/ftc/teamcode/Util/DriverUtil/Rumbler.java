@@ -18,34 +18,52 @@ public class Rumbler {
     Gamepad.RumbleEffect rightrumbleEffect;
 
     ElapsedTime runtime = new ElapsedTime();
-
-    public void halfimeRumble(){
-
-        //format is .addStep( <left motor strength(0-1)>, <right motor strength(0-1)>, <duration(miliseconds)>)
-        halftimerumbleEffect = new Gamepad.RumbleEffect.Builder()
-                .addStep(1.0, 0.0, 500)
-                .addStep(0.0, 1.0, 500)
-                .addStep(1.0, 1.0, 500)
-                .build();
-
-        runtime.reset();
-
-        if ((runtime.seconds() > MATCH_HALF_TIME) && !secondHalf)  {
-            gamepad1.runRumbleEffect(halftimerumbleEffect);
-            secondHalf = true;
+    //format is .addStep( <left motor strength(0-1)>, <right motor strength(0-1)>, <duration(miliseconds)>)
+        public Rumbler() {
+            halftimerumbleEffect = new Gamepad.RumbleEffect.Builder()
+                    .addStep(1.0, 0.0, 500)  // Left motor
+                    .addStep(0.0, 1.0, 500)  // Right motor
+                    .addStep(1.0, 1.0, 500)  // Both motors
+                    .build();
         }
 
-    }
-
-    public void rumbleLeft(float intensity, int milis){
+    public void rumbleLeft(Gamepad gamepad, int milis){
         leftrumbleEffect = new Gamepad.RumbleEffect.Builder()
-                .addStep(intensity, 0.0, milis)
+                .addStep(1.0, 0.0, milis)
                 .build();
     }
 
-    public void rumbleRight(float intensity, int milis){
+    public void rumbleRight(Gamepad gamepad, int milis){
         leftrumbleEffect = new Gamepad.RumbleEffect.Builder()
-                .addStep(0.0, intensity, milis)
+                .addStep(0.0, 1.0, milis)
                 .build();
+    }
+
+    public void halftimeRumble(Gamepad gamepad) {
+        if ((runtime.seconds() > MATCH_HALF_TIME) && !secondHalf) {
+            gamepad.runRumbleEffect(halftimerumbleEffect);
+            secondHalf = true;
+        }
+    }
+
+    public boolean isRumbling(Gamepad gamepad) {
+        return gamepad.isRumbling();
+    }
+
+    public void stopRumble(Gamepad gamepad) {
+        gamepad.stopRumble();
+    }
+
+    public void startMatchTimer() {
+        runtime.reset();
+        secondHalf = false;
+    }
+
+    public void rumbleBlips(Gamepad gamepad, int count) {
+        gamepad.rumbleBlips(count);
+    }
+
+    public void rumbleBlip(Gamepad gamepad) {
+        gamepad.rumbleBlips(1);
     }
 }

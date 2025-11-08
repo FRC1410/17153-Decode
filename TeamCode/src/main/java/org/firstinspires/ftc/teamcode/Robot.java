@@ -1,49 +1,64 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID;
-import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID2;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
-import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
-import org.firstinspires.ftc.teamcode.Util.Toggle;
-import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
+import org.firstinspires.ftc.teamcode.Util.Toggle;
+
 @TeleOp
 public class Robot extends OpMode {
-//    private final Drivetrain drivetrain = new Drivetrain();
-
     private final Rumbler rumbler = new Rumbler();
-
     private final Toggle drivetrainToggle = new Toggle();
 
-    
+    private boolean lastA = false;
+    private boolean lastB = false;
+    private boolean lastX = false;
+    private boolean lastY = false;
+
+    @Override
     public void init() {
-//        this.drivetrain.init(hardwareMap);
-//        ControlScheme.init(gamepad1);
-
-
     }
-    public void getTelemetry(){
-//        this.drivetrain.drivetrainData(telemetry);
 
+    @Override
+    public void start() {
+        rumbler.startMatchTimer();
+    }
+
+    public void getTelemetry() {
         telemetry.update();
     }
 
     @Override
     public void loop() {
-//        this.drivetrain.mechanumDrive(
-//            ControlScheme.DRIVE_STRAFE.get(),
-//                ControlScheme.DRIVE_FB.get(),
-//                ControlScheme.DRIVE_ROTATE.get(),
-//                drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
-//        );
+        boolean currentA = gamepad1.a;
+        boolean currentB = gamepad1.b;
+        boolean currentX = gamepad1.x;
+        boolean currentY = gamepad1.y;
 
-        this.rumbler.halfimeRumble();
+        rumbler.halftimeRumble(gamepad1);
 
-    getTelemetry();
+        if (currentA && !lastA) {
+            rumbler.rumbleBlip(gamepad1);
+        }
+
+        if (currentB && !lastB) {
+            rumbler.rumbleBlips(gamepad1, 3);
+        }
+
+        if (currentX && !lastX) {
+            rumbler.rumbleLeft(gamepad1,500);
+        }
+
+        if (currentY && !lastY) {
+            rumbler.rumbleRight(gamepad1, 500);
+        }
+
+        lastA = currentA;
+        lastB = currentB;
+        lastX = currentX;
+        lastY = currentY;
+
+        getTelemetry();
     }
 }

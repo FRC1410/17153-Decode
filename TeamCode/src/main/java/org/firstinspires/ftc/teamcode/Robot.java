@@ -10,14 +10,14 @@ import org.firstinspires.ftc.teamcode.Util.Toggle;
 
 @TeleOp
 public class Robot extends OpMode {
-    private final Drivetrain drivetrain = new Drivetrain();
+//    private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
 
-    private final Toggle drivetrainToggle = new Toggle();
+//    private final Toggle drivetrainToggle = new Toggle();
     private final Toggle raiseToggle = new Toggle();
     
     public void init() {
-        this.drivetrain.init(hardwareMap);
+//        this.drivetrain.init(hardwareMap);
         this.shooter.init(hardwareMap);
 
     }
@@ -25,14 +25,15 @@ public class Robot extends OpMode {
     @Override
     public void loop() {
 
-        this.drivetrain.mechanumDrive(
-                gamepad1.left_stick_x,
-                gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                drivetrainToggle.toggleButton(gamepad1.a)
-        );
+//        this.drivetrain.mechanumDrive(
+//                gamepad1.left_stick_x,
+//                gamepad1.left_stick_y,
+//                gamepad1.right_stick_x,
+//                drivetrainToggle.toggleButton(gamepad1.a)
+//        );
 
-
-        this.shooter.cycle(telemetry);
+        if (this.gamepad1.backWasReleased()) {
+            this.shooter.cycle(telemetry);
+        }
     }
 }

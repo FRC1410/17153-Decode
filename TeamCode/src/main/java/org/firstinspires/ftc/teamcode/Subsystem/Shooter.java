@@ -31,20 +31,22 @@ public class Shooter {
     }
 
     public void cycle(Telemetry telemetry) {
-        switch (shooterStatus) {
+        switch (this.shooterStatus) {
             case FORWARD:
                 this.shooterStatus = RobotStates.ShooterStates.BACKWARD;
-                telemetry.addData("Drive Mode:", this.shooterStatus);
+                break;
             case BACKWARD:
                 this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
-                telemetry.addData("Drive Mode:", this.shooterStatus);
+                break;
             case NEUTRAL:
                 this.shooterStatus = RobotStates.ShooterStates.HALF_POWER;
-                telemetry.addData("Drive Mode:", this.shooterStatus);
+                break;
             case HALF_POWER:
                 this.shooterStatus = RobotStates.ShooterStates.FORWARD;
-                telemetry.addData("Drive Mode:", this.shooterStatus);
+                break;
         }
+        telemetry.addData("Drive Mode:", this.shooterStatus);
+        telemetry.addData("Shooter Power", this.motorShooter.getPower());
         run(this.shooterStatus);
         telemetry.update();
     }
@@ -52,13 +54,13 @@ public class Shooter {
     public void run(RobotStates.ShooterStates shooterState){
         switch (shooterState) {
             case FORWARD:
-                this.motorShooter.setPower(1);
+                this.motorShooter.setPower(0.1);
             case BACKWARD:
-                this.motorShooter.setPower(-1);
+                this.motorShooter.setPower(-0.1);
             case NEUTRAL:
                 this.motorShooter.setPower(0);
             case HALF_POWER:
-                this.motorShooter.setPower(.5);
+                this.motorShooter.setPower(0.05);
         }
     }
 }

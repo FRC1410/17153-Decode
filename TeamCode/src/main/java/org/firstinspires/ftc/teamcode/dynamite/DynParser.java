@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import android.animation.IntArrayEvaluator;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.json.JSONException;
@@ -18,12 +15,14 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-// THE BASIC PROCESS FOR DYNAMITE SYSTEM
-// 1. parse into commands
-// 2. process variables
-// 3. process loops
-// 4. process functions
-// 5. convert into pedroPath
+/*
+ THE BASIC PROCESS FOR DYNAMITE SYSTEM
+ 1. parse into commands
+ 2. process variables
+ 3. process loops
+ 4. process functions
+ 5. convert into pedroPath
+*/
 
 public class DynParser {
     private Telemetry telemetry;
@@ -66,8 +65,7 @@ public class DynParser {
                 if (lineData[0] == "while" || lineData[0] == "for" || lineData[0] == "def_path"){
                     BiConsumer<String[],Integer> func = (BiConsumer<String[],Integer>) dynFuncLookup.get(lineData[0]);
                     func.accept(lineData, lineIndex);
-                }
-                else {
+                } else {
                     Consumer<String[]> func = (Consumer<String[]>) dynFuncLookup.get(lineData[0]);
                     func.accept(lineData);
                 }
@@ -144,18 +142,16 @@ public class DynParser {
     private void ParseTelemetry(String[] line) {
         telemetry.addData("DYN telemetry", line[1]);
     }
+    
     private void ParseLoop(String[] line, int lineIndex){
         // process while loop
         if (line[1] == "while"){
-            funcLoopDepthData.add(lineIndex);
         }
         // process for loop
         else if (line[1] == "for"){
-            funcLoopDepthData.add(lineIndex);
-
         }
     }
-    private void ParseFunc(String[] line, int lineIndex){
+    private void ParseFunc(String[] line, int lineIndex) {
 
     }
 }

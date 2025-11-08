@@ -13,10 +13,7 @@ import com.pedropathing.ftc.FollowerBuilder;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.Encoder;
 import com.pedropathing.ftc.localization.constants.DriveEncoderConstants;
-import com.pedropathing.ftc.localization.constants.PinpointConstants;
-import com.pedropathing.ftc.localization.localizers.DriveEncoderLocalizer;
 import com.pedropathing.paths.PathConstraints;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -44,7 +41,8 @@ public class Constants {
             .forwardTicksToInches(0.004880721498724319)
             .strafeTicksToInches(0.0046481890386523665)
             .turnTicksToInches(0.01119074420705601);
-    public static FollowerConstants followerConstants = new FollowerConstants().mass(7)
+    public static FollowerConstants followerConstants = new FollowerConstants()
+            .mass(7)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
             .lateralZeroPowerAcceleration(-67.342491844080064)
             .translationalPIDFCoefficients(new PIDFCoefficients(
@@ -66,7 +64,6 @@ public class Constants {
                     0.6,
                     0.015
             ))
-            .drivePIDFSwitch(15)
             .centripetalScaling(0.0005);
 
     public static PathConstraints pathConstraints = new PathConstraints(

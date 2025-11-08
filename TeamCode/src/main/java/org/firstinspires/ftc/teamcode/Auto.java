@@ -21,15 +21,8 @@ import java.util.Timer;
 
 @Autonomous(name="Pedro Pathing Test", group="Tests")
 public class Auto extends OpMode {
-    private boolean pathComplete = false;
     private Follower follower;
-    private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState = 0;
-    private Path autoPath;
-    private final Drivetrain drivetrain = new Drivetrain();
-
-    private final Toggle drivetrainToggle = new Toggle();
-
     private final Pose startPose = new Pose(0,0, Math.toRadians(90));
     private final Pose endPose = new Pose(10,10, Math.toRadians(0));
     private PathChain pathChain = new PathChain();

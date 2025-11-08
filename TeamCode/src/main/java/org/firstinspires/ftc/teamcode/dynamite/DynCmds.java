@@ -8,11 +8,28 @@ public class DynCmds {
     public ArrayList<Object> configSequence;
 }
 
-class DefineVar{}
-class MathOp{}
-class MovementOp{}
-class StartDeclare{}
-class EndDeclare{}
-class ForLoop{}
+class DefineVar{
+    String varName;
+    String varValue;
+}
+class MathOp{
+    String MathOp;
+    String VarIn1;
+    String VarIn2;
+    String VarOut;
+}
+class MovementOp{
+    String type;
+    String[] Poses;
+}
+class StartDeclare{
+    String name;
+}
+class EndDeclare{
+    String functionEndingName;
+}
+class ForLoop{
+
+}
 class WhileLoop{}
-class AutoPathFunc{}
+class PathFunc{}

@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Sensor;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.Util.IDs.CAMERA_CV_ID;
 
 import android.graphics.Canvas;
@@ -54,6 +55,17 @@ public class OpenCV {
                 .setErodeSize(15)        // Shrink blobs back to original size
                 .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
                 .build();
+
+        VisionPortal portal = new VisionPortal.Builder()
+                .addProcessor(purpleColorLocator)
+                .addProcessor(greenColorLocator)
+                .setCameraResolution(new Size(320, 240))
+                .setCamera(hardwareMap.get(WebcamName.class, CAMERA_CV_ID))
+                .build();
+    }
+    public void cameraData(Telemetry telemetry) {
+
+
     }
 
 }

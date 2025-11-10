@@ -56,6 +56,12 @@ VARIABLE DEFINITION/CREATION CREATION:
             as said many times before, the name is the name of the variable.
             works just like normal json. to get a value with an id use the .id(id) method to
 MATH OPERATIONS:
+    ADD: (WIP)
+        Syntax:
+            ADD val1 val2 to var
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
     SUB: (WIP)
         Syntax:
             SUB val1 val2 to var
@@ -139,16 +145,16 @@ BASIC MOVEMENT COMMANDS:
                 this argument tells the auto to go to the given point in a straight line
     followBezier: (WIP)
         syntax:
-            followBezier(midPose/Cord... ,endPos)
+            followBezier (midPose/Cord... ,endPos)
         args:
             midPos/Cord:
                 these args define all of the weight points in the bezier curve from start to finish.
             endPos:
                 this defines where the bot should end after the bezier curve.
 STARTING DECLARATIONS:
-    PathStartPoint: (WIP)
+    PathStartPositiont: (WIP)
         Syntax:
-            PathStartPoint = pos
+            PathStartPosition = pos
         Usage:
             pos = a position on the field, this defines where the robot starts in the auto sequence.
             must be the first command in an auto function
@@ -177,6 +183,11 @@ PATH DECLARATORS:
         Usage:
             main = the name of the function, will throw a fit if the name is already used as a function name beforehand in the script
             between the start and end lines put the code you want to run during auto.
+    RUN:
+        Syntax:
+            RUN pathFunctionName
+        Usage:
+            runs the given function name.
 TELEMETRY:
     output2telem: (WIP)
         syntax:

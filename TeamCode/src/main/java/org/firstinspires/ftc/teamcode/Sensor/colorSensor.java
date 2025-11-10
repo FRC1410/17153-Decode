@@ -75,10 +75,10 @@ public class colorSensor {
             float normalizedG = g / a;
             float normalizedB = b / a;
 
-            colourRed = (int)(normalizedR * 2550);
-            colourGre = (int)(normalizedG * 2550);
-            colourBlu = (int)(normalizedB * 2550);
-            colourAlp = (int)(a * 2550);
+            colourRed = (int)(normalizedR * 1000);
+            colourGre = (int)(normalizedG * 1000);
+            colourBlu = (int)(normalizedB * 1000);
+            colourAlp = (int)(a * 1000);
         } else {
 
             colourRed = (int)(r * 255);
@@ -87,7 +87,7 @@ public class colorSensor {
             colourAlp = (int)(a * 255);
         }
 
-        colourRed = Math.max(0, Math.min(colourRed, 255));
+         colourRed = Math.max(0, Math.min(colourRed, 255));
         colourGre = Math.max(0, Math.min(colourGre, 255));
         colourBlu = Math.max(0, Math.min(colourBlu, 255));
         colourAlp = Math.max(0, Math.min(colourAlp, 255));

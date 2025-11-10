@@ -45,9 +45,9 @@ public class Shooter {
                 this.shooterStatus = RobotStates.ShooterStates.FORWARD;
                 break;
         }
+        run(this.shooterStatus);
         telemetry.addData("Drive Mode:", this.shooterStatus);
         telemetry.addData("Shooter Power", this.motorShooter.getPower());
-        run(this.shooterStatus);
         telemetry.update();
     }
 
@@ -55,12 +55,16 @@ public class Shooter {
         switch (shooterState) {
             case FORWARD:
                 this.motorShooter.setPower(0.1);
+                break;
             case BACKWARD:
                 this.motorShooter.setPower(-0.1);
+                break;
             case NEUTRAL:
                 this.motorShooter.setPower(0);
+                break;
             case HALF_POWER:
                 this.motorShooter.setPower(0.05);
+                break;
         }
     }
 }

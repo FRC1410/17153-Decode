@@ -152,7 +152,7 @@ BASIC MOVEMENT COMMANDS:
             endPos:
                 this defines where the bot should end after the bezier curve.
 STARTING DECLARATIONS:
-    PathStartPositiont: (WIP)
+    PathStartPosition: (WIP)
         Syntax:
             PathStartPosition = pos
         Usage:

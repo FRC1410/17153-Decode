@@ -12,4 +12,6 @@ public class IDs {
 
     public static final String COLOUR_SENSOR_ID2 = "Colour2";
 
+    public static final String CAMERA_CV_ID = "CV1";
+
 }

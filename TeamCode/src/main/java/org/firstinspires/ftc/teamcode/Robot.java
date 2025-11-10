@@ -9,19 +9,30 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
+import org.firstinspires.ftc.teamcode.Sensor.OpenCV;
 @TeleOp
 public class Robot extends OpMode {
 //    private final Drivetrain drivetrain = new Drivetrain();
     private final colorSensor colour = new colorSensor();
+    private final OpenCV openCV = new OpenCV();
 
     
     public void init() {
 //        this.drivetrain.init(hardwareMap);
 //        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
+        this.openCV.init(hardwareMap);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        this.openCV.startStreaming();
+        telemetry.update();
     }
     public void doTelem(){
-
+        this.openCV.processVision(telemetry);
         updateTelemetry(telemetry);
     }
 
@@ -33,7 +44,13 @@ public class Robot extends OpMode {
 //                gamepad1.right_stick_x,
 //                drivetrainToggle.toggleButton(gamepad1.a)
 //        );
-        doTelem();
 
+        // Continuously process vision and update telemetry
+        doTelem();
+    }
+
+    @Override
+    public void stop() {
+        this.openCV.close();
     }
 }

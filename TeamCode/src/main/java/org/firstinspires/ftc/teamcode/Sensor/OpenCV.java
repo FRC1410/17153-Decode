@@ -63,7 +63,9 @@ public class OpenCV {
                 .setCamera(hardwareMap.get(WebcamName.class, CAMERA_CV_ID))
                 .build();
     }
-    public void cameraData(Telemetry telemetry) {
+    public void cameraDataCV(Telemetry telemetry) {
+        init();
+
 
 
     }

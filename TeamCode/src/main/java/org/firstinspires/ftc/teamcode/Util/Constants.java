@@ -41,6 +41,13 @@ public class Constants {
 
     public static int GREEN_LOWER_BLUE = 115;
     public static int GREEN_UPPER_BLUE = 140;
+
+    //Susan
+    public static final double SUSAN_POS_1 = 0;
+    public static final double SUSAN_POS_2 = 9;
+    public static final double SUSAN_POS_3 = 19;
+    public static final double SUSAN_LIFT_POS_UP = 0.4;
+    public static final double SUSAN_LIFT_POS_DOWN = 1;
 }
 
 //purple balls

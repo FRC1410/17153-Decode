@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID;
-import static org.firstinspires.ftc.teamcode.Util.IDs.COLOUR_SENSOR_ID2;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
-import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Sensor.OpenCV;
 @TeleOp
@@ -24,6 +20,7 @@ public class Robot extends OpMode {
 //        this.drivetrain.init(hardwareMap);
 //        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
+        this.lazySusan.init(hardwareMap);
         this.openCV.init(hardwareMap);
         try {
             Thread.sleep(1000);
@@ -36,20 +33,28 @@ public class Robot extends OpMode {
     }
     public void doTelem(){
         this.openCV.processVision(telemetry);
+
+        telemetry.addData("--- Lazy Susan Detection ---", "");
+        telemetry.addData("Position 1 Color", this.openCV.getColorInPosition(1));
+        telemetry.addData("Position 2 Color", this.openCV.getColorInPosition(2));
+        telemetry.addData("Position 3 Color", this.openCV.getColorInPosition(3));
+        telemetry.addData("Current Susan Position", this.lazySusan.getCurrentPosition());
+        telemetry.addData("Shooter Position", this.lazySusan.getShooterPosition());
+
         updateTelemetry(telemetry);
-//        this.drivetrain.init(hardwareMap);
-        this.lazySusan.init(hardwareMap);
     }
 
     @Override
     public void loop() {
-//        this.drivetrain.mechanumDrive(
-//                gamepad1.left_stick_x,
-//                gamepad1.left_stick_y,
-//                gamepad1.right_stick_x,
-//                drivetrainToggle.toggleButton(gamepad1.a)
-//        );
-        this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
+        if (gamepad1.x) {
+            this.lazySusan.shootColor(this.openCV, OpenCV.ArtifactColor.PURPLE, telemetry);
+        } else if (gamepad1.y) {
+            this.lazySusan.shootColor(this.openCV, OpenCV.ArtifactColor.GREEN, telemetry);
+        } else {
+            this.lazySusan.loop(gamepad1.a, gamepad1.b, gamepad1.dpad_up);
+        }
+
+        this.lazySusan.susanGoToState();
         doTelem();
     }
 

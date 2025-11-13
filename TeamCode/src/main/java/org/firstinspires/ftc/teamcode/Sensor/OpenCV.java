@@ -147,4 +147,63 @@ public class OpenCV {
         }
         return largest;
     }
+
+    public enum ArtifactColor {
+        PURPLE,
+        GREEN,
+        EMPTY
+    }
+
+    public ArtifactColor getColorInPosition(int position) {
+        if (position < 1 || position > 3) return ArtifactColor.EMPTY;
+
+        List<ColorBlobLocatorProcessor.Blob> purpleBlobs = getPurpleBlobs();
+        List<ColorBlobLocatorProcessor.Blob> greenBlobs = getGreenBlobs();
+
+        double minX = getMinXForPosition(position);
+        double maxX = getMaxXForPosition(position);
+
+        for (ColorBlobLocatorProcessor.Blob blob : purpleBlobs) {
+            double x = blob.getBoxFit().center.x;
+            if (x >= minX && x <= maxX) {
+                return ArtifactColor.PURPLE;
+            }
+        }
+
+        for (ColorBlobLocatorProcessor.Blob blob : greenBlobs) {
+            double x = blob.getBoxFit().center.x;
+            if (x >= minX && x <= maxX) {
+                return ArtifactColor.GREEN;
+            }
+        }
+
+        return ArtifactColor.EMPTY;
+    }
+
+    private double getMinXForPosition(int position) {
+        switch (position) {
+            case 1: return 0;
+            case 2: return 213;
+            case 3: return 427;
+            default: return 0;
+        }
+    }
+
+    private double getMaxXForPosition(int position) {
+        switch (position) {
+            case 1: return 213;
+            case 2: return 427;
+            case 3: return 640;
+            default: return 640;
+        }
+    }
+
+    public Integer findPositionForColor(ArtifactColor desiredColor) {
+        for (int position = 1; position <= 3; position++) {
+            if (getColorInPosition(position) == desiredColor) {
+                return position;
+            }
+        }
+        return null;
+    }
 }

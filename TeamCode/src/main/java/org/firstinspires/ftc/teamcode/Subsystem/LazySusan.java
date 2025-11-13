@@ -1,117 +1,49 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.Util.IDs.SUSAN_SPIN_MOTOR;
-import static org.firstinspires.ftc.teamcode.Util.IDs.SUSAN_LIFT_SERVO;
 import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_D;
 import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_I;
 import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_P;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_1;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_2;
 import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_3;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_UP;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_DOWN;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Sensor.OpenCV;
 import org.firstinspires.ftc.teamcode.Util.PIDController;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class LazySusan {
-    // me when i am motivationally challenged and
     private DcMotor spin_motor;
-    private ServoImplEx lift_servo;
-    private PwmControl.PwmRange pwm_range;
 
-    private double servo_pos;
     private double susan_pos;
-    private RobotStates.SusanLift current_servo_state = RobotStates.SusanLift.DOWN;
 
     private RobotStates.SusanSpin desired_susan_state = RobotStates.SusanSpin.ONE;
 
     private PIDController susan_PID_controller;
 
+    private static final int SHOOTER_POSITION = 1;
+
     public void init(HardwareMap hardwareMap) {
         this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR);
-        this.lift_servo = hardwareMap.get(ServoImplEx.class, SUSAN_LIFT_SERVO);
 
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.spin_motor.setTargetPosition(0);
         this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.lift_servo.setDirection(Servo.Direction.FORWARD);
-
-        this.pwm_range = new PwmControl.PwmRange(600, 2400, 20000);
 
         this.susan_PID_controller = new PIDController(SUSAN_P, SUSAN_I, SUSAN_D);
     }
-    /**
-     * Sets the desired servo state
-     */
-    public void setCurrent_servo_state(RobotStates.SusanLift desiredServoState) {
-        this.current_servo_state = desiredServoState;
-    }
 
-    /**
-     * Get the current servo state
-     * @return Current Servo State (RobotStates.SusanLift)
-     */
-    public RobotStates.SusanLift getCurrent_servo_state() {
-        return this.current_servo_state;
-    }
-
-    /**
-     * Get the current postition of the servo
-     * @return Position
-     */
-    public double getActualServoState() {
-        return this.lift_servo.getPosition();
-    }
-
-    /**
-     * Get the actual servo encoder pos based on state
-     * @return Servo Position
-     */
-    public double getServoPos(RobotStates.SusanLift desiredClawState) {
-        switch (desiredClawState) {
-            case UP:
-                this.servo_pos = SUSAN_LIFT_POS_UP;
-                break;
-
-            case DOWN:
-                this.servo_pos = SUSAN_LIFT_POS_DOWN;
-                break;
-        }
-        return servo_pos;
-    }
-
-    /**
-     * Have servo attempt to go to the current desired state
-     */
-    public void servoGoToState() {
-        RobotStates.SusanLift desiredClawState = this.getCurrent_servo_state();
-        double desiredClawPos = this.getServoPos(desiredClawState);
-        this.lift_servo.setPosition(desiredClawPos);
-    }
-
-    /**
-     * Get the current desired Susan state
-     * @return Desired Susan State
-     */
     public RobotStates.SusanSpin getDesired_susan_state() {
         return this.desired_susan_state;
     }
 
-    /**
-     * Set the current desired Susan state
-     */
     public void setDesired_susan_state(RobotStates.SusanSpin desired_susan_state) {
         this.desired_susan_state = desired_susan_state;
     }
@@ -156,7 +88,7 @@ public class LazySusan {
         return output;
     }
 
-    public void loop(boolean a, boolean b, boolean x, boolean rb) {
+    public void loop(boolean a, boolean b, boolean x) {
         if (a) {
             setDesired_susan_state(RobotStates.SusanSpin.ONE);
         } else if (b) {
@@ -165,16 +97,45 @@ public class LazySusan {
             setDesired_susan_state(RobotStates.SusanSpin.THREE);
         }
 
-        if (rb) {
-            setCurrent_servo_state(RobotStates.SusanLift.UP);
-        } else {
-            setCurrent_servo_state(RobotStates.SusanLift.DOWN);
+        susanGoToState();
+    }
+
+    public boolean shootColor(OpenCV openCV, OpenCV.ArtifactColor targetColor, Telemetry telemetry) {
+        Integer colorPosition = openCV.findPositionForColor(targetColor);
+
+        if (colorPosition == null) {
+            telemetry.addData("Shoot " + targetColor, "NOT FOUND");
+            return false;
         }
 
-        servoGoToState();
-        susanGoToState();
+        telemetry.addData("Shoot " + targetColor, "Found at position " + colorPosition);
 
-//        telemetry.addData("Motor encoder value", this.getActualSusanState());
-//        telemetry.addData("Desired encoder value", getSusanPos(this.desired_susan_state));
+        RobotStates.SusanSpin targetState = getStateForPosition(colorPosition);
+        setDesired_susan_state(targetState);
+
+        return true;
+    }
+
+    private RobotStates.SusanSpin getStateForPosition(int position) {
+        switch (position) {
+            case 1: return RobotStates.SusanSpin.ONE;
+            case 2: return RobotStates.SusanSpin.TWO;
+            case 3: return RobotStates.SusanSpin.THREE;
+            default: return RobotStates.SusanSpin.ONE;
+        }
+    }
+
+    public int getCurrentPosition() {
+        RobotStates.SusanSpin currentState = getDesired_susan_state();
+        switch (currentState) {
+            case ONE: return 1;
+            case TWO: return 2;
+            case THREE: return 3;
+            default: return 1;
+        }
+    }
+
+    public int getShooterPosition() {
+        return SHOOTER_POSITION;
     }
 }

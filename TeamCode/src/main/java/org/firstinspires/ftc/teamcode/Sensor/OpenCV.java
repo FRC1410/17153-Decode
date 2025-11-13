@@ -58,6 +58,10 @@ public class OpenCV {
                 .setAutoStopLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
+
+
+
+
     }
 
     public void processVision(Telemetry telemetry) {
@@ -68,7 +72,7 @@ public class OpenCV {
         for (int i = 0; i < Math.min(purpleBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = purpleBlobs.get(i);
             telemetry.addData("Purple " + (i+1) + " Center", String.format("(%.0f, %.0f)",
-                (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
+                    (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Purple " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
         }
 
@@ -76,7 +80,7 @@ public class OpenCV {
         for (int i = 0; i < Math.min(greenBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = greenBlobs.get(i);
             telemetry.addData("Green " + (i+1) + " Center", String.format("(%.0f, %.0f)",
-                (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
+                    (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Green " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
         }
 

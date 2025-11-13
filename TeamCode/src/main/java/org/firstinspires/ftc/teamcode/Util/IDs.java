@@ -7,7 +7,7 @@ public class IDs {
     public static final String FRONT_RIGHT_MOTOR_ID = "2";
     public static final String BACK_RIGHT_MOTOR_ID = "3";
     public static final String CONTROL_HUB = "Control hub";
-    public static final String CONTROL_HUB_IMU = "Control hub IMU";
     public static final String INTAKE_MOTOR_ID = "4";
+    public static final String CONTROL_HUB_IMU = "IMU";
 
 }

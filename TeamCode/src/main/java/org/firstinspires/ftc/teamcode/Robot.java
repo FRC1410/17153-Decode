@@ -17,11 +17,11 @@ public class Robot extends OpMode {
     
     public void init() {
 //        this.drivetrain.init(hardwareMap);
-//        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
+        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
     }
     public void doTelem(){
-
+        colour.colourData(telemetry);
         updateTelemetry(telemetry);
     }
 

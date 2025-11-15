@@ -24,23 +24,23 @@ public class Constants {
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
 
     //ball color ranges
-    public static int PURPLE_LOWER_RED = 50;
-    public static int PURPLE_UPPER_RED = 90;
+    public static int PURPLE_LOWER_RED = 10;
+    public static int PURPLE_UPPER_RED = 25;
 
-    public static int PURPLE_LOWER_GREEN = 50;
-    public static int PURPLE_UPPER_GREEN = 90;
+    public static int PURPLE_LOWER_GREEN = 1;
+    public static int PURPLE_UPPER_GREEN = 21;
 
-    public static int PURPLE_LOWER_BLUE = 100;
-    public static int PURPLE_UPPER_BLUE = 140;
+    public static int PURPLE_LOWER_BLUE = 10;
+    public static int PURPLE_UPPER_BLUE = 27;
 
-    public static int GREEN_LOWER_RED = 15;
-    public static int GREEN_UPPER_RED = 40;
+    public static int GREEN_LOWER_RED = 1;
+    public static int GREEN_UPPER_RED = 25;
 
-    public static int GREEN_LOWER_GREEN = 100;
-    public static int GREEN_UPPER_GREEN = 140;
+    public static int GREEN_LOWER_GREEN = 22;
+    public static int GREEN_UPPER_GREEN = 49;
 
-    public static int GREEN_LOWER_BLUE = 60;
-    public static int GREEN_UPPER_BLUE = 90;
+    public static int GREEN_LOWER_BLUE = 15;
+    public static int GREEN_UPPER_BLUE = 35;
 }
 
 //purple balls

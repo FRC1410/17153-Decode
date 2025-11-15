@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.dynamite;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -39,6 +45,9 @@ public class DynParser {
     public BufferedReader reader;
     // this keeps track of lines of which a loop/function start command is placed
     private final List<Integer> funcLoopDepthData = new ArrayList<>();
+
+    // variable storage
+    private final Map<String, Object[]> variables = new HashMap<>();
 
     private final JSONObject dynFuncLookup = new JSONObject();
     public void init(Telemetry telemetry){
@@ -128,7 +137,53 @@ public class DynParser {
         return out2;
     }
     private void ParseVarDec(String[] line){
-
+        switch (line[0]) {
+            case "Num":
+                this.variables.put(line[1], new Object[]{line[2], double.class});
+            case "Bool":
+                this.variables.put(line[1], new Object[]{line[2], boolean.class});
+            case "String":
+                this.variables.put(line[1], new Object[]{line[2], String.class});
+            case "List":
+                String[] lis = Arrays.stream(line).skip(2).toArray(String[]::new);
+                String[] nLis = new String[line.length - 2];
+                for (String s : lis) {
+                    String cleanedString = s
+                            .replace("[", "")
+                            .replace("]", "")
+                            .strip()
+                            .replace(",", "");
+                    for (int i = 0; i < 3; i++) {
+                        Object o = nLis[i];
+                        if (o == null) {
+                            o = cleanedString;
+                            break;
+                        }
+                    }
+                }
+                this.variables.put(line[1], new Object[]{nLis, double.class});
+            case "Json":
+                String[] jLis = Arrays.stream(line).skip(2).toArray(String[]::new);
+                String[] jNLis = new String[line.length - 2];
+                for (String s : jLis) {
+                    String cleanedString = s
+                            .replace("{", "")
+                            .replace("}", "")
+                            .strip()
+                            .replace(",", "");
+                    for (int i = 0; i < 3; i++) {
+                        Object o = jNLis[i];
+                        if (o == null) {
+                            String[] input = s
+                                    .replace("\"", "")
+                                    .split(":");
+                            o=input;
+                            break;
+                        }
+                    }
+                }
+                this.variables.put(line[1], new Object[]{jNLis, JSONArray.class});
+        }
     }
     private void ParseMathOp(String[] line){
 
@@ -145,10 +200,10 @@ public class DynParser {
     
     private void ParseLoop(String[] line, int lineIndex){
         // process while loop
-        if (line[1] == "while"){
+        if (line[0] == "while"){
         }
         // process for loop
-        else if (line[1] == "for"){
+        else if (line[0] == "for"){
         }
     }
     private void ParseFunc(String[] line, int lineIndex) {

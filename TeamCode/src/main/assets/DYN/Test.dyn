@@ -15,7 +15,10 @@ def_path goGoGadget start
     end
 
     while (endHeading < 90) start
-        ADD endHeading COS (SIN (0))
+        Num one 0
+        SIN 0 to one
+        COS one to one
+        ADD one to endHeading
     end
 end
 

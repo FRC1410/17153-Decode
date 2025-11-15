@@ -9,17 +9,21 @@
 // auto function declarators
 
 '''
+NOTES
+    Functions and definitions with commas need to have a space after each comma, like so:
+        List lis [2, 4, w, 4, s, 7]
+
 VARIABLE DEFINITION/CREATION CREATION:
     FieldCoord: (WIP)
         Syntax:
-            FieldCoord name (x,y)
+            FieldCoord name (x, y)
         Usage:
             'name' is the name given to the variable
             and (x,y) is the defined position when making the variable
             if the name is alredy defined, it will be updated to the new given value.
     FieldPos: (WIP)
         Syntax:
-            FieldPos name (x,y, h)
+            FieldPos name (x, y, h)
         Usage:
             'name' is the name of the variable
             x and y are the coordinates of the position.

@@ -24,7 +24,7 @@ public class Auto extends OpMode {
     private Follower follower;
     private int pathState = 0;
     private final Pose startPose = new Pose(0,0, Math.toRadians(90));
-    private final Pose endPose = new Pose(10,10, Math.toRadians(0));
+    private final Pose endPose = new Pose(0,20, Math.toRadians(90));
     private PathChain pathChain = new PathChain();
 
     public void initialize() {

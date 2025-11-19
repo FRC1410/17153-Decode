@@ -30,16 +30,16 @@ public class OpenCV {
     private VisionPortal visionPortal;
     private ColorBlobLocatorProcessor purpleColorLocator;
     private ColorBlobLocatorProcessor greenColorLocator;
-    private VisionProcessor thirdsSplitScreen;
-    private boolean useThirdsSplitScreen = false;
+    private VisionProcessor quartersSplitScreen;
+    private boolean useQuartersSplitScreen = false;
 
     public void init(HardwareMap hardwareMap) {
         init(hardwareMap, false);
     }
 
 
-    public void init(HardwareMap hardwareMap, boolean enableThirdsSplitScreen) {
-        this.useThirdsSplitScreen = enableThirdsSplitScreen;
+    public void init(HardwareMap hardwareMap, boolean enableQuartersSplitScreen) {
+        this.useQuartersSplitScreen = enableQuartersSplitScreen;
 
         purpleColorLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)
@@ -73,16 +73,16 @@ public class OpenCV {
                 .enableLiveView(true)
                 .setAutoStopLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG);
-        if (useThirdsSplitScreen) {
-            thirdsSplitScreen = createThirdsSplitScreen();
-            visionPortal = builder.addProcessor(thirdsSplitScreen).build();
+        if (useQuartersSplitScreen) {
+            quartersSplitScreen = createQuartersSplitScreen();
+            visionPortal = builder.addProcessor(quartersSplitScreen).build();
         } else {
             visionPortal = builder.addProcessor(purpleColorLocator)
                     .addProcessor(greenColorLocator)
                     .build();
         }
     }
-    private VisionProcessor createThirdsSplitScreen() {
+    private VisionProcessor createQuartersSplitScreen() {
         return new VisionProcessor() {
             private Mat leftSide;
             private Mat rightSide;
@@ -99,24 +99,20 @@ public class OpenCV {
                 int width = frame.width();
                 int height = frame.height();
                 int halfWidth = width / 2;
+                int halfHeight = height / 2;
 
-                // Clone frame for each processor
-                Mat leftFrame = frame.submat(0, height, 0, halfWidth).clone();
-                Mat rightFrame = frame.submat(0, height, halfWidth, width).clone();
+                Mat leftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat rightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
 
-                // Process both sides
-                purpleColorLocator.processFrame(leftFrame, captureTimeNanos);
-                greenColorLocator.processFrame(rightFrame, captureTimeNanos);
 
-                // Copy processed results back to original frame
-                leftFrame.copyTo(frame.submat(0, height, 0, halfWidth));
-                rightFrame.copyTo(frame.submat(0, height, halfWidth, width));
+                leftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
+                rightFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
 
-                // Release temporary mats
+
                 leftFrame.release();
                 rightFrame.release();
 
-                // Draw divider line
+
                 Imgproc.line(frame, new Point(halfWidth, 0), new Point(halfWidth, height),
                         new Scalar(255, 255, 255), 3);
 

@@ -21,7 +21,7 @@ public class Robot extends OpMode {
 //        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
         this.lazySusan.init(hardwareMap);
-        this.openCV.init(hardwareMap);
+        this.openCV.init(hardwareMap, false);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

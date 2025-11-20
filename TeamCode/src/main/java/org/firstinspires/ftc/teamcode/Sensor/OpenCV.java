@@ -80,6 +80,11 @@ public class OpenCV {
                     .build();
         }
     }
+
+    private boolean purpleDetected = false;
+    private boolean greenDetected = false;
+    private int purpleBlobCount = 0;
+    private int greenBlobCount = 0;
     private VisionProcessor createQuartersSplitScreen() {
         return new VisionProcessor() {
             private Mat bottomLeftSide;
@@ -112,11 +117,21 @@ public class OpenCV {
                 purpleColorLocator.processFrame(topRightFrame, captureTimeNanos);
                 purpleColorLocator.processFrame(bottomLeftFrame, captureTimeNanos);
                 purpleColorLocator.processFrame(bottomRightFrame, captureTimeNanos);
+
+                List<ColorBlobLocatorProcessor.Blob> purpleBlobs = purpleColorLocator.getBlobs();
+                purpleBlobCount = purpleBlobs.size();
+                purpleDetected = !purpleBlobs.isEmpty();
+
                 // green shutff
                 greenColorLocator.processFrame(bottomRightFrame, captureTimeNanos);
                 greenColorLocator.processFrame(bottomLeftFrame, captureTimeNanos);
                 greenColorLocator.processFrame(topRightFrame, captureTimeNanos);
                 greenColorLocator.processFrame(topLeftFrame, captureTimeNanos);
+
+                greenColorLocator.processFrame(topRightFrame, captureTimeNanos);
+                List<ColorBlobLocatorProcessor.Blob> greenBlobs = greenColorLocator.getBlobs();
+                greenBlobCount = greenBlobs.size();
+                greenDetected = !greenBlobs.isEmpty();
 
 
 

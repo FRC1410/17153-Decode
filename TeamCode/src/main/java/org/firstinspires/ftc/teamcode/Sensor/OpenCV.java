@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.Util.IDs.CAMERA_CV_ID;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,7 +16,6 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -84,14 +82,18 @@ public class OpenCV {
     }
     private VisionProcessor createQuartersSplitScreen() {
         return new VisionProcessor() {
-            private Mat leftSide;
-            private Mat rightSide;
+            private Mat bottomLeftSide;
+            private Mat bottomRightSide;
+            private Mat topLeftSide;
+            private Mat topRightSide;
 
             public void init(int width, int height, CameraCalibration calibration) {
                 purpleColorLocator.init(width, height, calibration);
                 greenColorLocator.init(width, height, calibration);
-                leftSide = new Mat();
-                rightSide = new Mat();
+                bottomLeftSide = new Mat();
+                bottomRightSide = new Mat();
+                topLeftSide = new Mat();
+                topRightSide = new Mat();
             }
 
 
@@ -101,26 +103,37 @@ public class OpenCV {
                 int halfWidth = width / 2;
                 int halfHeight = height / 2;
 
-                Mat leftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
-                Mat rightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat bottomLeftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat bottomRightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat topLeftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat topRightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
 
 
-                leftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
-                rightFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
+                topLeftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
+                topRightFrame.copyTo(frame.submat(0, halfHeight, halfWidth, width));
+                bottomLeftFrame.copyTo(frame.submat(halfHeight, height, 0, halfWidth));
+                bottomRightFrame.copyTo(frame.submat(halfHeight, height, halfWidth, width));
 
 
-                leftFrame.release();
-                rightFrame.release();
+                bottomLeftFrame.release();
+                bottomRightFrame.release();
+                topLeftFrame.release();
+                topRightFrame.release();
 
 
                 Imgproc.line(frame, new Point(halfWidth, 0), new Point(halfWidth, height),
                         new Scalar(255, 255, 255), 3);
+                Imgproc.line(frame, new Point(0, halfHeight), new Point(width, halfHeight),
+                        new Scalar(255, 255, 255), 3);
 
-
-                Imgproc.putText(frame, "PURPLE", new Point(10, 35),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 0, 255), 2);
-                Imgproc.putText(frame, "GREEN", new Point(halfWidth + 10, 35),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 255, 0), 2);
+                Imgproc.putText(frame, "TOPLEFT", new Point(10, 35),
+                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0), 2);
+                Imgproc.putText(frame, "TOPRIGHT", new Point(halfWidth + 10, 35),
+                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0), 2);
+                Imgproc.putText(frame, "BOTTOMLEFT", new Point(10, halfHeight + 35),
+                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0), 2);
+                Imgproc.putText(frame, "BOTTOMRIGHT", new Point(halfWidth + 10, halfHeight + 35),
+                        Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(0, 0, 0), 2);
 
                 return null;
             }

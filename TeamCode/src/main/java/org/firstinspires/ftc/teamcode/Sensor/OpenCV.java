@@ -103,10 +103,10 @@ public class OpenCV {
                 int halfWidth = width / 2;
                 int halfHeight = height / 2;
 
-                Mat bottomLeftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
-                Mat bottomRightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
                 Mat topLeftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
-                Mat topRightFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
+                Mat topRightFrame = frame.submat(0, halfHeight, halfWidth, width).clone();
+                Mat bottomLeftFrame = frame.submat(halfHeight, height, 0, halfWidth).clone();
+                Mat bottomRightFrame = frame.submat(halfHeight, height, halfWidth, width).clone();
 
 
                 topLeftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
@@ -171,6 +171,7 @@ public class OpenCV {
 
         telemetry.addData("Camera State", visionPortal.getCameraState());
         telemetry.addData("FPS", String.format("%.1f", visionPortal.getFps()));
+        telemetry.addData("Display Mode", useQuartersSplitScreen ? "Quarters Split Screen" : "Normal");
         telemetry.addData("Stream Available", visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING);
 
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {

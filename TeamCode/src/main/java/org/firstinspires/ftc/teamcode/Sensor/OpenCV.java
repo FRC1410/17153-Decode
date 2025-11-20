@@ -107,6 +107,17 @@ public class OpenCV {
                 Mat topRightFrame = frame.submat(0, halfHeight, halfWidth, width).clone();
                 Mat bottomLeftFrame = frame.submat(halfHeight, height, 0, halfWidth).clone();
                 Mat bottomRightFrame = frame.submat(halfHeight, height, halfWidth, width).clone();
+                // purple shtuff
+                purpleColorLocator.processFrame(topLeftFrame, captureTimeNanos);
+                purpleColorLocator.processFrame(topRightFrame, captureTimeNanos);
+                purpleColorLocator.processFrame(bottomLeftFrame, captureTimeNanos);
+                purpleColorLocator.processFrame(bottomRightFrame, captureTimeNanos);
+                // green shutff
+                greenColorLocator.processFrame(bottomRightFrame, captureTimeNanos);
+                greenColorLocator.processFrame(bottomLeftFrame, captureTimeNanos);
+                greenColorLocator.processFrame(topRightFrame, captureTimeNanos);
+                greenColorLocator.processFrame(topLeftFrame, captureTimeNanos);
+
 
 
                 topLeftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));

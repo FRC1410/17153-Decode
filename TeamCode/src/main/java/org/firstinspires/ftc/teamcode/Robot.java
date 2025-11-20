@@ -34,6 +34,7 @@ public class Robot extends OpMode {
 
     public void doTelemetry() {
         this.drivetrain.drivetrainData(telemetry);
+        this.intake.intakeTelem(telemetry);
 
         //this always goes last in this method:
         telemetry.update();
@@ -50,7 +51,8 @@ public class Robot extends OpMode {
                 ControlScheme.DRIVE_ROTATE.get(),
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
-        this.intake.run(ControlScheme.INTAKE_IN.get(), ControlScheme.INTAKE_OUT.get());
+//        this.intake.run(ControlScheme.INTAKE_IN.get(), ControlScheme.INTAKE_OUT.get());
+        this.intake.run(gamepad1.left_trigger, gamepad1.right_trigger);
 
 
         //this stays last in this method:

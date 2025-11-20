@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 public class Intake {
     DcMotorEx intake;
@@ -24,5 +26,10 @@ public class Intake {
 
     public void run(double intake, double outtake){
         this.intake.setPower((outtake) - (intake));
+    }
+
+    public void intakeTelem(Telemetry telemetry){
+        double p = this.intake.getPower();
+        telemetry.addData("Power: ", p);
     }
 }

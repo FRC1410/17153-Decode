@@ -13,10 +13,10 @@ import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Sensor.OpenCV;
 @TeleOp
 public class Robot extends OpMode {
-    private final Drivetrain drivetrain = new Drivetrain();
-    private final LazySusan lazySusan = new LazySusan();
 //    private final Drivetrain drivetrain = new Drivetrain();
-    private final colorSensor colour = new colorSensor();
+//    private final LazySusan lazySusan = new LazySusan();
+//    private final Drivetrain drivetrain = new Drivetrain();
+//    private final colorSensor colour = new colorSensor();
     private final OpenCV openCV = new OpenCV();
 
     
@@ -39,7 +39,7 @@ public class Robot extends OpMode {
         this.openCV.processVision(telemetry);
         updateTelemetry(telemetry);
 //        this.drivetrain.init(hardwareMap);
-        this.lazySusan.init(hardwareMap);
+//        this.lazySusan.init(hardwareMap);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Robot extends OpMode {
 //                gamepad1.right_stick_x,
 //                drivetrainToggle.toggleButton(gamepad1.a)
 //        );
-        this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
+//        this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
         doTelem();
     }
 

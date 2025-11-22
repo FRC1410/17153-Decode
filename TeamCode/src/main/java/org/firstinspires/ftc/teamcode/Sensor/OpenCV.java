@@ -22,6 +22,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class OpenCV {
 
@@ -30,6 +31,9 @@ public class OpenCV {
     private ColorBlobLocatorProcessor greenColorLocator;
     private VisionProcessor quartersSplitScreen;
     private boolean useQuartersSplitScreen = false;
+
+    private static final double MIN_PURPLE_AREA = 1000.0;
+    private static final double MIN_GREEN_AREA = 1000.0;
 
     public void init(HardwareMap hardwareMap) {
         init(hardwareMap, false);
@@ -85,8 +89,6 @@ public class OpenCV {
     private boolean greenDetected = false;
     private int purpleBlobCount = 0;
     private int greenBlobCount = 0;
-
-
     private boolean topLeftPurple = false;
     private boolean topLeftGreen = false;
     private boolean topRightPurple = false;
@@ -95,6 +97,26 @@ public class OpenCV {
     private boolean bottomLeftGreen = false;
     private boolean bottomRightPurple = false;
     private boolean bottomRightGreen = false;
+
+    private List<ColorBlobLocatorProcessor.Blob> filterPurpleBlobsBySize(List<ColorBlobLocatorProcessor.Blob> blobs) {
+        List<ColorBlobLocatorProcessor.Blob> filteredBlobs = new ArrayList<>();
+        for (ColorBlobLocatorProcessor.Blob blob : blobs) {
+            if (blob.getContourArea() >= MIN_PURPLE_AREA) {
+                filteredBlobs.add(blob);
+            }
+        }
+        return filteredBlobs;
+    }
+
+    private List<ColorBlobLocatorProcessor.Blob> filterGreenBlobsBySize(List<ColorBlobLocatorProcessor.Blob> blobs) {
+        List<ColorBlobLocatorProcessor.Blob> filteredBlobs = new ArrayList<>();
+        for (ColorBlobLocatorProcessor.Blob blob : blobs) {
+            if (blob.getContourArea() >= MIN_GREEN_AREA) {
+                filteredBlobs.add(blob);
+            }
+        }
+        return filteredBlobs;
+    }
 
     private VisionProcessor createQuartersSplitScreen() {
         return new VisionProcessor() {
@@ -106,6 +128,7 @@ public class OpenCV {
             public void init(int width, int height, CameraCalibration calibration) {
                 purpleColorLocator.init(width, height, calibration);
                 greenColorLocator.init(width, height, calibration);
+
                 topLeft = new Mat();
                 topRight = new Mat();
                 bottomLeft = new Mat();
@@ -118,141 +141,108 @@ public class OpenCV {
                 int halfWidth = width / 2;
                 int halfHeight = height / 2;
 
-
                 Mat topLeftFrame = frame.submat(0, halfHeight, 0, halfWidth).clone();
                 Mat topRightFrame = frame.submat(0, halfHeight, halfWidth, width).clone();
                 Mat bottomLeftFrame = frame.submat(halfHeight, height, 0, halfWidth).clone();
                 Mat bottomRightFrame = frame.submat(halfHeight, height, halfWidth, width).clone();
 
-
                 purpleColorLocator.processFrame(topLeftFrame.clone(), captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> tlPurple = purpleColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> tlPurple = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
                 topLeftPurple = !tlPurple.isEmpty();
 
                 greenColorLocator.processFrame(topLeftFrame, captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> tlGreen = greenColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> tlGreen = filterGreenBlobsBySize(greenColorLocator.getBlobs());
                 topLeftGreen = !tlGreen.isEmpty();
 
-
                 purpleColorLocator.processFrame(topRightFrame.clone(), captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> trPurple = purpleColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> trPurple = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
                 topRightPurple = !trPurple.isEmpty();
 
                 greenColorLocator.processFrame(topRightFrame, captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> trGreen = greenColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> trGreen = filterGreenBlobsBySize(greenColorLocator.getBlobs());
                 topRightGreen = !trGreen.isEmpty();
 
-
                 purpleColorLocator.processFrame(bottomLeftFrame.clone(), captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> blPurple = purpleColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> blPurple = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
                 bottomLeftPurple = !blPurple.isEmpty();
 
                 greenColorLocator.processFrame(bottomLeftFrame, captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> blGreen = greenColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> blGreen = filterGreenBlobsBySize(greenColorLocator.getBlobs());
                 bottomLeftGreen = !blGreen.isEmpty();
 
-
                 purpleColorLocator.processFrame(bottomRightFrame.clone(), captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> brPurple = purpleColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> brPurple = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
                 bottomRightPurple = !brPurple.isEmpty();
 
                 greenColorLocator.processFrame(bottomRightFrame, captureTimeNanos);
-                List<ColorBlobLocatorProcessor.Blob> brGreen = greenColorLocator.getBlobs();
+                List<ColorBlobLocatorProcessor.Blob> brGreen = filterGreenBlobsBySize(greenColorLocator.getBlobs());
                 bottomRightGreen = !brGreen.isEmpty();
-
 
                 purpleBlobCount = tlPurple.size() + trPurple.size() + blPurple.size() + brPurple.size();
                 greenBlobCount = tlGreen.size() + trGreen.size() + blGreen.size() + brGreen.size();
+
                 purpleDetected = purpleBlobCount > 0;
                 greenDetected = greenBlobCount > 0;
-
 
                 topLeftFrame.copyTo(frame.submat(0, halfHeight, 0, halfWidth));
                 topRightFrame.copyTo(frame.submat(0, halfHeight, halfWidth, width));
                 bottomLeftFrame.copyTo(frame.submat(halfHeight, height, 0, halfWidth));
                 bottomRightFrame.copyTo(frame.submat(halfHeight, height, halfWidth, width));
 
-
                 topLeftFrame.release();
                 topRightFrame.release();
                 bottomLeftFrame.release();
                 bottomRightFrame.release();
 
+                Imgproc.line(frame, new Point(halfWidth, 0), new Point(halfWidth, height), new Scalar(255, 255, 255), 3);
+                Imgproc.line(frame, new Point(0, halfHeight), new Point(width, halfHeight), new Scalar(255, 255, 255), 3);
 
-                Imgproc.line(frame, new Point(halfWidth, 0), new Point(halfWidth, height),
-                        new Scalar(255, 255, 255), 3);
-                Imgproc.line(frame, new Point(0, halfHeight), new Point(width, halfHeight),
-                        new Scalar(255, 255, 255), 3);
-
-
-                Imgproc.putText(frame, "TOP LEFT", new Point(10, 25),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
+                Imgproc.putText(frame, "TOP LEFT", new Point(10, 25), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
                 String tlStatus = (topLeftPurple ? "P" : "") + (topLeftGreen ? "G" : "");
                 if (tlStatus.isEmpty()) tlStatus = "NONE";
-                Imgproc.putText(frame, tlStatus, new Point(10, 50),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (topLeftPurple || topLeftGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
+                Imgproc.putText(frame, tlStatus, new Point(10, 50), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, (topLeftPurple || topLeftGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
 
-
-                Imgproc.putText(frame, "TOP RIGHT", new Point(halfWidth + 10, 25),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
+                Imgproc.putText(frame, "TOP RIGHT", new Point(halfWidth + 10, 25), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
                 String trStatus = (topRightPurple ? "P" : "") + (topRightGreen ? "G" : "");
                 if (trStatus.isEmpty()) trStatus = "NONE";
-                Imgproc.putText(frame, trStatus, new Point(halfWidth + 10, 50),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (topRightPurple || topRightGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
+                Imgproc.putText(frame, trStatus, new Point(halfWidth + 10, 50), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, (topRightPurple || topRightGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
 
-
-                Imgproc.putText(frame, "BOTTOM LEFT", new Point(10, halfHeight + 25),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
+                Imgproc.putText(frame, "BOTTOM LEFT", new Point(10, halfHeight + 25), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
                 String blStatus = (bottomLeftPurple ? "P" : "") + (bottomLeftGreen ? "G" : "");
                 if (blStatus.isEmpty()) blStatus = "NONE";
-                Imgproc.putText(frame, blStatus, new Point(10, halfHeight + 50),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (bottomLeftPurple || bottomLeftGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
+                Imgproc.putText(frame, blStatus, new Point(10, halfHeight + 50), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, (bottomLeftPurple || bottomLeftGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
 
-
-                Imgproc.putText(frame, "BOTTOM RIGHT", new Point(halfWidth + 10, halfHeight + 25),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
+                Imgproc.putText(frame, "BOTTOM RIGHT", new Point(halfWidth + 10, halfHeight + 25), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(255, 255, 255), 2);
                 String brStatus = (bottomRightPurple ? "P" : "") + (bottomRightGreen ? "G" : "");
                 if (brStatus.isEmpty()) brStatus = "NONE";
-                Imgproc.putText(frame, brStatus, new Point(halfWidth + 10, halfHeight + 50),
-                        Imgproc.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (bottomRightPurple || bottomRightGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
+                Imgproc.putText(frame, brStatus, new Point(halfWidth + 10, halfHeight + 50), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, (bottomRightPurple || bottomRightGreen) ? new Scalar(0, 255, 0) : new Scalar(0, 0, 255), 2);
 
                 return null;
             }
 
-            public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight,
-                                    float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-
+            public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
             }
         };
     }
 
     public void processVision(Telemetry telemetry) {
-        List<ColorBlobLocatorProcessor.Blob> purpleBlobs = purpleColorLocator.getBlobs();
-        List<ColorBlobLocatorProcessor.Blob> greenBlobs = greenColorLocator.getBlobs();
+        List<ColorBlobLocatorProcessor.Blob> purpleBlobs = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
+        List<ColorBlobLocatorProcessor.Blob> greenBlobs = filterGreenBlobsBySize(greenColorLocator.getBlobs());
 
         if (useQuartersSplitScreen) {
-
             telemetry.addData("=== QUADRANT DETECTION ===", "");
-            telemetry.addData("Top Left",
-                    String.format("Purple: %s | Green: %s",
-                            topLeftPurple ? "YES" : "NO",
-                            topLeftGreen ? "YES" : "NO"));
-            telemetry.addData("Top Right",
-                    String.format("Purple: %s | Green: %s",
-                            topRightPurple ? "YES" : "NO",
-                            topRightGreen ? "YES" : "NO"));
-            telemetry.addData("Bottom Left",
-                    String.format("Purple: %s | Green: %s",
-                            bottomLeftPurple ? "YES" : "NO",
-                            bottomLeftGreen ? "YES" : "NO"));
-            telemetry.addData("Bottom Right",
-                    String.format("Purple: %s | Green: %s",
-                            bottomRightPurple ? "YES" : "NO",
-                            bottomRightGreen ? "YES" : "NO"));
+            telemetry.addData("Top Left", String.format("Purple: %s | Green: %s",
+                    topLeftPurple ? "YES" : "NO",
+                    topLeftGreen ? "YES" : "NO"));
+            telemetry.addData("Top Right", String.format("Purple: %s | Green: %s",
+                    topRightPurple ? "YES" : "NO",
+                    topRightGreen ? "YES" : "NO"));
+            telemetry.addData("Bottom Left", String.format("Purple: %s | Green: %s",
+                    bottomLeftPurple ? "YES" : "NO",
+                    bottomLeftGreen ? "YES" : "NO"));
+            telemetry.addData("Bottom Right", String.format("Purple: %s | Green: %s",
+                    bottomRightPurple ? "YES" : "NO",
+                    bottomRightGreen ? "YES" : "NO"));
             telemetry.addLine();
             telemetry.addData("Total Purple Blobs", purpleBlobCount);
             telemetry.addData("Total Green Blobs", greenBlobCount);
@@ -262,16 +252,14 @@ public class OpenCV {
         telemetry.addData("Purple Artifacts Found", purpleBlobs.size());
         for (int i = 0; i < Math.min(purpleBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = purpleBlobs.get(i);
-            telemetry.addData("Purple " + (i+1) + " Center", String.format("(%.0f, %.0f)",
-                    (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
+            telemetry.addData("Purple " + (i+1) + " Center", String.format("(%.0f, %.0f)", (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Purple " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
         }
 
         telemetry.addData("Green Artifacts Found", greenBlobs.size());
         for (int i = 0; i < Math.min(greenBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = greenBlobs.get(i);
-            telemetry.addData("Green " + (i+1) + " Center", String.format("(%.0f, %.0f)",
-                    (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
+            telemetry.addData("Green " + (i+1) + " Center", String.format("(%.0f, %.0f)", (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Green " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
         }
 
@@ -305,11 +293,11 @@ public class OpenCV {
     }
 
     public List<ColorBlobLocatorProcessor.Blob> getPurpleBlobs() {
-        return purpleColorLocator.getBlobs();
+        return filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
     }
 
     public List<ColorBlobLocatorProcessor.Blob> getGreenBlobs() {
-        return greenColorLocator.getBlobs();
+        return filterGreenBlobsBySize(greenColorLocator.getBlobs());
     }
 
     public void close() {
@@ -344,7 +332,6 @@ public class OpenCV {
         return largest;
     }
 
-
     public boolean isPurpleDetected() {
         return purpleDetected;
     }
@@ -364,7 +351,6 @@ public class OpenCV {
     public boolean isAnythingDetected() {
         return purpleDetected || greenDetected;
     }
-
 
     public boolean isTopLeftPurpleDetected() {
         return topLeftPurple;

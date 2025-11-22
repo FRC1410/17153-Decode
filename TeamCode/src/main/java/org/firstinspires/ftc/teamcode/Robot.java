@@ -22,7 +22,6 @@ public class Robot extends OpMode {
     private final Toggle drivetrainToggle = new Toggle();
     
     public void init() {
-//        this.drivetrain.init(hardwareMap);
         this.lazySusan.init(hardwareMap);
         ControlScheme.initDriver(gamepad1);
         ControlScheme.initOperator(gamepad2);
@@ -36,8 +35,9 @@ public class Robot extends OpMode {
     }
 
     public void doTelemetry() {
-        this.drivetrain.drivetrainData(telemetry);
+        //this.drivetrain.drivetrainData(telemetry);
         this.intake.intakeTelem(telemetry);
+        this.lazySusan.susanTelem(telemetry);
 
         //this always goes last in this method:
         telemetry.update();

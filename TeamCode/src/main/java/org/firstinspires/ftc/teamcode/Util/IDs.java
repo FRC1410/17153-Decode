@@ -20,7 +20,7 @@ public class IDs {
     public static final String CONTROL_HUB = "Control hub";
 
     //SusanLift
-    public static final String SUSAN_SPIN_MOTOR = "Susan Spin Motor";
+    public static final String SUSAN_SPIN_MOTOR_ID = "Susan Spin Motor";
     public static final String SUSAN_LIFT_SERVO = "Susan Lift Servo";
 
 }

@@ -1,15 +1,9 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
-import static org.firstinspires.ftc.teamcode.Util.IDs.SUSAN_SPIN_MOTOR;
-import static org.firstinspires.ftc.teamcode.Util.IDs.SUSAN_LIFT_SERVO;
-import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_D;
-import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_I;
-import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_P;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_1;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_2;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_POS_3;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_UP;
-import static org.firstinspires.ftc.teamcode.Util.Constants.SUSAN_LIFT_POS_DOWN;
+import static org.firstinspires.ftc.teamcode.Util.IDs.*;
+import static org.firstinspires.ftc.teamcode.Util.Tuning.*;
+import static org.firstinspires.ftc.teamcode.Util.Constants.*;
+
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -25,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Util.RobotStates;
 public class LazySusan {
     // me when i am motivationally challenged and
     private DcMotor spin_motor;
-    private ServoImplEx lift_servo;
+//    private ServoImplEx lift_servo;
     private PwmControl.PwmRange pwm_range;
 
     private double servo_pos;
@@ -35,18 +29,17 @@ public class LazySusan {
     private RobotStates.SusanSpin desired_susan_state = RobotStates.SusanSpin.ONE;
 
     private PIDController susan_PID_controller;
+    private double lastMotorPower = 0;
 
     public void init(HardwareMap hardwareMap) {
-        this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR);
-        this.lift_servo = hardwareMap.get(ServoImplEx.class, SUSAN_LIFT_SERVO);
+        this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR_ID);
 
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.spin_motor.setTargetPosition(0);
         this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.lift_servo.setDirection(Servo.Direction.FORWARD);
+//        this.lift_servo.setDirection(Servo.Direction.FORWARD);
 
         this.pwm_range = new PwmControl.PwmRange(600, 2400, 20000);
 
@@ -71,9 +64,9 @@ public class LazySusan {
      * Get the current postition of the servo
      * @return Position
      */
-    public double getActualServoState() {
-        return this.lift_servo.getPosition();
-    }
+//    public double getActualServoState() {
+//        return this.lift_servo.getPosition();
+//    }
 
     /**
      * Get the actual servo encoder pos based on state
@@ -98,7 +91,7 @@ public class LazySusan {
     public void servoGoToState() {
         RobotStates.SusanLift desiredClawState = this.getCurrent_servo_state();
         double desiredClawPos = this.getServoPos(desiredClawState);
-        this.lift_servo.setPosition(desiredClawPos);
+//        this.lift_servo.setPosition(desiredClawPos);
     }
 
     /**
@@ -113,6 +106,9 @@ public class LazySusan {
      * Set the current desired Susan state
      */
     public void setDesired_susan_state(RobotStates.SusanSpin desired_susan_state) {
+        if (this.desired_susan_state != desired_susan_state) {
+            this.susan_PID_controller.reset();
+        }
         this.desired_susan_state = desired_susan_state;
     }
 
@@ -151,8 +147,38 @@ public class LazySusan {
     public double susanGoToState() {
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
         double desiredSusanPos = this.getSusanPos(desiredSpinState);
-        double output = this.susan_PID_controller.calculate(desiredSusanPos, this.getActualSusanState());
+        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double error = desiredSusanPos - currentPos;
+
+        if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
+            this.spin_motor.setPower(0);
+            this.lastMotorPower = 0;
+            return 0;
+        }
+        double output = this.susan_PID_controller.calculate(desiredSusanPos, currentPos);
+
+        output = Math.max(-0.5, Math.min(0.5, output));
+
+        boolean directionChange = (lastMotorPower > 0.01 && output < -0.01) || (lastMotorPower < -0.01 && output > 0.01);
+
+        if (directionChange) {
+            this.spin_motor.setPower(0);
+            this.lastMotorPower = 0;
+            return 0;
+        }
+
+        if (Math.abs(output) < SUSAN_MIN_POWER && Math.abs(output) > 0.001) {
+            if (output > 0) {
+                output = SUSAN_MIN_POWER;
+            } else {
+                output = -SUSAN_MIN_POWER;
+            }
+        } else if (Math.abs(output) <= 0.001) {
+            output = 0;
+        }
+
         this.spin_motor.setPower(output);
+        this.lastMotorPower = output;
         return output;
     }
 
@@ -173,8 +199,21 @@ public class LazySusan {
 
         servoGoToState();
         susanGoToState();
+    }
 
-//        telemetry.addData("Motor encoder value", this.getActualSusanState());
-//        telemetry.addData("Desired encoder value", getSusanPos(this.desired_susan_state));
+    public void susanTelem(Telemetry telemetry) {
+        double targetPos = getSusanPos(this.desired_susan_state);
+        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double error = targetPos - currentPos;
+        double calculatedOutput = error * SUSAN_P;
+
+        telemetry.addData("Susan State", this.getDesired_susan_state().toString());
+        telemetry.addData("Susan Target Pos", targetPos);
+        telemetry.addData("Susan Current Pos", currentPos);
+        telemetry.addData("Susan Error (T-C)", error);
+        telemetry.addData("Susan Calculated Output", String.format("%.3f", calculatedOutput));
+        telemetry.addData("Susan Motor Power", String.format("%.3f", this.spin_motor.getPower()));
+        telemetry.addData("Susan Last Power", String.format("%.3f", this.lastMotorPower));
+        telemetry.addData("Susan Servo State", this.getCurrent_servo_state().toString());
     }
 }

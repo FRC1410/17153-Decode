@@ -25,8 +25,8 @@ public class Constants {
 
     //Susan
     public static final double SUSAN_POS_1 = 0;
-    public static final double SUSAN_POS_2 = 9;
-    public static final double SUSAN_POS_3 = 19;
+    public static final double SUSAN_POS_2 = 3;
+    public static final double SUSAN_POS_3 = 6;
     public static final double SUSAN_LIFT_POS_UP = 0.4;
     public static final double SUSAN_LIFT_POS_DOWN = 1;
 

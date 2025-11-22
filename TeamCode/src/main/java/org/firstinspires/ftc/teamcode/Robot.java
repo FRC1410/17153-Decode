@@ -13,16 +13,16 @@ import org.firstinspires.ftc.teamcode.Sensor.colorSensor;
 import org.firstinspires.ftc.teamcode.Sensor.OpenCV;
 @TeleOp
 public class Robot extends OpMode {
-//    private final Drivetrain drivetrain = new Drivetrain();
-//    private final LazySusan lazySusan = new LazySusan();
-//    private final Drivetrain drivetrain = new Drivetrain();
-//    private final colorSensor colour = new colorSensor();
+    private final Drivetrain drivetrain = new Drivetrain();
+    private final LazySusan lazySusan = new LazySusan();
+
+    private final colorSensor colour = new colorSensor();
     private final OpenCV openCV = new OpenCV();
 
     
     public void init() {
-//        this.drivetrain.init(hardwareMap);
-//        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
+        this.drivetrain.init(hardwareMap);
+        this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
 
         this.openCV.init(hardwareMap, false);
 
@@ -38,19 +38,20 @@ public class Robot extends OpMode {
     public void doTelem(){
         this.openCV.processVision(telemetry);
         updateTelemetry(telemetry);
-//        this.drivetrain.init(hardwareMap);
-//        this.lazySusan.init(hardwareMap);
+        this.drivetrain.init(hardwareMap);
+        this.lazySusan.init(hardwareMap);
     }
 
     @Override
     public void loop() {
-//        this.drivetrain.mechanumDrive(
-//                gamepad1.left_stick_x,
-//                gamepad1.left_stick_y,
-//                gamepad1.right_stick_x,
-//                drivetrainToggle.toggleButton(gamepad1.a)
-//        );
-//        this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
+        Toggle drivetrainToggle = null;
+        this.drivetrain.mechanumDrive(
+                gamepad1.left_stick_x,
+                gamepad1.left_stick_y,
+                gamepad1.right_stick_x,
+                drivetrainToggle.toggleButton(gamepad1.a)
+        );
+     this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);
         doTelem();
     }
 

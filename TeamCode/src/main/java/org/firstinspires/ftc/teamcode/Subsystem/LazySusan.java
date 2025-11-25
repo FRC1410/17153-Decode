@@ -183,23 +183,27 @@ public class LazySusan {
     }
 
     public void loop(boolean a, boolean b, boolean x, boolean rb) {
-        if (a) {
-            setDesired_susan_state(RobotStates.SusanSpin.ONE);
-        } else if (b) {
-            setDesired_susan_state(RobotStates.SusanSpin.TWO);
-        } else if (x) {
-            setDesired_susan_state(RobotStates.SusanSpin.THREE);
+        if (this.spin_motor.getPower() == 0) {
+            if (a) {
+                setDesired_susan_state(RobotStates.SusanSpin.ONE);
+            } else if (b) {
+                setDesired_susan_state(RobotStates.SusanSpin.TWO);
+            } else if (x) {
+                setDesired_susan_state(RobotStates.SusanSpin.THREE);
+            }
         }
 
-        if (rb) {
-            setCurrent_servo_state(RobotStates.SusanLift.UP);
-        } else {
-            setCurrent_servo_state(RobotStates.SusanLift.DOWN);
+            if (rb) {
+                setCurrent_servo_state(RobotStates.SusanLift.UP);
+            } else {
+                setCurrent_servo_state(RobotStates.SusanLift.DOWN);
+            }
+
+            servoGoToState();
+            susanGoToState();
+
         }
 
-        servoGoToState();
-        susanGoToState();
-    }
 
     public void susanTelem(Telemetry telemetry) {
         double targetPos = getSusanPos(this.desired_susan_state);

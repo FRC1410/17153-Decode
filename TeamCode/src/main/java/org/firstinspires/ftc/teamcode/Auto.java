@@ -16,12 +16,13 @@ import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Util.Constants;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants.*;
+import org.firstinspires.ftc.teamcode.pedroPathing.VFpedroFollower;
 
 import java.util.Timer;
 
 @Autonomous(name="Pedro Pathing Test", group="Tests")
 public class Auto extends OpMode {
-    private Follower follower;
+    private VFpedroFollower follower;
     private int pathState = 0;
     private final Pose startPose = new Pose(0,0, Math.toRadians(90));
     private final Pose endPose = new Pose(0,20, Math.toRadians(90));

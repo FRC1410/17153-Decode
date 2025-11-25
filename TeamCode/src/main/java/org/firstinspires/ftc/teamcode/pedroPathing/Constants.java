@@ -38,9 +38,9 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(16.5)
             .robotLength(17)
-            .forwardTicksToInches(0.0026234360501604055)
-            .strafeTicksToInches(0.011586646756521643)
-            .turnTicksToInches(0.013942287063026852);
+            .forwardTicksToInches(0.10466749479)
+            .strafeTicksToInches(0.002526633007514)
+            .turnTicksToInches(0.01664203012031);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(6.5)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
@@ -62,7 +62,7 @@ public class Constants {
                     0,
                     0.00035,
                     0.6,
-                    0.015
+                    0.15
             ))
             .centripetalScaling(0.0005);
 
@@ -76,8 +76,8 @@ public class Constants {
             10,
             1);
 
-    public static Follower createFollower(HardwareMap hardwareMap) {
-        return new FollowerBuilder(followerConstants, hardwareMap)
+    public static VFpedroFollower createFollower(HardwareMap hardwareMap) {
+        return (VFpedroFollower) new VFpedroFollowerBuilder(followerConstants, hardwareMap)
                 .mecanumDrivetrain(driveConstants)
                 .driveEncoderLocalizer(localizerConstants)
                 .pathConstraints(pathConstraints)

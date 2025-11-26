@@ -7,6 +7,7 @@ import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
+import com.pedropathing.ftc.drivetrains.Mecanum;
 import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
@@ -21,15 +22,13 @@ import com.pedropathing.paths.PathPoint;
 import com.pedropathing.paths.callbacks.PathCallback;
 import com.pedropathing.util.PoseHistory;
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class VFpedroFollower extends Follower {
-    public VFpedroFollower(FollowerConstants constants, Localizer localizer, Drivetrain drivetrain, PathConstraints pathConstraints) {
-        super(constants, localizer, drivetrain, pathConstraints);
-    }
-    public FollowerConstants constants;
+    public VFpedroFollowerConstants constants;
     public PathConstraints pathConstraints;
     public PoseTracker poseTracker;
-    public ErrorCalculator errorCalculator;
+    public VFpedroErrorCalculator errorCalculator;
     public VFpedroVcalc vectorCalculator;
     public Drivetrain drivetrain;
     private PoseHistory poseHistory;
@@ -38,7 +37,6 @@ public class VFpedroFollower extends Follower {
     private PathPoint previousClosestPose = new PathPoint();
     private Path currentPath = null;
     private PathChain currentPathChain = null;
-
     private int BEZIER_CURVE_SEARCH_LIMIT;
     private int chainIndex;
     private boolean followingPathChain, holdingPosition, isBusy, isTurning, reachedParametricPathEnd, holdPositionAtEnd, manualDrive;
@@ -54,7 +52,54 @@ public class VFpedroFollower extends Follower {
     public boolean useDrive = true;
     private Timer zeroVelocityDetectedTimer = null;
     private Runnable resetFollowing = null;
+    private HardwareMap hardwareMap;
+    public VFpedroFollower(VFpedroFollowerConstants constants, Localizer localizer, Drivetrain drivetrain, PathConstraints pathConstraints) {
+        super(constants, localizer, drivetrain, pathConstraints);
+        HardwareMap localHWM = hardwareMap;
+        this.hardwareMap = localHWM;
+        this.drivetrain = drivetrain;
+        this.pathConstraints = pathConstraints;
+        this.constants = constants;
+        this.errorCalculator = new VFpedroErrorCalculator(this.constants);
+        this.vectorCalculator = new VFpedroVcalc(this.constants);
+        this.vectorCalculator = this.vectorCalculator.start(this.constants);
+        this.poseTracker = new PoseTracker(localizer);
+        this.poseHistory = new PoseHistory(this.poseTracker);
+        //this.drivetrain = new Mecanum(this.hardwareMap, Constants.driveConstants);
+    }
 
+    public static VFpedroFollower create(VFpedroFollowerConstants constants,
+                                         Localizer localizer,
+                                         Drivetrain drivetrain,
+                                         PathConstraints pathConstraints,
+                                         HardwareMap hardwareMap) {
+        VFpedroFollower follower = new VFpedroFollower(constants, localizer, drivetrain, pathConstraints);
+        follower.hardwareMap = hardwareMap;
+        return follower;
+    }
+    public void setHardwareMap(HardwareMap hawdwareMap){
+        this.hardwareMap = hawdwareMap;
+        this.drivetrain = new Mecanum(this.hardwareMap, Constants.driveConstants);
+    }
+    @Override
+    public void breakFollowing() {
+        this.errorCalculator = new VFpedroErrorCalculator(this.constants);
+        this.errorCalculator.breakFollowing();
+        this.vectorCalculator = new VFpedroVcalc(this.constants);
+        this.vectorCalculator.breakFollowing();
+
+        // Only recreate drivetrain if hardwareMap is available
+        if (this.hardwareMap != null) {
+            this.drivetrain = new Mecanum(this.hardwareMap, Constants.driveConstants);
+            this.drivetrain.breakFollowing();
+        }
+
+        manualDrive = false;
+        holdingPosition = false;
+        isBusy = false;
+        reachedParametricPathEnd = false;
+        zeroVelocityDetectedTimer = null;
+    }
     public void updateConstants() {
         this.BEZIER_CURVE_SEARCH_LIMIT = constants.BEZIER_CURVE_SEARCH_LIMIT;
         this.holdPointTranslationalScaling = constants.holdPointTranslationalScaling;
@@ -456,16 +501,6 @@ public class VFpedroFollower extends Follower {
     }
 
     /** This resets the PIDFs and stops following the current Path. */
-    public void breakFollowing() {
-        errorCalculator.breakFollowing();
-        vectorCalculator.breakFollowing();
-        drivetrain.breakFollowing();
-        manualDrive = false;
-        holdingPosition = false;
-        isBusy = false;
-        reachedParametricPathEnd = false;
-        zeroVelocityDetectedTimer = null;
-    }
 
     /**
      * This returns if the Follower is currently following a Path or a PathChain.
@@ -827,18 +862,6 @@ public class VFpedroFollower extends Follower {
      * @param secondaryTranslationalPIDFCoefficients the Secondary Translational PIDF coefficients to set
      */
     public void setSecondaryTranslationalPIDFCoefficients(PIDFCoefficients secondaryTranslationalPIDFCoefficients) { vectorCalculator.setSecondaryTranslationalPIDFCoefficients(secondaryTranslationalPIDFCoefficients); }
-
-    /**
-     * This sets the FollowerConstants for the Follower.
-     * @param constants the FollowerConstants to set
-     */
-    public void setConstants(FollowerConstants constants) {
-        this.constants = constants;
-        updateConstants();
-        errorCalculator.setConstants(constants);
-        vectorCalculator.setConstants(constants);
-        drivetrain.updateConstants();
-    }
 
     /**
      * This returns the heading goal at a specific t-value.

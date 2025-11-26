@@ -41,28 +41,27 @@ public class Constants {
             .forwardTicksToInches(0.10466749479)
             .strafeTicksToInches(0.002526633007514)
             .turnTicksToInches(0.01664203012031);
-    public static FollowerConstants followerConstants = new FollowerConstants()
+    public static VFpedroFollowerConstants followerConstants = new VFpedroFollowerConstants()
             .mass(6.5)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
             .lateralZeroPowerAcceleration(-67.342491844080064)
-            .translationalPIDFCoefficients(new PIDFCoefficients(
+            .translationalPIDFCoefficients(new VFpedroPIDFController(
                     0.035,
                     0.008,
                     0,
-                    0.02
+                    0
             ))
-            .headingPIDFCoefficients(new PIDFCoefficients(
+            .headingPIDFCoefficients(new VFpedroPIDFController(
                     0.8,
                     0,
                     0,
-                    0.01
+                    0
             ))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(
+            .drivePIDFCoefficients(new VFpedroPIDFController(
                     0.1,
                     0,
                     0.00035,
-                    0.6,
-                    0.15
+                    0
             ))
             .centripetalScaling(0.0005);
 
@@ -77,7 +76,7 @@ public class Constants {
             1);
 
     public static VFpedroFollower createFollower(HardwareMap hardwareMap) {
-        return (VFpedroFollower) new VFpedroFollowerBuilder(followerConstants, hardwareMap)
+        return new VFpedroFollowerBuilder(followerConstants, hardwareMap)
                 .mecanumDrivetrain(driveConstants)
                 .driveEncoderLocalizer(localizerConstants)
                 .pathConstraints(pathConstraints)

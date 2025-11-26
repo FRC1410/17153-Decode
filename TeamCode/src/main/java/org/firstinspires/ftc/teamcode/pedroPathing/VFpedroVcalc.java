@@ -15,11 +15,8 @@ import com.pedropathing.paths.PathChain;
 import java.util.ArrayList;
 
 public class VFpedroVcalc extends VectorCalculator {
-    public VFpedroVcalc(FollowerConstants constants) {
-        super(constants);
-    }
 
-    private VFpedroFollowerConstants constants;
+    private VFpedroFollowerConstants constants = new VFpedroFollowerConstants();
 
     private Path currentPath;
     private PathChain currentPathChain;
@@ -58,22 +55,90 @@ public class VFpedroVcalc extends VectorCalculator {
 
     private VFpedroPIDFController headingPIDF;
     private VFpedroPIDFController secondaryDrivePIDF, drivePIDF;
+    public VFpedroVcalc(VFpedroFollowerConstants constants) {
+        super(new FollowerConstants());
+
+        // DEBUG - print before updateConstants
+        System.out.println("=== DEBUG VFpedroVcalc ===");
+        System.out.println("constants is null? " + (this.constants == null));
+        System.out.println("coefficientsDrivePIDF is null? " + (this.constants.coefficientsDrivePIDF == null));
+        System.out.println("coefficientsHeadingPIDF is null? " + (this.constants.coefficientsHeadingPIDF == null));
+        System.out.println("coefficientsTranslationalPIDF is null? " + (this.constants.coefficientsTranslationalPIDF == null));
+
+        //updateConstants();
+    }
+    public static VFpedroVcalc start(VFpedroFollowerConstants constants){
+        VFpedroVcalc Vcalc = new VFpedroVcalc(constants);
+        Vcalc.constants = constants;
+        Vcalc.updateConstants();
+        return Vcalc;
+    }
     public void updateConstants() {
-        drivePIDF.setCoefficients(constants.coefficientsDrivePIDF);
-        secondaryDrivePIDF.setCoefficients(constants.coefficientsSecondaryDrivePIDF);
-        headingPIDF.setCoefficients(constants.coefficientsHeadingPIDF);
-        secondaryHeadingPIDF.setCoefficients(constants.coefficientsSecondaryHeadingPIDF);
-        translationalPIDF.setCoefficients(constants.coefficientsTranslationalPIDF);
-        secondaryTranslationalPIDF.setCoefficients(constants.coefficientsSecondaryTranslationalPIDF);
-        translationalIntegral.setCoefficients(constants.integralTranslational);
-        secondaryTranslationalIntegral.setCoefficients(constants.integralSecondaryTranslational);
-        drivePIDFSwitch = constants.drivePIDFSwitch;
-        headingPIDFSwitch = constants.headingPIDFSwitch;
-        translationalPIDFSwitch = constants.translationalPIDFSwitch;
-        useSecondaryDrivePID = constants.useSecondaryDrivePIDF;
-        useSecondaryHeadingPID = constants.useSecondaryHeadingPIDF;
-        useSecondaryTranslationalPID = constants.useSecondaryTranslationalPIDF;
-        mass = constants.mass;
+        // Don't create new FollowerConstants! Use the one passed in!
+        this.drivePIDF = new VFpedroPIDFController(
+                this.constants.coefficientsDrivePIDF.P,
+                this.constants.coefficientsDrivePIDF.I,
+                this.constants.coefficientsDrivePIDF.D,
+                this.constants.coefficientsDrivePIDF.F
+        );
+
+        this.secondaryDrivePIDF = new VFpedroPIDFController(
+                this.constants.coefficientsSecondaryDrivePIDF.P,
+                this.constants.coefficientsSecondaryDrivePIDF.I,
+                this.constants.coefficientsSecondaryDrivePIDF.D,
+                this.constants.coefficientsSecondaryDrivePIDF.F
+        );
+
+        this.headingPIDF = new VFpedroPIDFController(
+                this.constants.coefficientsHeadingPIDF.P,
+                this.constants.coefficientsHeadingPIDF.I,
+                this.constants.coefficientsHeadingPIDF.D,
+                this.constants.coefficientsHeadingPIDF.F
+        );
+
+        this.secondaryHeadingPIDF = new VFpedroPIDFController(
+                this.constants.coefficientsSecondaryHeadingPIDF.P,
+                this.constants.coefficientsSecondaryHeadingPIDF.I,
+                this.constants.coefficientsSecondaryHeadingPIDF.D,
+                this.constants.coefficientsSecondaryHeadingPIDF.F
+        );
+
+        this.translationalPIDF = new VFpedroPIDFController(
+                this.constants.coefficientsTranslationalPIDF.P,
+                this.constants.coefficientsTranslationalPIDF.I,
+                this.constants.coefficientsTranslationalPIDF.D,
+                this.constants.coefficientsTranslationalPIDF.F
+        );
+
+        this.secondaryTranslationalPIDF = new VFpedroPIDFController(
+                this.constants.coefficientsSecondaryTranslationalPIDF.P,
+                this.constants.coefficientsSecondaryTranslationalPIDF.I,
+                this.constants.coefficientsSecondaryTranslationalPIDF.D,
+                this.constants.coefficientsSecondaryTranslationalPIDF.F
+        );
+
+        this.translationalIntegral = new VFpedroPIDFController(
+                this.constants.integralTranslational.P,
+                this.constants.integralTranslational.I,
+                this.constants.integralTranslational.D,
+                this.constants.integralTranslational.F
+        );
+
+        this.secondaryTranslationalIntegral = new VFpedroPIDFController(
+                this.constants.integralSecondaryTranslational.P,
+                this.constants.integralSecondaryTranslational.I,
+                this.constants.integralSecondaryTranslational.D,
+                this.constants.integralSecondaryTranslational.F
+        );
+
+        // Remove all the "this.constants = new FollowerConstants();" lines!
+        this.drivePIDFSwitch = this.constants.drivePIDFSwitch;
+        this.headingPIDFSwitch = this.constants.headingPIDFSwitch;
+        this.translationalPIDFSwitch = this.constants.translationalPIDFSwitch;
+        this.useSecondaryDrivePID = this.constants.useSecondaryDrivePIDF;
+        this.useSecondaryHeadingPID = this.constants.useSecondaryHeadingPIDF;
+        this.useSecondaryTranslationalPID = this.constants.useSecondaryTranslationalPIDF;
+        this.mass = this.constants.mass;
     }
 
     public void update(boolean useDrive, boolean useHeading, boolean useTranslational, boolean useCentripetal, boolean teleopDrive, int chainIndex, double maxPowerScaling, boolean followingPathChain, double centripetalScaling, Pose currentPose, Pose closestPose, Vector velocity, Path currentPath, PathChain currentPathChain, double driveError, Vector translationalError, double headingError, double headingGoal) {

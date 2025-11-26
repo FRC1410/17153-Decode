@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class PIDController {
-    private final double P;
-    private final double I;
-    private final double D;
+    public final double P;
+    public final double I;
+    public final double D;
     private double previousError;
     private double integral;
 

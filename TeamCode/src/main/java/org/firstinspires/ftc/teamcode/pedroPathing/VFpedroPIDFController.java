@@ -6,6 +6,7 @@ import com.pedropathing.control.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Util.PIDController;
 
 public class VFpedroPIDFController extends PIDController {
+    public double F;
     public VFpedroPIDFController(double P, double I, double D, double F) {
         super(P, I, D);
     }

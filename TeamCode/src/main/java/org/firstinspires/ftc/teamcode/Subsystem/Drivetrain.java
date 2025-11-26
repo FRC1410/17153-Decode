@@ -43,7 +43,7 @@ public class Drivetrain {
 
         this.motorFL.setDirection(FORWARD);
         this.motorFR.setDirection(FORWARD);
-        this.motorBL.setDirection(FORWARD);
+        this.motorBL.setDirection(REVERSE);
         this.motorBR.setDirection(FORWARD);
 
         this.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

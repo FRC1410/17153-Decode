@@ -185,6 +185,19 @@ public class VFpedroFollowerConstants extends FollowerConstants {
      * This value is found via 'LateralZeroPowerAccelerationTuner'*/
     public double lateralZeroPowerAcceleration = -78.15554;
 
+    public VFpedroFollowerConstants(){
+        this.mass = Constants.followerConstants.mass;
+        this.forwardZeroPowerAcceleration = Constants.followerConstants.forwardZeroPowerAcceleration;
+        this.lateralZeroPowerAcceleration = Constants.followerConstants.lateralZeroPowerAcceleration;
+        this.coefficientsTranslationalPIDF = Constants.followerConstants.coefficientsTranslationalPIDF;
+        this.coefficientsDrivePIDF = Constants.followerConstants.coefficientsDrivePIDF;
+        this.centripetalScaling = Constants.followerConstants.centripetalScaling;
+    }
+
+    public VFpedroFollowerConstants translatonalPIDFCoefficients(VFpedroPIDFController in){
+        this.coefficientsTranslationalPIDF = in;
+        return this;
+    }
     public VFpedroFollowerConstants secondaryTranslationalPIDFCoefficients(VFpedroPIDFController secondaryTranslationalPIDFCoefficients) {
         this.coefficientsSecondaryTranslationalPIDF = secondaryTranslationalPIDFCoefficients;
         useSecondaryTranslationalPIDF = true;
@@ -254,7 +267,9 @@ public class VFpedroFollowerConstants extends FollowerConstants {
         this.mass = mass;
         return this;
     }
-
+    public FollowerConstants toPedroConst(){
+        return (FollowerConstants) this;
+    }
     public VFpedroFollowerConstants forwardZeroPowerAcceleration(double forwardZeroPowerAcceleration) {
         this.forwardZeroPowerAcceleration = forwardZeroPowerAcceleration;
         return this;
@@ -375,5 +390,19 @@ public class VFpedroFollowerConstants extends FollowerConstants {
 
     public void setLateralZeroPowerAcceleration(double lateralZeroPowerAcceleration) {
         this.lateralZeroPowerAcceleration = lateralZeroPowerAcceleration;
+    }
+    public VFpedroFollowerConstants translationalPIDFCoefficients(VFpedroPIDFController vFpedroPIDFController) {
+        this.coefficientsTranslationalPIDF = vFpedroPIDFController;  // ← This is what updateConstants reads!
+        return this;
+    }
+
+    public VFpedroFollowerConstants headingPIDFCoefficients(VFpedroPIDFController vFpedroPIDFController) {
+        this.coefficientsHeadingPIDF = vFpedroPIDFController;  // ← This is what updateConstants reads!
+        return this;
+    }
+
+    public VFpedroFollowerConstants drivePIDFCoefficients(VFpedroPIDFController vFpedroPIDFController) {
+        this.coefficientsDrivePIDF = vFpedroPIDFController;  // ← This is what updateConstants reads!
+        return this;
     }
 }

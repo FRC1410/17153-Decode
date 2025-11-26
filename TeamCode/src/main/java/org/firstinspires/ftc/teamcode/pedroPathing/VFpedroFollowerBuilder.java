@@ -23,61 +23,63 @@ import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class VFpedroFollowerBuilder extends FollowerBuilder {
-    public VFpedroFollowerBuilder(FollowerConstants constants, HardwareMap hardwareMap) {
-        super(constants, hardwareMap);
-    }
-
-    private FollowerConstants constants;
+    private VFpedroFollowerConstants constants;
     private PathConstraints constraints;
     private HardwareMap hardwareMap;
     private Localizer localizer;
     private Drivetrain drivetrain;
 
-    public FollowerBuilder setLocalizer(Localizer localizer) {
+    public VFpedroFollowerBuilder(VFpedroFollowerConstants constants, HardwareMap hardwareMap) {
+        super(constants, hardwareMap);
+        this.hardwareMap = hardwareMap;
+        this.constants = constants;
+    }
+    public VFpedroFollowerBuilder setLocalizer(Localizer localizer) {
         this.localizer = localizer;
         return this;
     }
 
-    public FollowerBuilder driveEncoderLocalizer(DriveEncoderConstants lConstants) {
-        return setLocalizer(new DriveEncoderLocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder driveEncoderLocalizer(DriveEncoderConstants lConstants) {
+        return setLocalizer(new DriveEncoderLocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder OTOSLocalizer(OTOSConstants lConstants) {
-        return setLocalizer(new OTOSLocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder OTOSLocalizer(OTOSConstants lConstants) {
+        return setLocalizer(new OTOSLocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder pinpointLocalizer(PinpointConstants lConstants) {
-        return setLocalizer(new PinpointLocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder pinpointLocalizer(PinpointConstants lConstants) {
+        return setLocalizer(new PinpointLocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder threeWheelIMULocalizer(ThreeWheelIMUConstants lConstants) {
-        return setLocalizer(new ThreeWheelIMULocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder threeWheelIMULocalizer(ThreeWheelIMUConstants lConstants) {
+        return setLocalizer(new ThreeWheelIMULocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder threeWheelLocalizer(ThreeWheelConstants lConstants) {
-        return setLocalizer(new ThreeWheelLocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder threeWheelLocalizer(ThreeWheelConstants lConstants) {
+        return setLocalizer(new ThreeWheelLocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder twoWheelLocalizer(TwoWheelConstants lConstants) {
-        return setLocalizer(new TwoWheelLocalizer(hardwareMap, lConstants));
+    public VFpedroFollowerBuilder twoWheelLocalizer(TwoWheelConstants lConstants) {
+        return setLocalizer(new TwoWheelLocalizer(this.hardwareMap, lConstants));
     }
 
-    public FollowerBuilder setDrivetrain(Drivetrain drivetrain) {
+    public VFpedroFollowerBuilder setDrivetrain(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
         return this;
     }
-
-    public FollowerBuilder mecanumDrivetrain(MecanumConstants mecanumConstants) {
-        return setDrivetrain(new Mecanum(hardwareMap, mecanumConstants));
+    @Override
+    public VFpedroFollowerBuilder mecanumDrivetrain(MecanumConstants mecanumConstants) {
+        return setDrivetrain(new Mecanum(this.hardwareMap, mecanumConstants));
     }
 
-    public FollowerBuilder pathConstraints(PathConstraints pathConstraints) {
+    public VFpedroFollowerBuilder pathConstraints(PathConstraints pathConstraints) {
         this.constraints = pathConstraints;
         PathConstraints.setDefaultConstraints(pathConstraints);
         return this;
     }
-    @Override
     public VFpedroFollower build() {
-        return new VFpedroFollower(constants, localizer, drivetrain, constraints);
+        VFpedroFollower follower = VFpedroFollower.create(constants, localizer, drivetrain, constraints, this.hardwareMap);
+        //follower = follower.create(constants, localizer, drivetrain, constraints, this.hardwareMap);
+        return follower;
     }
 }

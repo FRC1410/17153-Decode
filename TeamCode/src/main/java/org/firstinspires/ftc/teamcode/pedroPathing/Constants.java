@@ -23,7 +23,7 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
@@ -32,30 +32,30 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontEncoderDirection(Encoder.FORWARD)
+            .leftFrontEncoderDirection(Encoder.REVERSE)
             .leftRearEncoderDirection(Encoder.FORWARD)
             .rightFrontEncoderDirection(Encoder.FORWARD)
             .rightRearEncoderDirection(Encoder.FORWARD)
-            .robotWidth(16.5)
-            .robotLength(17)
-            .forwardTicksToInches(0.0026234360501604055)
-            .strafeTicksToInches(0.011586646756521643)
-            .turnTicksToInches(0.013942287063026852);
+            .robotWidth(15.4)
+            .robotLength(14.3)
+            .forwardTicksToInches(0.00440555683476)
+            .strafeTicksToInches(0.00383179729959)
+            .turnTicksToInches(0.00905746511198);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(6.5)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
             .lateralZeroPowerAcceleration(-67.342491844080064)
             .translationalPIDFCoefficients(new PIDFCoefficients(
-                    0.035,
-                    0.008,
+                    0.025,
+                    0.01,
                     0,
                     0.02
             ))
             .headingPIDFCoefficients(new PIDFCoefficients(
-                    0.8,
-                    0,
-                    0,
-                    0.01
+                    1.5,
+                    0.05,
+                    0.1,
+                    0.05
             ))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
                     0.1,

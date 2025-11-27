@@ -23,8 +23,8 @@ import java.util.Timer;
 public class Auto extends OpMode {
     private Follower follower;
     private int pathState = 0;
-    private final Pose startPose = new Pose(0,0, Math.toRadians(90));
-    private final Pose endPose = new Pose(0,20, Math.toRadians(90));
+    private final Pose startPose = new Pose(0,0, Math.toRadians(0));
+    private final Pose endPose = new Pose(0.01,0.01, Math.toRadians(180));
     private PathChain pathChain = new PathChain();
 
     public void initialize() {
@@ -72,9 +72,9 @@ public class Auto extends OpMode {
         }
         follower.update();
         runPath();
-        telemetry.addData("X: ",follower.getPose().getX());
-        telemetry.addData("Y: ",follower.getPose().getY());
-        telemetry.addData("X: ",follower.getPose().getHeading());
+        telemetry.addData("X(inc): ",follower.getPose().getX());
+        telemetry.addData("Y(inc): ",follower.getPose().getY());
+        telemetry.addData("H(deg): ",Math.toDegrees(follower.getPose().getHeading()));
         telemetry.update();
     }
 }

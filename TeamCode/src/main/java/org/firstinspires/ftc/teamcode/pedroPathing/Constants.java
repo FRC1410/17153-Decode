@@ -40,7 +40,7 @@ public class Constants {
             .robotLength(14.3)
             .forwardTicksToInches(0.00440555683476)
             .strafeTicksToInches(0.00383179729959)
-            .turnTicksToInches(0.00905746511198);
+            .turnTicksToInches(0.00896866643441);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(6.5)
             .forwardZeroPowerAcceleration(-25.9346931313679598)
@@ -52,10 +52,10 @@ public class Constants {
                     0.02
             ))
             .headingPIDFCoefficients(new PIDFCoefficients(
-                    1.5,
-                    0.05,
-                    0.1,
-                    0.05
+                    1.1,
+                    0.06,
+                    0.02,
+                    0.03
             ))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
                     0.1,

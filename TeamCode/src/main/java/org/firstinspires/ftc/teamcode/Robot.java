@@ -21,12 +21,16 @@ public class Robot extends OpMode {
 
     @Override
     public void loop() {
+        boolean toggleState = drivetrainToggle.toggleButton(gamepad1.a);
+
+        telemetry.addData("Slow Mode",toggleState);
+        telemetry.update();
 
         this.drivetrain.mechanumDrive(
                 gamepad1.left_stick_x,
                 gamepad1.left_stick_y,
                 gamepad1.right_stick_x,
-                drivetrainToggle.toggleButton(gamepad1.a)
+                toggleState
         );
 
     }

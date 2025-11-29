@@ -26,7 +26,9 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .xVelocity(46.12)
+            .yVelocity(37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName(FRONT_RIGHT_MOTOR_ID)
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
@@ -43,38 +45,38 @@ public class Constants {
             .turnTicksToInches(0.00896866643441);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(6.5)
-            .forwardZeroPowerAcceleration(-25.9346931313679598)
-            .lateralZeroPowerAcceleration(-67.342491844080064)
+            .forwardZeroPowerAcceleration(-114.7371925)
+            .lateralZeroPowerAcceleration(-141.977375)
             .translationalPIDFCoefficients(new PIDFCoefficients(
                     0.025,
                     0.01,
                     0,
-                    0.02
-            ))
-            .headingPIDFCoefficients(new PIDFCoefficients(
-                    1.1,
-                    0.06,
-                    0.02,
-                    0.03
-            ))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(
-                    0.1,
-                    0,
-                    0.00035,
-                    0.6,
                     0.015
             ))
-            .centripetalScaling(0.0005);
+            .headingPIDFCoefficients(new PIDFCoefficients(
+                    1.7,
+                    0.06,
+                    0,
+                    0.005
+            ))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(
+                    1,
+                    0,
+                    0,
+                    1,
+                    0.1
+            ))
+            .centripetalScaling(0);
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.995,
             0.1,
             0.1,
-            0.009,
+            0.01,
             50,
-            1.25,
+            6,
             10,
-            1);
+            3);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

@@ -38,45 +38,46 @@ public class Constants {
             .leftRearEncoderDirection(Encoder.FORWARD)
             .rightFrontEncoderDirection(Encoder.FORWARD)
             .rightRearEncoderDirection(Encoder.FORWARD)
-            .robotWidth(15.4)
-            .robotLength(14.3)
+            .robotWidth(15.35)
+            .robotLength(14.35)
             .forwardTicksToInches(0.00440555683476)
             .strafeTicksToInches(0.00383179729959)
             .turnTicksToInches(0.00896866643441);
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(6.5)
-            .forwardZeroPowerAcceleration(-114.7371925)
-            .lateralZeroPowerAcceleration(-141.977375)
+            .mass(8)
+            .forwardZeroPowerAcceleration(-101.494285714)
+            .lateralZeroPowerAcceleration(-108.808571429)
             .translationalPIDFCoefficients(new PIDFCoefficients(
-                    0.7,
+                    0.04,
                     0,
-                    0,
-                    0.025
+                    0.04,
+                    0.006
             ))
             .headingPIDFCoefficients(new PIDFCoefficients(
-                    1.7,
+                    2,
                     0,
                     0,
-                    0.005
+                    0.006
             ))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
+                    0.06,
+                    0,
+                    0.0015,
                     0.7,
-                    0,
-                    0,
-                    1,
-                    0.025
+                    0.006
+
             ))
             .centripetalScaling(0);
 
     public static PathConstraints pathConstraints = new PathConstraints(
-            0.995,
+            0.99,
             0.1,
             0.1,
-            0.01,
+            0.1,
             50,
-            6,
+            1.4,
             10,
-            10);
+            1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
+import org.firstinspires.ftc.teamcode.Subsystem.Intake;
+import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
 import org.firstinspires.ftc.teamcode.Util.Constants;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants.*;
@@ -22,12 +24,14 @@ import java.util.Timer;
 
 @Autonomous(name="Pedro Pathing Test", group="Tests")
 public class Auto extends OpMode {
+    private Intake intake;
+    private LazySusan lazySusan;
     private Follower follower;
     private int pathState = 0;
     private final Pose startPose = new Pose(30,5, Math.toRadians(180));
     private final Pose pose2 = new Pose(7,15, Math.toRadians(90));
     private final Pose pose3 = new Pose(7,25, Math.toRadians(90));
-    private final Pose endPose = new Pose(-10.5,10.5, Math.toRadians(136));
+    private final Pose endPose = new Pose(-9,10.5, Math.toRadians(136));
     private final Pose controlPoint = new Pose(8.375,13.875, Math.toRadians(0));
     private PathChain pathChain = new PathChain();
     private PathChain pathChain2 = new PathChain();
@@ -36,6 +40,10 @@ public class Auto extends OpMode {
     private PathChain pathChain5 = new PathChain();
     public void initialize() {
         this.follower = createFollower(hardwareMap);
+        this.intake = new Intake();
+        this.intake.init(hardwareMap);
+        this.lazySusan = new LazySusan();
+        this.lazySusan.init(hardwareMap);
     }
 
     public void buildPaths(){
@@ -47,12 +55,12 @@ public class Auto extends OpMode {
         pathChain3 = follower.pathBuilder()
                 .addPath(new BezierLine(pose3, pose2)).setLinearHeadingInterpolation(pose3.getHeading(),endPose.getHeading()).build();
         pathChain4 = follower.pathBuilder()
-                .addPath(new BezierLine(pose2, endPose)).setLinearHeadingInterpolation(endPose.getHeading(),startPose.getHeading()).build();
+                .addPath(new BezierLine(pose2, endPose)).setLinearHeadingInterpolation(endPose.getHeading(),endPose.getHeading()).build();
         pathChain5 = follower.pathBuilder()
                 .addPath(new BezierLine(endPose, startPose)).setLinearHeadingInterpolation(endPose.getHeading(),startPose.getHeading()).build();
     }
 
-    public void runPath(){
+    public void runPath() {
         switch (pathState) {
             case 0: {
                 if (!follower.isBusy()) {
@@ -63,7 +71,11 @@ public class Auto extends OpMode {
             }
             case 1: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain2, false);
+                    intake.run(1,0);
+                    try {
+                        //Thread.sleep(1000);
+                    } catch (Exception e){}
+                    follower.followPath(pathChain2, true);
                     pathState++;
                 }
                 break;
@@ -77,8 +89,9 @@ public class Auto extends OpMode {
             }
             case 3: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain4,false);
-                    pathState++;
+                    intake.run(0,0);
+                    follower.followPath(pathChain4,true);
+                    pathState = -1;
                 }
                 break;
             }
@@ -91,7 +104,7 @@ public class Auto extends OpMode {
             }
             case 5: {
                 if (!follower.isBusy()){
-                    pathState = 0;
+                    pathState = -1;
                     try{
                         //Thread.sleep(1000);
                     } catch (Exception e) {
@@ -126,6 +139,7 @@ public class Auto extends OpMode {
         }
         follower.update();
         runPath();
+        intake.intakeTelem(telemetry);
         telemetry.addData("X(inc)",follower.getPose().getX());
         telemetry.addData("Y(inc)",follower.getPose().getY());
         telemetry.addData("H(deg)",Math.toDegrees(follower.getPose().getHeading()));
@@ -136,7 +150,7 @@ public class Auto extends OpMode {
             case 2: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose2.getHeading()));
             case 3: telemetry.addData("Next Pose X", endPose.getX());telemetry.addData("Next Pose Y", endPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(endPose.getHeading()));
             case 4: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
-            case -1: telemetry.addData("At Path End centripetal","");
+            case -1: telemetry.addData("At Path End","");
         }
         telemetry.addData("Next Pose", pose2.getX());
         telemetry.update();

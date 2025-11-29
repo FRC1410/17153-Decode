@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class PIDController {
-    public final double P;
-    public final double I;
-    public final double D;
+    private final double P;
+    private final double I;
+    private final double D;
     private double previousError;
     private double integral;
+    private boolean firstCalculation = true;
 
     private ElapsedTime timer = new ElapsedTime();
 
@@ -21,8 +22,18 @@ public class PIDController {
 
     public double calculate(double setPoint, double currentPosition) {
         double error = setPoint - currentPosition;
-        integral += error * timer.seconds();
-        double derivative = (error - previousError) / timer.seconds();
+        double deltaTime = timer.seconds();
+
+        // Prevent division by zero and huge derivative on first calculation
+        if (firstCalculation || deltaTime == 0) {
+            previousError = error;
+            timer.reset();
+            firstCalculation = false;
+            return P * error;
+        }
+
+        integral += error * deltaTime;
+        double derivative = (error - previousError) / deltaTime;
 
         double output = (P * error) + (I * integral) + (D * derivative);
 
@@ -30,6 +41,13 @@ public class PIDController {
         timer.reset();
 
         return output;
+    }
+
+    public void reset() {
+        integral = 0;
+        previousError = 0;
+        firstCalculation = true;
+        timer.reset();
     }
 
 

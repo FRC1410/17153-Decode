@@ -41,9 +41,9 @@ public class Drivetrain {
         this.motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        this.motorFL.setDirection(FORWARD);
+        this.motorFL.setDirection(REVERSE);
         this.motorFR.setDirection(FORWARD);
-        this.motorBL.setDirection(REVERSE);
+        this.motorBL.setDirection(FORWARD);
         this.motorBR.setDirection(FORWARD);
 
         this.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

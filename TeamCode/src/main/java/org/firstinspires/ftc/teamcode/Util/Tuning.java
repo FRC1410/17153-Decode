@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.Util;
 
-import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.configurables.annotations.IgnoreConfigurable;
-import com.bylazar.configurables.PanelsConfigurables;
-import com.bylazar.field.FieldManager;
-import com.bylazar.field.PanelsField;
-import com.bylazar.field.Style;
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 public class Tuning {
     public static double DRIVE_P = 0;
     public static double DRIVE_I = 0;
     public static double DRIVE_D = 0;
 
+    //Susan
+    public static double SUSAN_P = 0.0008;
+    public static double SUSAN_I = 0.0;
+    public static double SUSAN_D = 0.004;
+    public static double SUSAN_SPIN_THRESHHOLD = 1;
+    public static double SUSAN_MIN_POWER = 0.008;
 
+    //testing
+//    public static double SUSAN_P = 0.0;
+//    public static double SUSAN_I = 0.0;
+//    public static double SUSAN_D = 0.0;
 }

@@ -22,4 +22,34 @@ public class Constants {
             RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
     public static RevHubOrientationOnRobot HUB_ORIENTATION =
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
+
+    //Susan
+    public static final double SUSAN_POS_1 = 0;
+    public static final double SUSAN_POS_2 = 3;
+    public static final double SUSAN_POS_3 = 6;
+    public static final double SUSAN_LIFT_POS_UP = 0.4;
+    public static final double SUSAN_LIFT_POS_DOWN = 1;
+
+    //ball color ranges
+    public static int PURPLE_LOWER_RED = 115;
+    public static int PURPLE_UPPER_RED = 150;
+
+    public static int PURPLE_LOWER_GREEN = 50;
+    public static int PURPLE_UPPER_GREEN = 90;
+
+    public static int PURPLE_LOWER_BLUE = 90;
+    public static int PURPLE_UPPER_BLUE = 120;
+
+    public static int GREEN_LOWER_RED = 115;
+    public static int GREEN_UPPER_RED = 140;
+
+    public static int GREEN_LOWER_GREEN = 200;
+    public static int GREEN_UPPER_GREEN = 255;
+
+    public static int GREEN_LOWER_BLUE = 115;
+    public static int GREEN_UPPER_BLUE = 140;
+
+    //Controller
+
+    public static double MATCH_HALF_TIME = 10.0; //Seconds
 }

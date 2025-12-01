@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Util.PIDController;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class LazySusan {
-    // me when i am motivationally challenged and
+    // me when i am motivationally challenged and my name is susan
     private DcMotor spin_motor;
 //    private ServoImplEx lift_servo;
     private PwmControl.PwmRange pwm_range;

@@ -35,6 +35,15 @@ public class OpenCV {
     private static final double MIN_PURPLE_AREA = 1000.0;
     private static final double MIN_GREEN_AREA = 1000.0;
 
+    // Distance estimation constants
+    private static final double KNOWN_BALL_DIAMETER_CM = 7.5; // Adjust to your actual ball diameter
+    private static final double FOCAL_LENGTH_PIXELS = 500.0; // CALIBRATE THIS at 24cm - see calibration method
+    private static final double CALIBRATION_DISTANCE_CM = 24.0; // Standard calibration distance
+
+    // Distance storage variables
+    private double purpleDistance = -1.0;
+    private double greenDistance = -1.0;
+
     public void init(HardwareMap hardwareMap) {
         init(hardwareMap, false);
     }
@@ -116,6 +125,71 @@ public class OpenCV {
             }
         }
         return filteredBlobs;
+    }
+
+    /**
+     * Calculates distance to object based on its apparent size in the image using width
+     * Formula: distance = (known_width * focal_length) / perceived_width
+     *
+     * @param blob The detected blob
+     * @return Estimated distance in centimeters, or -1 if calculation fails
+     */
+    private double calculateDistance(ColorBlobLocatorProcessor.Blob blob) {
+        if (blob == null) return -1.0;
+
+        double perceivedWidth = blob.getBoxFit().size.width;
+
+        if (perceivedWidth <= 0) return -1.0;
+
+        double distance = (KNOWN_BALL_DIAMETER_CM * FOCAL_LENGTH_PIXELS) / perceivedWidth;
+
+        return distance;
+    }
+
+    /**
+     * Calculates distance using contour area instead of width
+     * Generally more stable for circular objects
+     *
+     * @param blob The detected blob
+     * @return Estimated distance in centimeters, or -1 if calculation fails
+     */
+    private double calculateDistanceFromArea(ColorBlobLocatorProcessor.Blob blob) {
+        if (blob == null) return -1.0;
+
+        double area = blob.getContourArea();
+        if (area <= 0) return -1.0;
+
+        // Assuming circular object, calculate diameter from area
+        double perceivedDiameter = 2 * Math.sqrt(area / Math.PI);
+
+        if (perceivedDiameter <= 0) return -1.0;
+
+        double distance = (KNOWN_BALL_DIAMETER_CM * FOCAL_LENGTH_PIXELS) / perceivedDiameter;
+
+        return distance;
+    }
+
+    /**
+     * Calculates average distance for multiple blobs
+     *
+     * @param blobs List of detected blobs
+     * @return Average distance in centimeters, or -1 if no valid blobs
+     */
+    private double calculateAverageDistance(List<ColorBlobLocatorProcessor.Blob> blobs) {
+        if (blobs.isEmpty()) return -1.0;
+
+        double totalDistance = 0;
+        int validCount = 0;
+
+        for (ColorBlobLocatorProcessor.Blob blob : blobs) {
+            double distance = calculateDistanceFromArea(blob);
+            if (distance > 0) {
+                totalDistance += distance;
+                validCount++;
+            }
+        }
+
+        return validCount > 0 ? totalDistance / validCount : -1.0;
     }
 
     private VisionProcessor createQuartersSplitScreen() {
@@ -229,6 +303,10 @@ public class OpenCV {
         List<ColorBlobLocatorProcessor.Blob> purpleBlobs = filterPurpleBlobsBySize(purpleColorLocator.getBlobs());
         List<ColorBlobLocatorProcessor.Blob> greenBlobs = filterGreenBlobsBySize(greenColorLocator.getBlobs());
 
+        // Calculate distances
+        purpleDistance = calculateAverageDistance(purpleBlobs);
+        greenDistance = calculateAverageDistance(greenBlobs);
+
         if (useQuartersSplitScreen) {
             telemetry.addData("=== QUADRANT DETECTION ===", "");
             telemetry.addData("Top Left", String.format("Purple: %s | Green: %s",
@@ -249,18 +327,41 @@ public class OpenCV {
             telemetry.addLine();
         }
 
+        // Distance telemetry
+        telemetry.addData("=== DISTANCE ESTIMATION ===", "");
+        if (purpleDistance > 0) {
+            telemetry.addData("Purple Avg Distance", String.format("%.1f cm", purpleDistance));
+        } else {
+            telemetry.addData("Purple Avg Distance", "N/A");
+        }
+
+        if (greenDistance > 0) {
+            telemetry.addData("Green Avg Distance", String.format("%.1f cm", greenDistance));
+        } else {
+            telemetry.addData("Green Avg Distance", "N/A");
+        }
+        telemetry.addLine();
+
         telemetry.addData("Purple Artifacts Found", purpleBlobs.size());
         for (int i = 0; i < Math.min(purpleBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = purpleBlobs.get(i);
+            double blobDistance = calculateDistanceFromArea(blob);
             telemetry.addData("Purple " + (i+1) + " Center", String.format("(%.0f, %.0f)", (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Purple " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
+            if (blobDistance > 0) {
+                telemetry.addData("Purple " + (i+1) + " Distance", String.format("%.1f cm", blobDistance));
+            }
         }
 
         telemetry.addData("Green Artifacts Found", greenBlobs.size());
         for (int i = 0; i < Math.min(greenBlobs.size(), 3); i++) {
             ColorBlobLocatorProcessor.Blob blob = greenBlobs.get(i);
+            double blobDistance = calculateDistanceFromArea(blob);
             telemetry.addData("Green " + (i+1) + " Center", String.format("(%.0f, %.0f)", (double)blob.getBoxFit().center.x, (double)blob.getBoxFit().center.y));
             telemetry.addData("Green " + (i+1) + " Area", String.format("%.0f", (double)blob.getContourArea()));
+            if (blobDistance > 0) {
+                telemetry.addData("Green " + (i+1) + " Distance", String.format("%.1f cm", blobDistance));
+            }
         }
 
         telemetry.addData("Camera State", visionPortal.getCameraState());
@@ -382,5 +483,48 @@ public class OpenCV {
 
     public boolean isBottomRightGreenDetected() {
         return bottomRightGreen;
+    }
+
+    // Distance getter methods
+    public double getPurpleDistance() {
+        return purpleDistance;
+    }
+
+    public double getGreenDistance() {
+        return greenDistance;
+    }
+
+    public double getLargestPurpleBlobDistance() {
+        ColorBlobLocatorProcessor.Blob blob = getLargestPurpleBlob();
+        return calculateDistanceFromArea(blob);
+    }
+
+    public double getLargestGreenBlobDistance() {
+        ColorBlobLocatorProcessor.Blob blob = getLargestGreenBlob();
+        return calculateDistanceFromArea(blob);
+    }
+
+    /**
+     * CALIBRATION METHOD - Run this to determine your focal length constant
+     *
+     * 1. Place a ball at a known distance (e.g., 50cm) from the camera
+     * 2. Measure the actual distance accurately
+     * 3. Run this method and note the calculated focal length
+     * 4. Update FOCAL_LENGTH_PIXELS constant with this value
+     *
+     * @param knownDistanceCm The actual measured distance to the ball
+     * @param blob The detected blob at that distance
+     * @return The calculated focal length to use as a constant
+     */
+    public double calibrateFocalLength(double knownDistanceCm, ColorBlobLocatorProcessor.Blob blob) {
+        if (blob == null) return -1.0;
+
+        double area = blob.getContourArea();
+        double perceivedDiameter = 2 * Math.sqrt(area / Math.PI);
+
+        // Focal Length = (Perceived Width × Distance) / Real Width
+        double focalLength = (perceivedDiameter * knownDistanceCm) / KNOWN_BALL_DIAMETER_CM;
+
+        return focalLength;
     }
 }

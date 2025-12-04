@@ -43,7 +43,7 @@ public class LazySusan {
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        this.spin_motor.setTargetPosition(0);
+        this.spin_motor.setTargetPosition(0);
         this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.lift_servo.setDirection(Servo.Direction.FORWARD);

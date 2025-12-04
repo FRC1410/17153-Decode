@@ -19,7 +19,7 @@ public class Robot extends OpMode {
     private final colorSensor colour = new colorSensor();
     private final OpenCV openCV = new OpenCV();
 
-    
+
     public void init() {
         this.drivetrain.init(hardwareMap);
         this.colour.init(hardwareMap, COLOUR_SENSOR_ID, COLOUR_SENSOR_ID2);
@@ -48,7 +48,7 @@ public class Robot extends OpMode {
         this.drivetrain.mechanumDrive(
                 gamepad1.left_stick_x,
                 gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
+                 gamepad1.right_stick_x,
                 drivetrainToggle.toggleButton(gamepad1.a)
         );
      this.lazySusan.loop(gamepad1.x, gamepad1.a, gamepad1.b, gamepad1.right_bumper);

@@ -37,7 +37,7 @@ public class OpenCV {
 
     // Distance estimation constants
     private static final double KNOWN_BALL_DIAMETER_CM = 7.5; // Adjust to your actual ball diameter
-    private static final double FOCAL_LENGTH_PIXELS = 500.0; // CALIBRATE THIS at 24cm - see calibration method
+    private static final double FOCAL_LENGTH_PIXELS = 825.0; // CALIBRATE THIS at 24cm - see calibration method
     private static final double CALIBRATION_DISTANCE_CM = 24.0; // Standard calibration distance
 
     // Distance storage variables
@@ -528,4 +528,3 @@ public class OpenCV {
         return focalLength;
     }
 }
-// comment for the purpose of making a new commit.

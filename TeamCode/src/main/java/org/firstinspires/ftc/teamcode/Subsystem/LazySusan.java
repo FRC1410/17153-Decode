@@ -22,6 +22,7 @@ public class LazySusan {
 //    private ServoImplEx lift_servo;
     private PwmControl.PwmRange pwm_range;
 
+
     private double servo_pos;
     private double susan_pos;
     private RobotStates.SusanLift current_servo_state = RobotStates.SusanLift.DOWN;
@@ -147,7 +148,7 @@ public class LazySusan {
     public double susanGoToState() {
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
         double desiredSusanPos = this.getSusanPos(desiredSpinState);
-        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
         double error = desiredSusanPos - currentPos;
 
         if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
@@ -159,14 +160,7 @@ public class LazySusan {
 
         output = Math.max(-0.5, Math.min(0.5, output));
 
-        boolean directionChange = (lastMotorPower > 0.01 && output < -0.01) || (lastMotorPower < -0.01 && output > 0.01);
-
-        if (directionChange) {
-            this.spin_motor.setPower(0);
-            this.lastMotorPower = 0;
-            return 0;
-        }
-
+        // Apply minimum power to overcome static friction
         if (Math.abs(output) < SUSAN_MIN_POWER && Math.abs(output) > 0.001) {
             if (output > 0) {
                 output = SUSAN_MIN_POWER;
@@ -183,7 +177,14 @@ public class LazySusan {
     }
 
     public void loop(boolean a, boolean b, boolean x, boolean rb) {
-            if (Math.abs(this.spin_motor.getPower()) <= 0.001) {
+            // Check if we're at the target position (not moving to a new position)
+            double desiredSusanPos = this.getSusanPos(this.getDesired_susan_state());
+            double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
+            double error = Math.abs(desiredSusanPos - currentPos);
+            boolean atTarget = error <= SUSAN_SPIN_THRESHHOLD;
+
+            // Only accept new position inputs if we've reached the target
+            if (atTarget) {
                 if (a) {
                     setDesired_susan_state(RobotStates.SusanSpin.ONE);
                 } else if (b) {
@@ -207,12 +208,12 @@ public class LazySusan {
 
     public void susanTelem(Telemetry telemetry) {
         double targetPos = getSusanPos(this.desired_susan_state);
-        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
         double error = targetPos - currentPos;
         double calculatedOutput = error * SUSAN_P;
 
         telemetry.addData("Susan State", this.getDesired_susan_state().toString());
-        telemetry.addData("Susan Target Pos", targetPos);
+        telemetry.addData("Susan Target Pos", this.getActualSusanState());
         telemetry.addData("Susan Current Pos", currentPos);
         telemetry.addData("Susan Error (T-C)", error);
         telemetry.addData("Susan Calculated Output", String.format("%.3f", calculatedOutput));

@@ -13,6 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     DcMotorEx intake;
 
+    private double Intake = 0;
+    private double Outtake = 0;
+
     public void init(HardwareMap hardwareMap) {
         this.intake = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_ID);
 
@@ -25,11 +28,16 @@ public class Intake {
         this.intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);}
 
     public void run(double intake, double outtake){
+        this.Intake = intake;
+        this.Outtake = outtake;
         this.intake.setPower((outtake) - (intake));
     }
 
     public void intakeTelem(Telemetry telemetry){
         double p = this.intake.getPower();
+        telemetry.addData("--- INTAKE DATA ---", "");
         telemetry.addData("Power: ", p);
+        telemetry.addData("Intake: ", Intake);
+        telemetry.addData("Outtake: ", Outtake);
     }
 }

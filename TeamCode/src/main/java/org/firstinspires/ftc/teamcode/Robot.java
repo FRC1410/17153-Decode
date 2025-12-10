@@ -32,7 +32,7 @@ public class Robot extends OpMode {
 //                drivetrainToggle.toggleButton(gamepad1.a)
 //        );
 
-        if (this.gamepad1.backWasReleased()) {
+        if (this.gamepad1.aWasPressed()) {
             this.shooter.cycle(telemetry);
         }
     }

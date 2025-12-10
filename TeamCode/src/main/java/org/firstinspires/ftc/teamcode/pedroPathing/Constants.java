@@ -65,7 +65,6 @@ public class Constants {
                     0.0015,
                     0.7,
                     0.006
-
             ))
             .centripetalScaling(0);
 

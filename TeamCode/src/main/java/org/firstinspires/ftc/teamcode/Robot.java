@@ -1,27 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import android.service.controls.Control;
 
-import com.pedropathing.follower.Follower;
-import com.pedropathing.ftc.FollowerBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 public class Robot extends OpMode {
-    private final double normalMux = 0.8;
-    private final double halfSpeedMux = 0.5;
-    private Follower localiser;
+    private final Shooter shooter = new Shooter();
     private final Rumbler rumbler = new Rumbler();
     private final Drivetrain drivetrain = new Drivetrain();
     private final LazySusan lazySusan = new LazySusan();
@@ -35,23 +29,15 @@ public class Robot extends OpMode {
         ControlScheme.initOperator(gamepad2);
         this.drivetrain.init(hardwareMap);
         this.intake.init(hardwareMap);
-        this.localiser = Constants.createFollower(hardwareMap);
-        localiser.update();
+        this.shooter.init(hardwareMap);
     }
 
     @Override
     public void start() {
         rumbler.startMatchTimer();
-        localiser.startTeleopDrive();
-        localiser.update();
     }
 
     public void doTelemetry() {
-        // uses pedro to give relative coordinates
-        telemetry.addData("Bot X",localiser.getPose().getX());
-        telemetry.addData("Bot Y",localiser.getPose().getY());
-        telemetry.addData("Bot H",localiser.getTotalHeading());
-
         //this.drivetrain.drivetrainData(telemetry);
         this.intake.intakeTelem(telemetry);
         this.lazySusan.susanTelem(telemetry);
@@ -59,26 +45,21 @@ public class Robot extends OpMode {
         //this always goes last in this method:
         telemetry.update();
 
+
     }
 
     @Override
     public void loop() {
-/*
+        if (this.gamepad1.aWasPressed()){
+            this.shooter.cycle(telemetry);
+        }
         this.drivetrain.mechanumDrive(
                 ControlScheme.DRIVE_STRAFE.get(),
                 ControlScheme.DRIVE_FB.get(),
                 ControlScheme.DRIVE_ROTATE.get(),
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
-*/
 
-        if (drivetrainToggle.toggleButton(!ControlScheme.DRIVE_SLOW_MODE.get())) {
-            localiser.setTeleOpDrive(-gamepad1.left_stick_y * normalMux, -gamepad1.left_stick_x * normalMux, -gamepad1.right_stick_x * normalMux, true);
-        } else {
-            localiser.setTeleOpDrive(-gamepad1.left_stick_y * normalMux * halfSpeedMux, -gamepad1.left_stick_x * normalMux * halfSpeedMux, -gamepad1.right_stick_x * normalMux * halfSpeedMux, true);
-        }
-        // update pedro localiser
-        localiser.update();
         this.intake.run(
                 ControlScheme.INTAKE_IN.get(),
                 ControlScheme.INTAKE_OUT.get()

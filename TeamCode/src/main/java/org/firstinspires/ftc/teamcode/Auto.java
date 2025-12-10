@@ -33,11 +33,10 @@ public class Auto extends OpMode {
     private Follower follower;
     private PoseHistory poseHistory;
     private int pathState = 0;
-    private final Pose startPose = new Pose(30,5, Math.toRadians(180));
-    private final Pose pose2 = new Pose(7,15, Math.toRadians(90));
-    private final Pose pose3 = new Pose(7,25, Math.toRadians(90));
-    private final Pose endPose = new Pose(-9,10.5, Math.toRadians(136));
-    private final Pose controlPoint = new Pose(8.375,13.875, Math.toRadians(0));
+    private final Pose startPose = new Pose(88,8, Math.toRadians(90)); // start path pos
+    private final Pose pose2 = new Pose(100,60, Math.toRadians(0)); // start pickup pos
+    private final Pose pose3 = new Pose(125,60, Math.toRadians(0)); // end pickup pos
+    private final Pose endPose = new Pose(84,83, Math.toRadians(136)); // shooting pose
     private PathChain pathChain = new PathChain();
     private PathChain pathChain2 = new PathChain();
     private PathChain pathChain3 = new PathChain();
@@ -54,10 +53,8 @@ public class Auto extends OpMode {
         pathChain2 = follower.pathBuilder()
                 .addPath(new BezierLine(pose2, pose3)).setLinearHeadingInterpolation(pose2.getHeading(),pose3.getHeading()).build();
         pathChain3 = follower.pathBuilder()
-                .addPath(new BezierLine(pose3, pose2)).setLinearHeadingInterpolation(pose3.getHeading(),endPose.getHeading()).build();
+                .addPath(new BezierLine(pose3, endPose)).setLinearHeadingInterpolation(pose3.getHeading(),endPose.getHeading()).build();
         pathChain4 = follower.pathBuilder()
-                .addPath(new BezierLine(pose2, endPose)).setLinearHeadingInterpolation(endPose.getHeading(),endPose.getHeading()).build();
-        pathChain5 = follower.pathBuilder()
                 .addPath(new BezierLine(endPose, startPose)).setLinearHeadingInterpolation(endPose.getHeading(),startPose.getHeading()).build();
     }
 
@@ -93,16 +90,11 @@ public class Auto extends OpMode {
             }
             case 4: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain5, false);
-                    pathState++;
-                }
-                break;
-            }
-            case 5: {
-                if (!follower.isBusy()){
                     pathState = 0;
                     try{
-                        //Thread.sleep(1000);
+                        follower.pausePathFollowing();
+                        Thread.sleep(1000);
+                        follower.resumePathFollowing();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -152,16 +144,16 @@ public class Auto extends OpMode {
         switch (pathState){
             case 0: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose :", Math.toDegrees(pose2.getHeading()));
             case 1: telemetry.addData("Next Pose X", pose3.getX());telemetry.addData("Next Pose Y", pose3.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose3.getHeading()));
-            case 2: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose2.getHeading()));
-            case 3: telemetry.addData("Next Pose X", endPose.getX());telemetry.addData("Next Pose Y", endPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(endPose.getHeading()));
-            case 4: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
+            case 2: telemetry.addData("Next Pose X", endPose.getX());telemetry.addData("Next Pose Y", endPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(endPose.getHeading()));
+            case 3: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
+            //case 4: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
             case -1: telemetry.addData("At Path End","");
         }
-        telemetry.addData("Next Pose", pose2.getX());
         telemetry.update();
     }
 }
 
+// for pedro panels interface
 class Drawing {
     public static final double ROBOT_RADIUS = 9; // woah
     private static final FieldManager panelsField = PanelsField.INSTANCE.getField();
@@ -177,7 +169,7 @@ class Drawing {
      * This prepares Panels Field for using Pedro Offsets
      */
     public static void init() {
-        panelsField.setOffsets(PanelsField.INSTANCE.getPresets().getDEFAULT_FTC());
+        panelsField.setOffsets(PanelsField.INSTANCE.getPresets().getPEDRO_PATHING());
     }
 
     /**

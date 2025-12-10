@@ -11,14 +11,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Util.PIDController;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class LazySusan {
     // me when i am motivationally challenged and my name is susan
@@ -33,8 +32,8 @@ public class LazySusan {
 
     private PIDController susan_PID_controller;
     private double lastMotorPower = 0;
-    LocalTime now = LocalTime.now();
-    private int lastTime = 60;
+    private ElapsedTime runTime;
+    private int lastTime;
 
     public void init(HardwareMap hardwareMap) {
         this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR_ID);
@@ -47,6 +46,9 @@ public class LazySusan {
 //        this.lift_servo.setDirection(Servo.Direction.FORWARD);
 
         this.susan_PID_controller = new PIDController(SUSAN_P, SUSAN_I, SUSAN_D);
+
+        this.runTime = new ElapsedTime();
+        this.lastTime = -1;
     }
     /**
      * Sets the desired servo state
@@ -148,24 +150,31 @@ public class LazySusan {
      * @return Power output
      */
     public double susanGoToState() {
-        now = LocalTime.now();
-        if (this.lastTime == now.getSecond()) {
-            this.spin_motor.setPower(0);
-            this.lastMotorPower = 0;
-            return 0;
-        } else if (this.lastTime < 60) {
-            this.lastTime = 60;
-        }
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
         double desiredSusanPos = this.getSusanPos(desiredSpinState);
         double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
         double error = desiredSusanPos - currentPos;
 
         if (currentPos > 9 || currentPos < -3) {
+            if (lastTime == -1) {
+                this.lastTime = ((int) runTime.now(TimeUnit.SECONDS)) % 2;
+            }
+            if (!(this.lastTime == ((int) runTime.now(TimeUnit.SECONDS)) % 2)){
+                if (currentPos > 9) {
+                    this.spin_motor.setPower(-0.003);
+                    this.lastMotorPower = -0.003;
+                    return -0.003;
+                } else if (currentPos < -3) {
+                    this.spin_motor.setPower(0.003);
+                    this.lastMotorPower = 0.003;
+                    return 0.003;
+                }
+            }
             this.spin_motor.setPower(0);
             this.lastMotorPower = 0;
-            this.lastTime = now.getSecond();
             return 0;
+        } else {
+            this.lastTime = -1;
         }
 
         if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
@@ -175,7 +184,7 @@ public class LazySusan {
         }
         double output = this.susan_PID_controller.calculate(desiredSusanPos, currentPos);
 
-        output = Math.max(-0.007, Math.min(0.007, output));
+        output = Math.max(-0.003, Math.min(0.003, output));
 
         // Apply minimum power to overcome static friction
         if (Math.abs(output) < SUSAN_MIN_POWER && Math.abs(output) > 0.0001) {
@@ -239,5 +248,6 @@ public class LazySusan {
         telemetry.addData("Susan Motor Power", String.format("%.3f", this.spin_motor.getPower()));
         telemetry.addData("Susan Last Power", String.format("%.3f", this.lastMotorPower));
         telemetry.addData("Susan Servo State", this.getCurrent_servo_state().toString());
+        telemetry.addData("Last Time I Was Alive", this.lastTime);
     }
 }

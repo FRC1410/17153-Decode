@@ -22,6 +22,6 @@ public class IDs {
     //SusanLift
     public static final String SUSAN_SPIN_MOTOR_ID = "Susan Spin Motor";
     public static final String SUSAN_LIFT_SERVO = "Susan Lift Servo";
-    public static final String SHOOTER_MOTOR_ID = "4";
+    public static final String SHOOTER_MOTOR_ID = "5";
 
 }

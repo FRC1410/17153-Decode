@@ -34,56 +34,57 @@ public class Auto extends OpMode {
     private PoseHistory poseHistory;
     private int pathState = 0;
     private final Pose startPose = new Pose(88,8, Math.toRadians(90)); // start path pos
-    private final Pose pose2 = new Pose(100,60, Math.toRadians(0)); // start pickup pos
-    private final Pose pose3 = new Pose(125,60, Math.toRadians(0)); // end pickup pos
+    private final Pose SmiddleArtifactPose = new Pose(100,60, Math.toRadians(0)); // start pickup middle articfacts pos
+    private final Pose EmiddleArtifactPose = new Pose(125,60, Math.toRadians(0)); // end pickup middle articfacts pos
+    private final Pose SfirstArtifactsPose = new Pose(104, 84, Math.toRadians(0));
+    private final Pose EfirstArtifactsPose = new Pose(132, 84, Math.toRadians(0));
+    private final Pose SlastArtifactPose = new Pose(104, 35, Math.toRadians(0));
+    private final Pose ElastArtifactPose = new Pose(132, 35, Math.toRadians(0));
     private final Pose endPose = new Pose(84,83, Math.toRadians(136)); // shooting pose
-    private PathChain pathChain = new PathChain();
-    private PathChain pathChain2 = new PathChain();
-    private PathChain pathChain3 = new PathChain();
-    private PathChain pathChain4 = new PathChain();
-    private PathChain pathChain5 = new PathChain();
+    private PathChain LastArtifactsPathChain = new PathChain();
+    private PathChain FromShootingToLastArtifactsPathCain = new PathChain();
+    private PathChain FromStartToLastArtifactPathChain = new PathChain();
+    private PathChain MiddleArtifactsPathChain = new PathChain();
+    private PathChain FromShootingToMiddleArtifactsPathChain = new PathChain();
+    private PathChain FromstartToMiddleArtifactsPos = new PathChain();
+    private PathChain FirstArtifactsPathChain = new PathChain();
+    private PathChain FromShootingToFirstArtifactPathChain = new PathChain();
+    private PathChain FromStartToFirstArtifactPathChain = new PathChain();
+    private PathChain BackToStartPathChain = new PathChain();
     public void initialize() {
         this.follower = createFollower(hardwareMap);
     }
 
     public void buildPaths(){
-        // take the paths from dynamite and build them.
-        pathChain = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, pose2)).setLinearHeadingInterpolation(startPose.getHeading(),pose2.getHeading()).build();
-        pathChain2 = follower.pathBuilder()
-                .addPath(new BezierLine(pose2, pose3)).setLinearHeadingInterpolation(pose2.getHeading(),pose3.getHeading()).build();
-        pathChain3 = follower.pathBuilder()
-                .addPath(new BezierLine(pose3, endPose)).setLinearHeadingInterpolation(pose3.getHeading(),endPose.getHeading()).build();
-        pathChain4 = follower.pathBuilder()
-                .addPath(new BezierLine(endPose, startPose)).setLinearHeadingInterpolation(endPose.getHeading(),startPose.getHeading()).build();
+        LastArtifactsPathChain = new PathChain();
     }
 
     public void runPath() {
         switch (pathState) {
             case 0: {
                 if (!follower.isBusy()) {
-                    follower.followPath(pathChain, false);
+                    //follower.followPath(pathChain, false);
                     pathState++;
                 }
                 break;
             }
             case 1: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain2, true);
+                    //follower.followPath(pathChain2, true);
                     pathState++;
                 }
                 break;
             }
             case 2: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain3, false);
+                    //follower.followPath(pathChain3, false);
                     pathState++;
                 }
                 break;
             }
             case 3: {
                 if (!follower.isBusy()){
-                    follower.followPath(pathChain4,true);
+                    //follower.followPath(pathChain4,true);
                     pathState++;
                 }
                 break;
@@ -142,12 +143,12 @@ public class Auto extends OpMode {
         telemetry.addData("H(deg)",Math.toDegrees(follower.getPose().getHeading()));
         telemetry.addData("Path State", pathState);
         switch (pathState){
-            case 0: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose :", Math.toDegrees(pose2.getHeading()));
-            case 1: telemetry.addData("Next Pose X", pose3.getX());telemetry.addData("Next Pose Y", pose3.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose3.getHeading()));
-            case 2: telemetry.addData("Next Pose X", endPose.getX());telemetry.addData("Next Pose Y", endPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(endPose.getHeading()));
-            case 3: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
+            //case 0: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose :", Math.toDegrees(pose2.getHeading()));
+            //case 1: telemetry.addData("Next Pose X", pose3.getX());telemetry.addData("Next Pose Y", pose3.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose3.getHeading()));
+            //case 2: telemetry.addData("Next Pose X", endPose.getX());telemetry.addData("Next Pose Y", endPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(endPose.getHeading()));
+            //case 3: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
             //case 4: telemetry.addData("Next Pose X", startPose.getX());telemetry.addData("Next Pose Y", startPose.getY());telemetry.addData("Next Pose H", Math.toDegrees(startPose.getHeading()));
-            case -1: telemetry.addData("At Path End","");
+            //case -1: telemetry.addData("At Path End","");
         }
         telemetry.update();
     }

@@ -15,8 +15,17 @@ import org.firstinspires.ftc.teamcode.Util.RobotStates;
 public class Shooter {
 
     private DcMotorEx motorShooter;
-    public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.HALF_POWER;
+    public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
+    public String toString(){
+        switch (this.shooterStatus) {
+            case FORWARD: return "Forward";
+            case BACKWARD: return "Reverse";
+            case NEUTRAL: return "Neutral";
+            case HALF_POWER: return "Half Forward";
+            default: return "N/A";
+        }
+    }
 
     public void init(HardwareMap hardwareMap) {
 
@@ -49,7 +58,7 @@ public class Shooter {
         run(this.shooterStatus);
         telemetry.addData("Drive Mode:", this.shooterStatus);
         telemetry.addData("Shooter Power", this.motorShooter.getPower());
-        telemetry.update();
+//        telemetry.update();
     }
 
     public void run(RobotStates.ShooterStates shooterState){

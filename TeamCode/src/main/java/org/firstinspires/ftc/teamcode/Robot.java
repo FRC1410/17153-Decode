@@ -44,8 +44,6 @@ public class Robot extends OpMode {
 
         //this always goes last in this method:
         telemetry.update();
-
-
     }
 
     @Override
@@ -53,16 +51,17 @@ public class Robot extends OpMode {
         if (this.gamepad1.aWasPressed()){
             this.shooter.cycle(telemetry);
         }
+        telemetry.addData("shooter state", this.shooter.toString());
+        this.intake.run(
+                ControlScheme.INTAKE_IN.get(),
+                ControlScheme.INTAKE_OUT.get()
+        );
+        /*
         this.drivetrain.mechanumDrive(
                 ControlScheme.DRIVE_STRAFE.get(),
                 ControlScheme.DRIVE_FB.get(),
                 ControlScheme.DRIVE_ROTATE.get(),
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
-        );
-
-        this.intake.run(
-                ControlScheme.INTAKE_IN.get(),
-                ControlScheme.INTAKE_OUT.get()
         );
 
         this.lazySusan.loop(
@@ -71,7 +70,7 @@ public class Robot extends OpMode {
                 ControlScheme.SUSAN_MANUAL_THREE.get(),
                 ControlScheme.SUSAN_LIFT.get()
         );
-
+*/
         //this stays last in this method:
         doTelemetry();
     }

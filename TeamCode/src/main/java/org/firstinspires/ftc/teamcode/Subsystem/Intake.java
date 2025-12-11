@@ -25,7 +25,7 @@ public class Intake {
         this.intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);}
 
     public void run(double intake, double outtake){
-        this.intake.setPower((outtake) - (intake));
+        this.intake.setPower((outtake*0.8) - (intake*0.8));
     }
 
     public void intakeTelem(Telemetry telemetry){

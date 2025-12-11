@@ -57,6 +57,7 @@ public class Auto extends OpMode {
 
     public void buildPaths(){
         LastArtifactsPathChain = new PathChain();
+
     }
 
     public void runPath() {

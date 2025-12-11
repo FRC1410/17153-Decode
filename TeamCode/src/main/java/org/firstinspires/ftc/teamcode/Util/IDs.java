@@ -9,9 +9,10 @@ public class IDs {
     public static final String BACK_LEFT_MOTOR_ID = "1";
     public static final String FRONT_RIGHT_MOTOR_ID = "2";
     public static final String BACK_RIGHT_MOTOR_ID = "3";
+    public static final String INTAKE_MOTOR_ID = "4";
+    public static final String SHOOTER_MOTOR_ID = "6";
 
     //Intake
-    public static final String INTAKE_MOTOR_ID = "4";
 
 
     //Other Device IDs

@@ -9,17 +9,20 @@ import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Util.Toggle;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 
 @TeleOp
 public class Robot extends OpMode {
-    private final Rumbler rumbler = new Rumbler();
     private final Drivetrain drivetrain = new Drivetrain();
+    private final Shooter shooter = new Shooter();
+    private final Rumbler rumbler = new Rumbler();
     private final LazySusan lazySusan = new LazySusan();
     private final Intake intake = new Intake();
 
-    private final Toggle drivetrainToggle = new Toggle();
+//    private final Toggle drivetrainToggle = new Toggle();
     
     public void init() {
         this.lazySusan.init(hardwareMap);
@@ -27,6 +30,8 @@ public class Robot extends OpMode {
         ControlScheme.initOperator(gamepad2);
         this.drivetrain.init(hardwareMap);
         this.intake.init(hardwareMap);
+        this.shooter.init(hardwareMap);
+
     }
 
     @Override
@@ -48,6 +53,12 @@ public class Robot extends OpMode {
     @Override
     public void loop() {
 
+//        this.drivetrain.mechanumDrive(
+//                gamepad1.left_stick_x,
+//                gamepad1.left_stick_y,
+//                gamepad1.right_stick_x,
+//                drivetrainToggle.toggleButton(gamepad1.a)
+//        );
         this.drivetrain.mechanumDrive(
                 ControlScheme.DRIVE_STRAFE.get(),
                 ControlScheme.DRIVE_FB.get(),
@@ -67,6 +78,9 @@ public class Robot extends OpMode {
                 ControlScheme.SUSAN_LIFT.get()
         );
 
+        if (this.gamepad1.aWasPressed()) {
+            this.shooter.cycle(telemetry);
+        }
         //this stays last in this method:
         doTelemetry();
     }

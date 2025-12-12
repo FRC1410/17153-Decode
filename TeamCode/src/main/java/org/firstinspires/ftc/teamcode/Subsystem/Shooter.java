@@ -57,15 +57,15 @@ public class Shooter {
             case FORWARD:
                 this.motorShooter.setPower(1);
                 break;
-            case BACKWARD:
-                this.motorShooter.setPower(-0.5);
-                break;
+//            case BACKWARD:
+//                this.motorShooter.setPower(-0.5);
+//                break;
             case NEUTRAL:
                 this.motorShooter.setPower(0);
                 break;
-            case HALF_POWER:
-                this.motorShooter.setPower(0.5);
-                break;
+//            case HALF_POWER:
+//                this.motorShooter.setPower(0.5);
+//                break;
         }
     }
 }

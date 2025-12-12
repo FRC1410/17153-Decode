@@ -40,6 +40,6 @@ public class ControlScheme {
         SUSAN_MANUAL_TWO = () -> gamepad2.a;
         SUSAN_MANUAL_THREE = () -> gamepad2.b;
         SUSAN_LIFT = () -> gamepad2.y;
-        SHOOTER_CYCLE = () -> gamepad2.right_bumper;
+        SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
     }
 }

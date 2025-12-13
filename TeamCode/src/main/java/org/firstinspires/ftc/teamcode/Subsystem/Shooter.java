@@ -24,7 +24,7 @@ public class Shooter {
 
         this.motorShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        this.motorShooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.motorShooter.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.motorShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

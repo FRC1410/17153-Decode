@@ -13,6 +13,7 @@ public class PIDController {
     private boolean firstCalculation = true;
 
     private ElapsedTime timer = new ElapsedTime();
+    private double lastTime = 0;
 
     public PIDController(double P, double I, double D) {
         this.P = P;
@@ -22,12 +23,13 @@ public class PIDController {
 
     public double calculate(double setPoint, double currentPosition) {
         double error = setPoint - currentPosition;
-        double deltaTime = timer.seconds();
+        double currentTime = timer.seconds();
+        double deltaTime = currentTime - lastTime;
 
         // Prevent division by zero and huge derivative on first calculation
-        if (firstCalculation || deltaTime == 0) {
+        if (firstCalculation || deltaTime <= 0.001) {
             previousError = error;
-            timer.reset();
+            lastTime = currentTime;
             firstCalculation = false;
             return P * error;
         }
@@ -38,7 +40,7 @@ public class PIDController {
         double output = (P * error) + (I * integral) + (D * derivative);
 
         previousError = error;
-        timer.reset();
+        lastTime = currentTime;
 
         return output;
     }
@@ -47,8 +49,6 @@ public class PIDController {
         integral = 0;
         previousError = 0;
         firstCalculation = true;
-        timer.reset();
+        lastTime = timer.seconds();
     }
-
-
 }

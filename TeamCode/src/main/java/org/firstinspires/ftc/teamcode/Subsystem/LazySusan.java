@@ -154,6 +154,7 @@ public class LazySusan {
         if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
             this.spin_motor.setPower(0);
             this.lastMotorPower = 0;
+            this.susan_PID_controller.reset();
             return 0;
         }
         double output = this.susan_PID_controller.calculate(desiredSusanPos, currentPos);
@@ -213,12 +214,10 @@ public class LazySusan {
         double calculatedOutput = error * SUSAN_P;
 
         telemetry.addData("Susan State", this.getDesired_susan_state().toString());
-        telemetry.addData("Susan Target Pos", this.getActualSusanState());
-        telemetry.addData("Susan Current Pos", currentPos);
+        telemetry.addData("Susan Current Pos", this.getActualSusanState());
         telemetry.addData("Susan Error (T-C)", error);
         telemetry.addData("Susan Calculated Output", String.format("%.3f", calculatedOutput));
         telemetry.addData("Susan Motor Power", String.format("%.3f", this.spin_motor.getPower()));
         telemetry.addData("Susan Last Power", String.format("%.3f", this.lastMotorPower));
-        telemetry.addData("Susan Servo State", this.getCurrent_servo_state().toString());
     }
 }

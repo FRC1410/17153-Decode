@@ -25,6 +25,16 @@ public class ControlScheme {
     //SHOOTER
     public static Supplier<Boolean> SHOOTER_CYCLE;
 
+    //HOOD SERVO
+    public static Supplier<Boolean> HOOD_POS_ONE;
+    public static Supplier<Boolean> HOOD_POS_TWO;
+    public static Supplier<Boolean> HOOD_POS_THREE;
+    public static Supplier<Boolean> HOOD_POS_FOUR;
+    public static Supplier<Boolean> HOOD_POS_FIVE;
+
+    //CONTINUOUS SERVO
+    public static Supplier<Boolean> CONTINUOUS_SERVO_TOGGLE;
+
 
     public static void initDriver(Gamepad gamepad1) {
         DRIVE_STRAFE = () -> gamepad1.left_stick_x;
@@ -41,5 +51,15 @@ public class ControlScheme {
         SUSAN_MANUAL_THREE = () -> gamepad2.b;
         SUSAN_LIFT = () -> gamepad2.y;
         SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+
+        //Hood Servo - using dpad for 5 positions
+        HOOD_POS_ONE = () -> gamepad2.dpad_left;
+        HOOD_POS_TWO = () -> gamepad2.dpad_down;
+        HOOD_POS_THREE = () -> gamepad2.dpad_right;
+        HOOD_POS_FOUR = () -> gamepad2.dpad_up;
+        HOOD_POS_FIVE = () -> gamepad2.right_stick_button;
+
+        //Continuous Servo
+        CONTINUOUS_SERVO_TOGGLE = () -> gamepad2.leftBumperWasPressed();
     }
 }

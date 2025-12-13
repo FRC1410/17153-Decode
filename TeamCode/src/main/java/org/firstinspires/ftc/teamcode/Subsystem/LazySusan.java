@@ -206,8 +206,13 @@ public class LazySusan {
             susanGoToState();
 
         }
-        public void adjust(double velocity) {
-            this.spin_motor.setVelocity(velocity);
+        public void adjust(double input) {
+            // Only apply manual adjustment if input is significant
+            if (Math.abs(input) > 0.1) {
+                // Scale input by adjustment speed constant
+                double adjustPower = input * SUSAN_ADJUST_SPEED;
+                this.spin_motor.setPower(adjustPower);
+            }
         }
 
 

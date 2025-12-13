@@ -38,7 +38,7 @@ public class LazySusan {
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.spin_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        this.lift_servo.setDirection(Servo.Direction.FORWARD);
 
@@ -148,7 +148,7 @@ public class LazySusan {
     public double susanGoToState() {
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
         double desiredSusanPos = this.getSusanPos(desiredSpinState);
-        double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
+        double currentPos = ((this.getActualSusanState()) * -1);
         double error = desiredSusanPos - currentPos;
 
         if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
@@ -180,7 +180,7 @@ public class LazySusan {
     public void loop(boolean a, boolean b, boolean x, boolean rb) {
             // Check if we're at the target position (not moving to a new position)
             double desiredSusanPos = this.getSusanPos(this.getDesired_susan_state());
-            double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
+            double currentPos = ((this.getActualSusanState()) * -1);
             double error = Math.abs(desiredSusanPos - currentPos);
             boolean atTarget = error <= SUSAN_SPIN_THRESHHOLD;
 
@@ -209,15 +209,17 @@ public class LazySusan {
 
     public void susanTelem(Telemetry telemetry) {
         double targetPos = getSusanPos(this.desired_susan_state);
-        double currentPos = ((this.getActualSusanState() / 1365.0) * -1);
+        double currentPos = ((this.getActualSusanState()) * -1);
         double error = targetPos - currentPos;
         double calculatedOutput = error * SUSAN_P;
 
         telemetry.addData("Susan State", this.getDesired_susan_state().toString());
-        telemetry.addData("Susan Current Pos", this.getActualSusanState());
+        telemetry.addData("Susan Target Pos", targetPos);
+        telemetry.addData("Susan Current Pos", currentPos);
         telemetry.addData("Susan Error (T-C)", error);
-        telemetry.addData("Susan Calculated Output", String.format("%.3f", calculatedOutput));
-        telemetry.addData("Susan Motor Power", String.format("%.3f", this.spin_motor.getPower()));
-        telemetry.addData("Susan Last Power", String.format("%.3f", this.lastMotorPower));
+        telemetry.addData("Susan Calculated Output", String.format("%.4f", calculatedOutput));
+        telemetry.addData("Susan Motor Power", String.format("%.4f", this.spin_motor.getPower()));
+        telemetry.addData("Susan Last Power", String.format("%.4f", this.lastMotorPower));
+        telemetry.addData("Susan At Threshold?", Math.abs(error) <= SUSAN_SPIN_THRESHHOLD);
     }
 }

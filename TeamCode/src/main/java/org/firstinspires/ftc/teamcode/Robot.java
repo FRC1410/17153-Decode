@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.HoodServo;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
 import org.firstinspires.ftc.teamcode.Subsystem.ContinuousServo;
+import org.firstinspires.ftc.teamcode.Subsystem.liftShooter;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
@@ -17,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 @TeleOp
 public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
-    private final Shooter shooter = new Shooter();
+    private final liftShooter shooter = new liftShooter();
     private final Rumbler rumbler = new Rumbler();
     private final LazySusan lazySusan = new LazySusan();
     private final Intake intake = new Intake();
@@ -94,7 +95,7 @@ public class Robot extends OpMode {
         );
 
         if (ControlScheme.SHOOTER_CYCLE.get()) {
-            this.shooter.cycle(telemetry);
+            this.shooter.cycle(telemetry, ControlScheme.SHOOT.get(), ControlScheme.REVERSE.get());
         }
         //this stays last in this method:
         doTelemetry();

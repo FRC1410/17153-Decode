@@ -36,7 +36,8 @@ public class ControlScheme {
 
     //CONTINUOUS SERVO
     public static Supplier<Boolean> CONTINUOUS_SERVO_TOGGLE;
-
+    public static Supplier<Float> SHOOT;
+    public static Supplier<Float> REVERSE;
 
     public static void initDriver(Gamepad gamepad1) {
         DRIVE_STRAFE = () -> gamepad1.left_stick_x;
@@ -52,7 +53,11 @@ public class ControlScheme {
         SUSAN_MANUAL_TWO = () -> gamepad2.a;
         SUSAN_MANUAL_THREE = () -> gamepad2.b;
         SUSAN_ADJUST = () -> gamepad2.left_stick_x;
-        SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+        //SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+        SUSAN_LIFT = () -> gamepad2.y;
+        //SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+        SHOOT = () -> gamepad2.right_trigger;
+        REVERSE = () -> gamepad2.left_trigger;
 
         //Hood Servo - using dpad for 5 positions
         HOOD_POS_ONE = () -> gamepad2.dpad_left;

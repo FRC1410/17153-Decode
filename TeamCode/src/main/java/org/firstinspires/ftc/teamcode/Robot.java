@@ -19,7 +19,8 @@ import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 public class Robot extends OpMode {
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
-    private final Rumbler rumbler = new Rumbler();
+    private final Rumbler driverRumbler = new Rumbler();
+    private final Rumbler operatorRumbler = new Rumbler();
     private final LazySusan lazySusan = new LazySusan();
     private final Intake intake = new Intake();
     private final HoodServo hoodServo = new HoodServo();
@@ -41,7 +42,9 @@ public class Robot extends OpMode {
 
     @Override
     public void start() {
-        rumbler.startMatchTimer();
+        driverRumbler.startMatchTimer();
+        operatorRumbler.startMatchTimer();
+
     }
 
     public void doTelemetry() {
@@ -97,6 +100,11 @@ public class Robot extends OpMode {
         if (ControlScheme.SHOOTER_CYCLE.get()) {
             this.shooter.cycle(telemetry);
         }
+
+        this.driverRumbler.halftimeRumble(gamepad1);
+        this.operatorRumbler.halftimeRumble(gamepad2);
+        this.operatorRumbler.rumbleWhileTrue(gamepad2, this.continuousServo.isGoing());
+
         //this stays last in this method:
         doTelemetry();
     }

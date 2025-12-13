@@ -17,6 +17,8 @@ public class Rumbler {
     Gamepad.RumbleEffect leftrumbleEffect;
     Gamepad.RumbleEffect rightrumbleEffect;
 
+    Gamepad.RumbleEffect rumblecontinuousEffect;
+
     ElapsedTime runtime = new ElapsedTime();
     //format is .addStep( <left motor strength(0-1)>, <right motor strength(0-1)>, <duration(miliseconds)>)
         public Rumbler() {
@@ -43,6 +45,18 @@ public class Rumbler {
         if ((runtime.seconds() > MATCH_HALF_TIME) && !secondHalf) {
             gamepad.runRumbleEffect(halftimerumbleEffect);
             secondHalf = true;
+        }
+    }
+
+    public void rumbleWhileTrue(Gamepad gamepad, boolean truth){
+        rumblecontinuousEffect = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.5, 0.5, 2)
+                .addStep(0.5, 0.5, 2)
+                .build();
+        if (truth){
+            gamepad.runRumbleEffect(rumblecontinuousEffect);
+        } else {
+            stopRumble(gamepad);
         }
     }
 

@@ -32,6 +32,14 @@ public class ContinuousServo {
         }
     }
 
+    public boolean isGoing(){
+        if (running){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void stop() {
         running = false;
         servo.setPower(0);

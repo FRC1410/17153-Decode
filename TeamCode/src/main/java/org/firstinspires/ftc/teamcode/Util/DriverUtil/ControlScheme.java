@@ -20,6 +20,8 @@ public class ControlScheme {
     public static Supplier<Boolean> SUSAN_MANUAL_TWO;
     public static Supplier<Boolean> SUSAN_MANUAL_THREE;
 
+    public static Supplier<Float> SUSAN_ADJUST;
+
     public static Supplier<Boolean> SUSAN_LIFT;
 
     //SHOOTER
@@ -49,7 +51,7 @@ public class ControlScheme {
         SUSAN_MANUAL_ONE = () -> gamepad2.x;
         SUSAN_MANUAL_TWO = () -> gamepad2.a;
         SUSAN_MANUAL_THREE = () -> gamepad2.b;
-        SUSAN_LIFT = () -> gamepad2.y;
+        SUSAN_ADJUST = () -> gamepad2.left_stick_x;
         SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
 
         //Hood Servo - using dpad for 5 positions

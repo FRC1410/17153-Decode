@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Util.Constants.*;
 
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class LazySusan {
     // me when i am motivationally challenged and my name is susan
-    private DcMotor spin_motor;
+    private DcMotorEx spin_motor;
 //    private ServoImplEx lift_servo;
     private PwmControl.PwmRange pwm_range;
 
@@ -33,7 +34,7 @@ public class LazySusan {
     private double lastMotorPower = 0;
 
     public void init(HardwareMap hardwareMap) {
-        this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR_ID);
+        this.spin_motor = hardwareMap.get(DcMotorEx.class, SUSAN_SPIN_MOTOR_ID);
 
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -177,7 +178,7 @@ public class LazySusan {
         return output;
     }
 
-    public void loop(boolean a, boolean b, boolean x, boolean rb) {
+    public void looppid(boolean a, boolean b, boolean x, boolean rb) {
             // Check if we're at the target position (not moving to a new position)
             double desiredSusanPos = this.getSusanPos(this.getDesired_susan_state());
             double currentPos = ((this.getActualSusanState()) * -1);
@@ -204,6 +205,9 @@ public class LazySusan {
             servoGoToState();
             susanGoToState();
 
+        }
+        public void adjust(double velocity) {
+            this.spin_motor.setVelocity(velocity);
         }
 
 

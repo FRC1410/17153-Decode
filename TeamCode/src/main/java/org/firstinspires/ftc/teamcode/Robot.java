@@ -71,11 +71,14 @@ public class Robot extends OpMode {
                 ControlScheme.INTAKE_OUT.get()
         );
 
-        this.lazySusan.loop(
+        this.lazySusan.looppid(
                 ControlScheme.SUSAN_MANUAL_ONE.get(),
                 ControlScheme.SUSAN_MANUAL_TWO.get(),
                 ControlScheme.SUSAN_MANUAL_THREE.get(),
                 ControlScheme.SUSAN_LIFT.get()
+        );
+        this.lazySusan.adjust(
+                ControlScheme.SUSAN_ADJUST.get()
         );
 
         this.hoodServo.loop(

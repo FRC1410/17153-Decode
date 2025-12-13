@@ -40,9 +40,6 @@ public class Shooter {
                 this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
                 break;
             case NEUTRAL:
-                this.shooterStatus = RobotStates.ShooterStates.HALF_POWER;
-                break;
-            case HALF_POWER:
                 this.shooterStatus = RobotStates.ShooterStates.FORWARD;
                 break;
         }

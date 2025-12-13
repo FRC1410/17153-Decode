@@ -21,8 +21,8 @@ public class AutoOne extends LinearOpMode {
         telemetry.addData("Auto started", opModeIsActive());
         telemetry.update();
 
-        drivetrain.drive(1, 0, 0);
-        sleep(100);
+        drivetrain.drive(-1, 0, 0);
+        sleep(800);
         drivetrain.drive(0, 0, 0);
     }
 }

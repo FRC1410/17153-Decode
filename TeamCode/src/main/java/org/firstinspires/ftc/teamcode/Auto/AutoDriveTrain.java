@@ -48,10 +48,12 @@ public class AutoDriveTrain {
 
         motorBackRight = hardwareMap.get(DcMotorEx.class, BACK_RIGHT_MOTOR_ID);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setDirection(REVERSE);
 
 
         motorBackLeft = hardwareMap.get(DcMotorEx.class, BACK_LEFT_MOTOR_ID);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setDirection(REVERSE);
 
 
 

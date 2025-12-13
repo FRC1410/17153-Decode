@@ -9,7 +9,7 @@ public class Tuning {
     public static double SUSAN_P = 0.8;
     public static double SUSAN_I = 0.0;
     public static double SUSAN_D = 0.004;
-    public static double SUSAN_SPIN_THRESHHOLD = 1;
+    public static double SUSAN_SPIN_THRESHHOLD = 0.5;
     public static double SUSAN_MIN_POWER = 0.08;
 
     //testing

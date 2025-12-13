@@ -31,38 +31,39 @@ public class Shooter {
         this.motorShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void cycle(Telemetry telemetry, double intake, double outtake) {
-        if(intake > outtake){
-            this.shooterStatus = RobotStates.ShooterStates.FORWARD;
+    public void cycle(Telemetry telemetry) {
+        switch (this.shooterStatus) {
+            case FORWARD:
+                this.shooterStatus = RobotStates.ShooterStates.BACKWARD;
+                break;
+            case BACKWARD:
+                this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
+                break;
+            case NEUTRAL:
+                this.shooterStatus = RobotStates.ShooterStates.HALF_POWER;
+                break;
+            case HALF_POWER:
+                this.shooterStatus = RobotStates.ShooterStates.FORWARD;
+                break;
         }
-        if(intake < outtake){
-            this.shooterStatus = RobotStates.ShooterStates.BACKWARD;
-        }
-        else{
-            this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
-        }
-//        switch (double intake, double outtake) {
-//            case( intake > outtake):
-//                break;
-//            case FORWARD:
-//                this.shooterStatus = RobotStates.ShooterStates.BACKWARD;
-//                break;
-//            case BACKWARD:
-//                this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
-//                break;
-//            case NEUTRAL:
-//                this.shooterStatus = RobotStates.ShooterStates.HALF_POWER;
-//                break;
-//            case HALF_POWER:
-//                this.shooterStatus = RobotStates.ShooterStates.FORWARD;
-//                break;
-        run(intake - outtake);
+        run(this.shooterStatus);
         telemetry.addData("Drive Mode:", this.shooterStatus);
         telemetry.addData("Shooter Power", this.motorShooter.getPower());
         telemetry.update();
     }
 
-    public void run(double val){
-        this.motorShooter.setPower(val);
+    public void run(RobotStates.ShooterStates shooterState){
+        switch (shooterState) {
+            case FORWARD:
+                this.motorShooter.setVelocity(1500);
+                break;
+            case BACKWARD:
+                this.motorShooter.setVelocity(-500);
+                break;
+            case NEUTRAL:
+                this.motorShooter.setVelocity(0);
+                break;
+
         }
+    }
 }

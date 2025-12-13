@@ -53,13 +53,12 @@ public class ControlScheme {
         SUSAN_MANUAL_TWO = () -> gamepad2.a;
         SUSAN_MANUAL_THREE = () -> gamepad2.b;
         SUSAN_ADJUST = () -> gamepad2.left_stick_x;
-        //SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
         SUSAN_LIFT = () -> gamepad2.y;
-        //SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
-        SHOOT = () -> gamepad2.right_trigger;
-        REVERSE = () -> gamepad2.left_trigger;
-        SUSAN_LIFT = () -> gamepad2.y; // Assign to Y button for susan lift
         SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+
+
+
+
 
         //Hood Servo - using dpad for 5 positions
         HOOD_POS_ONE = () -> gamepad2.dpad_left;

@@ -19,9 +19,13 @@ public class Tuning {
 //    public static double SUSAN_D = 0.0;
 
     //Hood Servo
-    public static double HOOD_P = 0.5;
+//    public static double HOOD_P = 0.5;
+//    public static double HOOD_I = 0.0;
+//    public static double HOOD_D = 0.01;
+
+    public static double HOOD_P = 0.0;
     public static double HOOD_I = 0.0;
-    public static double HOOD_D = 0.01;
+    public static double HOOD_D = 0.0;
     public static double HOOD_THRESHOLD = 0.02;
     public static double HOOD_MIN_POWER = 0.05;
 }

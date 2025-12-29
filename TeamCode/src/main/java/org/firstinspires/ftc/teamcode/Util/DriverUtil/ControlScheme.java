@@ -12,7 +12,7 @@ public class ControlScheme {
     public static Supplier<Boolean> DRIVE_SLOW_MODE;
 
     //Intake
-    public static Supplier<Float> INTAKE_IN;;
+    public static Supplier<Float> INTAKE_IN;
     public static Supplier<Float> INTAKE_OUT;
 
     //SUSAN
@@ -22,10 +22,11 @@ public class ControlScheme {
 
     public static Supplier<Float> SUSAN_ADJUST;
 
-    public static Supplier<Boolean> SUSAN_LIFT = () -> false; // Default to false to avoid null
+    public static Supplier<Boolean> SUSAN_LIFT = () -> false;
 
     //SHOOTER
     public static Supplier<Boolean> SHOOTER_CYCLE;
+    public static Supplier<Boolean> SHOOTER_REVERSE;
 
     //HOOD SERVO
     public static Supplier<Boolean> HOOD_POS_ONE;
@@ -49,25 +50,13 @@ public class ControlScheme {
     }
 
     public static void initOperator(Gamepad gamepad2) {
-        SUSAN_MANUAL_ONE = () -> gamepad2.x;
-        SUSAN_MANUAL_TWO = () -> gamepad2.a;
-        SUSAN_MANUAL_THREE = () -> gamepad2.b;
-        SUSAN_ADJUST = () -> gamepad2.left_stick_x;
-        SUSAN_LIFT = () -> gamepad2.y;
-        SHOOTER_CYCLE = () -> gamepad2.rightBumperWasPressed();
+        SHOOTER_CYCLE = () -> gamepad2.right_bumper;
+        SHOOTER_REVERSE = () -> gamepad2.left_bumper;
 
-
-
-
-
-        //Hood Servo - using dpad for 5 positions
         HOOD_POS_ONE = () -> gamepad2.dpad_left;
         HOOD_POS_TWO = () -> gamepad2.dpad_down;
         HOOD_POS_THREE = () -> gamepad2.dpad_right;
         HOOD_POS_FOUR = () -> gamepad2.dpad_up;
         HOOD_POS_FIVE = () -> gamepad2.right_stick_button;
-
-        //Continuous Servo
-        CONTINUOUS_SERVO_TOGGLE = () -> gamepad2.leftBumperWasPressed();
     }
 }

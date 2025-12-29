@@ -71,12 +71,12 @@ public class Robot extends OpMode {
         this.shooter.update();
 
         if (this.shooter.isAtTargetRPM() && this.shooter.shooterStatus == RobotStates.ShooterStates.FORWARD) {
+            this.intake.run(1, 0);
+        } else {
             this.intake.run(
                     ControlScheme.INTAKE_IN.get(),
                     ControlScheme.INTAKE_OUT.get()
             );
-        } else {
-            this.intake.run(0, 0);
         }
 
         this.hoodServo.loop(

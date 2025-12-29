@@ -22,4 +22,12 @@ public class RobotStates {
         BACKWARD,
         HALF_POWER
     }
+
+    public enum HoodPosition {
+        POS_ONE,
+        POS_TWO,
+        POS_THREE,
+        POS_FOUR,
+        POS_FIVE
+    }
 }

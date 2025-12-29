@@ -232,9 +232,12 @@ public class Auto extends OpMode {
 
     public void runPath() {
         switch (pathState) {
+            // you can consider each case in this to be 1 whole step in the auto sequence.
             case 0: {
+                // wait for robot to not be running a path.
                 if (!follower.isBusy()){
                     follower.followPath(FromStartToShootingPathChain);
+                    // start next auto step
                     pathState++;
                 }
                 break;
@@ -246,7 +249,6 @@ public class Auto extends OpMode {
                     // [insert subsystem method here]
                     //follower.resumePathFollowing();
                     // make sure the function gives enough time for it to startup
-
                     // here since we are at the shooting position, we want to shoot the balls
                     // shoot the balls
                     follower.followPath(FromShootingToLastArtifactsPathCain, false);
@@ -335,7 +337,9 @@ public class Auto extends OpMode {
                 break;
             case 12: {
                 if (!follower.isBusy()){
+                    // setting this variable to -1 will cause the path to stop running because the switch case has no code to run for this case.
                     pathState = -1;
+                    // pause pedro (for safety)
                     follower.pausePathFollowing();
                 }
                 break;

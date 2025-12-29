@@ -25,10 +25,17 @@ public class Constants {
 
     //Susan
     public static final double SUSAN_POS_1 = 0;
-    public static final double SUSAN_POS_2 = 3;
-    public static final double SUSAN_POS_3 = 6;
+    public static final double SUSAN_POS_2 = 4860;
+    public static final double SUSAN_POS_3 = 2658;
     public static final double SUSAN_LIFT_POS_UP = 0.4;
     public static final double SUSAN_LIFT_POS_DOWN = 1;
+
+    //Hood Servo Positions
+    public static final double HOOD_POS_1 = 0.0;
+    public static final double HOOD_POS_2 = 0.1;
+    public static final double HOOD_POS_3 = 0.2;
+    public static final double HOOD_POS_4 = 0.3;
+    public static final double HOOD_POS_5 = 0.4;
 
     //ball color ranges
     public static int PURPLE_LOWER_RED = 115;

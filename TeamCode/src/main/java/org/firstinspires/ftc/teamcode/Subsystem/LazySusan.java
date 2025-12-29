@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 import static org.firstinspires.ftc.teamcode.Util.IDs.*;
 import static org.firstinspires.ftc.teamcode.Util.Tuning.*;
 import static org.firstinspires.ftc.teamcode.Util.Constants.*;
+import static org.firstinspires.ftc.teamcode.Util.Tuning.SUSAN_ADJUST_SPEED;
 
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -17,10 +19,11 @@ import org.firstinspires.ftc.teamcode.Util.PIDController;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class LazySusan {
-    // me when i am motivationally challenged and
-    private DcMotor spin_motor;
+    // me when i am motivationally challenged and my name is susan
+    private DcMotorEx spin_motor;
     //    private ServoImplEx lift_servo;
     private PwmControl.PwmRange pwm_range;
+
 
     private double servo_pos;
     private double susan_pos;
@@ -32,12 +35,12 @@ public class LazySusan {
     private double lastMotorPower = 0;
 
     public void init(HardwareMap hardwareMap) {
-        this.spin_motor = hardwareMap.get(DcMotor.class, SUSAN_SPIN_MOTOR_ID);
+        this.spin_motor = hardwareMap.get(DcMotorEx.class, SUSAN_SPIN_MOTOR_ID);
 
         this.spin_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.spin_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.spin_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.spin_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.spin_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        this.lift_servo.setDirection(Servo.Direction.FORWARD);
 
@@ -147,26 +150,20 @@ public class LazySusan {
     public double susanGoToState() {
         RobotStates.SusanSpin desiredSpinState = this.getDesired_susan_state();
         double desiredSusanPos = this.getSusanPos(desiredSpinState);
-        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double currentPos = ((this.getActualSusanState()) * -1);
         double error = desiredSusanPos - currentPos;
 
         if(Math.abs(error) <= SUSAN_SPIN_THRESHHOLD) {
             this.spin_motor.setPower(0);
             this.lastMotorPower = 0;
+            this.susan_PID_controller.reset();
             return 0;
         }
         double output = this.susan_PID_controller.calculate(desiredSusanPos, currentPos);
 
         output = Math.max(-0.5, Math.min(0.5, output));
 
-        boolean directionChange = (lastMotorPower > 0.01 && output < -0.01) || (lastMotorPower < -0.01 && output > 0.01);
-
-        if (directionChange) {
-            this.spin_motor.setPower(0);
-            this.lastMotorPower = 0;
-            return 0;
-        }
-
+        // Apply minimum power to overcome static friction
         if (Math.abs(output) < SUSAN_MIN_POWER && Math.abs(output) > 0.001) {
             if (output > 0) {
                 output = SUSAN_MIN_POWER;
@@ -182,8 +179,15 @@ public class LazySusan {
         return output;
     }
 
-    public void loop(boolean a, boolean b, boolean x, boolean rb) {
-        if (this.spin_motor.getPower() == 0) {
+    public void looppid(boolean a, boolean b, boolean x, boolean rb) {
+        // Check if we're at the target position (not moving to a new position)
+        double desiredSusanPos = this.getSusanPos(this.getDesired_susan_state());
+        double currentPos = ((this.getActualSusanState()) * -1);
+        double error = Math.abs(desiredSusanPos - currentPos);
+        boolean atTarget = error <= SUSAN_SPIN_THRESHHOLD;
+
+        // Only accept new position inputs if we've reached the target
+        if (atTarget) {
             if (a) {
                 setDesired_susan_state(RobotStates.SusanSpin.ONE);
             } else if (b) {
@@ -203,11 +207,19 @@ public class LazySusan {
         susanGoToState();
 
     }
+    public void adjust(double input) {
+        // Only apply manual adjustment if input is significant
+        if (Math.abs(input) > 0.1) {
+            // Scale input by adjustment speed constant
+            double adjustPower = input * SUSAN_ADJUST_SPEED;
+            this.spin_motor.setPower(adjustPower);
+        }
+    }
 
 
     public void susanTelem(Telemetry telemetry) {
         double targetPos = getSusanPos(this.desired_susan_state);
-        double currentPos = ((this.getActualSusanState() / 1365) * -1);
+        double currentPos = ((this.getActualSusanState()) * -1);
         double error = targetPos - currentPos;
         double calculatedOutput = error * SUSAN_P;
 
@@ -215,9 +227,9 @@ public class LazySusan {
         telemetry.addData("Susan Target Pos", targetPos);
         telemetry.addData("Susan Current Pos", currentPos);
         telemetry.addData("Susan Error (T-C)", error);
-        telemetry.addData("Susan Calculated Output", String.format("%.3f", calculatedOutput));
-        telemetry.addData("Susan Motor Power", String.format("%.3f", this.spin_motor.getPower()));
-        telemetry.addData("Susan Last Power", String.format("%.3f", this.lastMotorPower));
-        telemetry.addData("Susan Servo State", this.getCurrent_servo_state().toString());
+        telemetry.addData("Susan Calculated Output", String.format("%.4f", calculatedOutput));
+        telemetry.addData("Susan Motor Power", String.format("%.4f", this.spin_motor.getPower()));
+        telemetry.addData("Susan Last Power", String.format("%.4f", this.lastMotorPower));
+        telemetry.addData("Susan At Threshold?", Math.abs(error) <= SUSAN_SPIN_THRESHHOLD);
     }
 }

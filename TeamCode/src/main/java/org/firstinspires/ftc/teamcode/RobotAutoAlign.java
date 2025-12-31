@@ -8,6 +8,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystem.ContinuousServo;
 import org.firstinspires.ftc.teamcode.Subsystem.HoodServo;
@@ -21,12 +22,17 @@ import org.firstinspires.ftc.teamcode.Util.Toggle;
 
 @TeleOp(name="Robot TeleOp w AutoAlign")
 public class RobotAutoAlign extends OpMode {
+    // endtime variables
+    private int totalMatchTime = 120;
+    private int lastSecondsForEndPointAutoAlign = 10;
+    private ElapsedTime matchTime = new ElapsedTime();
     // pedro things
     private Follower follower;
     private boolean autoAligning = false;
     private Pose startPose;
     private Pose[] firingPoses = new Pose[3];
     private double[] firingServoPoses = new double[]{0,0,0};
+    private Pose endingZonePose;
     private String ALIENCE = "BLUE";
     private String startingLocation = "AT GOAL";
     // normal things
@@ -64,6 +70,8 @@ public class RobotAutoAlign extends OpMode {
         follower.update();
         driverRumbler.startMatchTimer();
         operatorRumbler.startMatchTimer();
+        // start match
+        matchTime.reset();
     }
 
     private void setupPoses(){
@@ -77,6 +85,9 @@ public class RobotAutoAlign extends OpMode {
                 firingPoses[1] = new Pose(66, 76, Math.toRadians(135));
                 // from small zone
                 firingPoses[2] = new Pose(60, 10, Math.toRadians(113));
+
+                // ending pose
+                endingZonePose = new Pose(105.4,33.3);
             } else {
                 startPose = new Pose(120, 126, Math.toRadians(217));
 
@@ -86,6 +97,9 @@ public class RobotAutoAlign extends OpMode {
                 firingPoses[1] = new Pose(78.5, 77.5, Math.toRadians(48));
                 // from small zone
                 firingPoses[2] = new Pose(85, 12, Math.toRadians(69));
+
+                // ending pose
+                endingZonePose = new Pose(38.7,33.3);
             }
         } else {
             if (ALIENCE.equals("BLUE")){
@@ -97,6 +111,9 @@ public class RobotAutoAlign extends OpMode {
                 firingPoses[1] = new Pose(66, 76, Math.toRadians(135));
                 // from small zone
                 firingPoses[2] = new Pose(60, 10, Math.toRadians(113));
+
+                // ending pose
+                endingZonePose = new Pose(105.4,33.3);
             } else {
                 startPose = new Pose(88, 8, Math.toRadians(90));
 
@@ -106,6 +123,9 @@ public class RobotAutoAlign extends OpMode {
                 firingPoses[1] = new Pose(78.5, 77.5, Math.toRadians(48));
                 // from small zone
                 firingPoses[2] = new Pose(85, 12, Math.toRadians(69));
+
+                // ending pose
+                endingZonePose = new Pose(38.7,33.3);
             }
         }
     }
@@ -136,41 +156,73 @@ public class RobotAutoAlign extends OpMode {
         }
         return closestFiringServoPos;
     }
+    public double getNearestEndAngle(Pose currentPose){
+        double botAngle = Math.toDegrees(currentPose.getHeading());
+        double[] angles = new double[]{0,90,180,270};
+        double bestDelta = Double.MAX_VALUE;
+        double nearestAngle = 0;
+        for (int i = 1; i < angles.length; i++){
+            double angleDelta = Math.abs(angles[i]-botAngle);
+            if (angleDelta < bestDelta){
+                bestDelta = angleDelta;
+                nearestAngle = angles[1];
+            }
+        }
+        return nearestAngle;
+    }
 
     public void doTelemetry() {
         // pedro
+        telemetry.addData("Robot Field Pos", follower.getPose().toString());
+        telemetry.addData("Auto Aligning",autoAligning);
         // normal
         this.hoodServo.hoodTelem(telemetry);
         this.shooter.addTelemetry(telemetry);
         telemetry.update();
     }
+
     @Override
     public void loop() {
         // do the autoalign things
+        autoAligning = (!autoAligning && gamepad1.y && follower.isBusy());
         if (autoAligning){
+            follower.setStartingPose(follower.getPose());
             if (!follower.isBusy()) {
-                // get current pose and find the nearest firing position
-                Pose currentPose = follower.getPose();
-                // get and set servo
-                double servoVal = getNearestPosesServoVal(currentPose);
-                hoodServo.RAWloop(servoVal);
-                // get fire pose
-                Pose firingPose = getNearestFirePose(currentPose);
-                // create path
-                PathChain path = follower.pathBuilder()
-                        .addPath(new BezierLine(currentPose, firingPose))
-                        .setLinearHeadingInterpolation(currentPose.getHeading(), firingPose.getHeading())
-                        .build();
-                // start running path
-                follower.followPath(path, true);
-                // set back to normal teleop
-                autoAligning = false;
+                if (matchTime.seconds() <= (totalMatchTime-lastSecondsForEndPointAutoAlign)){
+                    // find the 'best fit' angle for the robot
+                    double targetBotAngle = Math.toRadians(getNearestEndAngle(follower.getPose()));
+                    // make ending pose and path
+                    Pose endPose = new Pose(endingZonePose.getX(),endingZonePose.getY(), targetBotAngle);
+                    PathChain path = follower.pathBuilder()
+                            .addPath(new BezierLine(follower.getPose(), endPose))
+                            .setLinearHeadingInterpolation(follower.getHeading(), endPose.getHeading())
+                            .build();
+                    // move to there
+                    follower.followPath(path, true);
+                } else {
+                    // get current pose and find the nearest firing position
+                    Pose currentPose = follower.getPose();
+                    // get and set servo
+                    double servoVal = getNearestPosesServoVal(currentPose);
+                    hoodServo.RAWloop(servoVal);
+                    // get fire pose
+                    Pose firingPose = getNearestFirePose(currentPose);
+                    // create path
+                    PathChain path = follower.pathBuilder()
+                            .addPath(new BezierLine(currentPose, firingPose))
+                            .setLinearHeadingInterpolation(currentPose.getHeading(), firingPose.getHeading())
+                            .build();
+                    // start running path
+                    follower.followPath(path, true);
+                }
             }
+            // set back to normal teleop
+            autoAligning = false;
         } else {
             if (!follower.isBusy()) {
-                // move the bot
+                // move the bot (pedro takes the inputs funny, DO NOT TOUCH THIS)
                 follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
-                // update localiser
+                // update localizer
                 follower.update();
             }
         }

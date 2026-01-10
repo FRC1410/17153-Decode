@@ -18,8 +18,7 @@ public class IDs {
     public static final String CONTROL_HUB_IMU = "IMU";
 
     public static final String CONTROL_HUB = "Control hub";
-    public static final String CONTINUOUS_SERVO_ID = "";
-    public static final String SUSAN_SPIN_MOTOR_ID = "";
+    public static final String CONTINUOUS_SERVO_ID = "" ;
 
 
     //Hood Servo

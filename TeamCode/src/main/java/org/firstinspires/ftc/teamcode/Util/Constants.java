@@ -23,7 +23,7 @@ public class Constants {
     public static RevHubOrientationOnRobot HUB_ORIENTATION =
             new RevHubOrientationOnRobot(LOGO_FACING_DIRECTION, USB_FACING_DIRECTION);
 
-    //Susan
+    //Susansd
     public static final double SUSAN_POS_1 = 0;
     public static final double SUSAN_POS_2 = 4860;
     public static final double SUSAN_POS_3 = 2658;
@@ -31,11 +31,11 @@ public class Constants {
     public static final double SUSAN_LIFT_POS_DOWN = 1;
 
     //Hood Servo Positions
-    public static final double HOOD_POS_1 = 0.0;
-    public static final double HOOD_POS_2 = 0.1;
-    public static final double HOOD_POS_3 = 0.2;
-    public static final double HOOD_POS_4 = 0.3;
-    public static final double HOOD_POS_5 = 0.4;
+    public static final double HOOD_POS_1 = 0.0; // close fire angle
+    public static final double HOOD_POS_2 = 0.1; // long fire angle
+    public static final double HOOD_POS_3 = 0.2; // small area fire angle
+    public static final double HOOD_POS_4 = 0.3; // loading angle
+    public static final double HOOD_POS_5 = 0.4; // idle angle (average of all angles for minimal distance deltas)
 
     //ball color ranges
     public static int PURPLE_LOWER_RED = 115;

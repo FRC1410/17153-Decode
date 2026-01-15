@@ -128,7 +128,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Added `filterByCriteria()` and `sortByCriteria()` to ColorBlobLocatorProcessor.Util.
   * The filter and sort methods for specific criteria have been deprecated.
   * The updated sample program `ConceptVisionColorLocator` provides more details on the new syntax.
-* Add Help menu item and Help page that is available when connected to the robot controller via Program and Manage. The Help page has links to team resources such as [FTC Documentation](https://ftc-docs.firstinspires.org/), [FTC Discussion Forums](https://ftc-community.firstinspires.org), [Java FTC SDK API Documentation](https://javadoc.io/doc/org.firstinspires.ftc), and [FTC Game Information](https://ftc.game/).
+* org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.Add Help menu item and Help page that is available when connected to the robot controller via Program and Manage. The Help page has links to team resources such as [FTC Documentation](https://ftc-docs.firstinspires.org/), [FTC Discussion Forums](https://ftc-community.firstinspires.org), [Java FTC SDK API Documentation](https://javadoc.io/doc/org.firstinspires.ftc), and [FTC Game Information](https://ftc.game/).
 * Self inspection changes:
   * List both the Driver Station Name and Robot Controller Name when inspecting the Driver Station.
   * Report if the team number portion of the device names do not match.
@@ -144,7 +144,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 ## Version 10.2 (20250121-174034)
 
 ### Enhancements
-* Add ability to upload the pipeline for Limelight3A which allows teams to version control their limelight pipelines.
+* org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.Add ability to upload the pipeline for Limelight3A which allows teams to version control their limelight pipelines.
 
 
 ### Bug Fixes
@@ -281,7 +281,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
   * Adds option to control whether the stream is automatically started following a `.build()` call on a VisionPortal Builder
   * Adds option to control whether the vision processing statistics overlay is rendered or not
   * VisionPortals now implement the `CameraStreamSource` interface, allowing multiportal users to select which portal is routed to the DS in INIT by calling CameraStreamServer.getInstance().setSource(visionPortal). Can be selected via gamepad, between Camera Stream sessions.
-  * Add option to `AprilTagProcessor` to suppress calibration warnings
+  * org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.Add option to `AprilTagProcessor` to suppress calibration warnings
   * Improves camera calibration warnings
     * If a calibration is scaled, the resolution it was scaled from will be listed
     * If calibrations exist with the wrong aspect ratio, the calibrated resolutions will be listed
@@ -880,7 +880,7 @@ Version 5.5 requires Android Studio 4.0 or later.
     * Update targetSdkVersion and compileSdkVersion to 28
     * Update Android Studio's Android plugin to latest
     * Fix reported build timestamp in 'About' screen
-* Add sample illustrating manual webcam use: ConceptWebcam
+* org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.Add sample illustrating manual webcam use: ConceptWebcam
 
 
 ### Bug fixes

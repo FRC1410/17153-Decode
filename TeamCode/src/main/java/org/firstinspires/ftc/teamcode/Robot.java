@@ -27,6 +27,7 @@ public class Robot extends OpMode {
 //    private final ContinuousServo continuousServo = new ContinuousServo();
 
     private final Toggle drivetrainToggle = new Toggle();
+    private final Toggle shooterToggle = new Toggle();
 
     public void init() {
         ControlScheme.initDriver(gamepad1);
@@ -58,7 +59,7 @@ public class Robot extends OpMode {
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
 
-        if (ControlScheme.SHOOTER_CYCLE.get()) {
+        if (shooterToggle.detectPress(ControlScheme.SHOOTER_CYCLE.get())) {
             this.shooter.cycle(telemetry);
         }
 
@@ -90,6 +91,6 @@ public class Robot extends OpMode {
         this.driverRumbler.halftimeRumble(gamepad1);
         this.operatorRumbler.halftimeRumble(gamepad2);
 
-        doTelemetry();
+//        doTelemetry();
     }
 }

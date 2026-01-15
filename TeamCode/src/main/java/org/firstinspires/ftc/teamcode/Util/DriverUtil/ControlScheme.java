@@ -39,14 +39,13 @@ public class ControlScheme {
     public static Supplier<Boolean> CONTINUOUS_SERVO_TOGGLE;
     public static Supplier<Float> SHOOT;
     public static Supplier<Float> REVERSE;
-
     public static void initDriver(Gamepad gamepad1) {
         DRIVE_STRAFE = () -> gamepad1.left_stick_x;
         DRIVE_FB = () -> gamepad1.left_stick_y;
         DRIVE_ROTATE = () -> gamepad1.right_stick_x;
         DRIVE_SLOW_MODE = () -> gamepad1.a;
-        INTAKE_IN = () -> gamepad1.left_trigger;
-        INTAKE_OUT = () -> gamepad1.right_trigger;
+        INTAKE_IN = () -> gamepad1.right_trigger;
+        INTAKE_OUT = () -> gamepad1.left_trigger;
     }
 
     public static void initOperator(Gamepad gamepad2) {

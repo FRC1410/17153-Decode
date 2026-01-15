@@ -204,3 +204,5 @@ The rest of this program is a systems test for the language interpreter
 
 
 def_path Main start
+    output2telem "DYN Language System Test Starting!"
+end

@@ -698,6 +698,32 @@ public class DynVar {
         }
     }
 
+    /**
+     * Format for DYN telemetry output with shorthand type.
+     * Example: "NUM varName 3.0"
+     */
+    public String toTelemetryString() {
+        String id = ID == null ? "" : ID;
+        switch (type) {
+            case NUMBER:
+                return "NUM " + id + " " + (double) value;
+            case BOOLEAN:
+                return "BOOL " + id + " " + (boolean) value;
+            case STRING:
+                return "STR " + id + " " + value;
+            case LIST:
+                return "LIST " + id + " " + toString();
+            case JSON:
+                return "JSON " + id + " " + toString();
+            case FIELD_CORD:
+                return "FC " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1];
+            case FIELD_POS:
+                return "FP " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1] + " " + ((double[]) value)[2];
+            default:
+                return toString();
+        }
+    }
+
     // custom funciton interfaces
     public <T> T toJava(){
         return (T)value;

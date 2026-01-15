@@ -38,7 +38,7 @@ public class OutputToTelem implements DynCommand {
             output = messageOrVarId;
         } else {
             DynVar var = getVar.apply(messageOrVarId);
-            output = var != null ? var.toString() : messageOrVarId;
+            output = var != null ? var.toTelemetryString() : messageOrVarId;
         }
 
         if (telemOutput != null) {

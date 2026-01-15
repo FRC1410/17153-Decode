@@ -36,6 +36,7 @@ public class DynProcessor {
     private DynTokenizer tokeniser;
     private Token[] tokens;
     private int currentIndex = 0;
+    private int literalCounter = 0;
 
     // Runtime components
     private DynVarBuffer varBuffer;
@@ -535,8 +536,8 @@ public class DynProcessor {
      */
     private DynCommand parseBinaryMathOp(BinaryMathFactory factory) {
         advance(); // Skip operation token
-        String val1 = expectIdentifierOrLiteral();
-        String val2 = expectIdentifierOrLiteral();
+        String val1 = ensureNumberVar(expectIdentifierOrLiteral());
+        String val2 = ensureNumberVar(expectIdentifierOrLiteral());
 
         if (check(TokenType.TO)) {
             advance();
@@ -553,7 +554,7 @@ public class DynProcessor {
      */
     private DynCommand parseUnaryMathOp(UnaryMathFactory factory) {
         advance(); // Skip operation token
-        String val = expectIdentifierOrLiteral();
+        String val = ensureNumberVar(expectIdentifierOrLiteral());
 
         if (check(TokenType.TO)) {
             advance();
@@ -573,6 +574,24 @@ public class DynProcessor {
             return current.getValue();
         }
         throw new DynAutoStepException("Expected identifier or number at line " + current.getLine());
+    }
+
+    private String ensureNumberVar(String tokenValue) {
+        if (tokenValue == null) {
+            return null;
+        }
+        try {
+            double literal = Double.parseDouble(tokenValue);
+            String constId = "__lit_" + literalCounter++;
+            try {
+                varBuffer.setVar(constId, new org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar("Number", constId, literal));
+            } catch (Exception e) {
+                throw new DynAutoStepException("Failed to create literal var for value: " + tokenValue);
+            }
+            return constId;
+        } catch (NumberFormatException e) {
+            return tokenValue;
+        }
     }
 
     // ==================== Movement Commands ====================

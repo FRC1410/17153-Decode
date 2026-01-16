@@ -45,8 +45,9 @@ public class Robot extends OpMode {
     }
 
     public void doTelemetry() {
-        this.hoodServo.hoodTelem(telemetry);
-        this.shooter.addTelemetry(telemetry);
+//        this.hoodServo.hoodTelem(telemetry);
+//        this.shooter.addTelemetry(telemetry);
+        this.drivetrain.drivetrainData(telemetry);
         telemetry.update();
     }
 
@@ -88,8 +89,8 @@ public class Robot extends OpMode {
                 ControlScheme.HOOD_POS_FIVE.get()
         );
 
-        this.driverRumbler.halftimeRumble(gamepad1);
-        this.operatorRumbler.halftimeRumble(gamepad2);
+//        this.driverRumbler.halftimeRumble(gamepad1);
+//        this.operatorRumbler.halftimeRumble(gamepad2);
 
 //        doTelemetry();
     }

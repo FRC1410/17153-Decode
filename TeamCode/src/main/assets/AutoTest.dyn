@@ -1,0 +1,156 @@
+// global esc variables (cus all variables are global)
+String RED "RED"
+String BLUE "BLUE"
+String AT_GOAL "AT_GOAL"
+String AT_FAR "AT_FAR"
+String AT_SQUARE "AT_SQUARE"
+
+
+def_path RED_AT_GOAL start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup0End (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup1End (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    FieldPos Pickup2End (0,0,0)
+    // fire points
+    FieldPos Fire0 (118,127,37) // close
+    FieldPos Fire1 (83,83,47)   // middle
+    FieldPos Fire2 (84,12,70)   // far
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldCoord ControlPoint1 (103,11) // from Square to pickup0
+    FieldCoord ControlPoint2 (67.5,697) // from classifier to fire0/fire1
+    FieldPos classifierPoint (0,0,0)
+end
+def_path RED_AT_FAR start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    // fire points
+    FieldPos Fire0 (0,0,0)
+    FieldPos Fire1 (0,0,0)
+    FieldPos Fire2 (0,0,0)
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldPos ConrtolPoint1 (0,0,0)
+    FieldPos ConrtolPoint2 (0,0,0)
+    FieldPos classifierPoint (0,0,0)
+end
+def_path RED_AT_SQUARE start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    // fire points
+    FieldPos Fire0 (0,0,0)
+    FieldPos Fire1 (0,0,0)
+    FieldPos Fire2 (0,0,0)
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldPos ConrtolPoint1 (0,0,0)
+    FieldPos ConrtolPoint2 (0,0,0)
+    FieldPos classifierPoint (0,0,0)
+end
+
+def_path BLUE_AT_GOAL start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    // fire points
+    FieldPos Fire0 (24,124,144) // close
+    FieldPos Fire1 (66,80,135)  // middle
+    FieldPos Fire2 (61,12,115)  // far
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldPos ConrtolPoint1 (0,0,0)
+    FieldPos ConrtolPoint2 (0,0,0)
+    FieldPos classifierPoint (0,0,0)
+end
+def_path BLUE_AT_FAR start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    // fire points
+    FieldPos Fire0 (24,124,144) // close
+    FieldPos Fire1 (66,80,135)  // middle
+    FieldPos Fire2 (61,12,115)  // far
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldPos ConrtolPoint1 (0,0,0)
+    FieldPos ConrtolPoint2 (0,0,0)
+    FieldPos classifierPoint (0,0,0)
+end
+def_path BLUE_AT_SQUARE start
+    // define points
+    // pickup points
+    FieldPos Pickup0 (0,0,0)
+    FieldPos Pickup1 (0,0,0)
+    FieldPos Pickup2 (0,0,0)
+    // fire points
+    FieldPos Fire0 (24,124,144) // close
+    FieldPos Fire1 (66,80,135)  // middle
+    FieldPos Fire2 (61,12,115)  // far
+    // start/end points
+    FieldPos StartPos (0,0,0)
+    FieldPos EndPos (0,0,0)
+    // extra points
+    FieldPos ConrtolPoint1 (0,0,0)
+    FieldPos ConrtolPoint2 (0,0,0)
+    FieldPos classifierPoint (0,0,0)
+end
+
+def_path Main start
+    // define variables
+    String Alience "RED" // RED or BLUE
+    String Start_Pos "AT_GOAL" //either AT_GOAL or AT_FAR
+    // telemetry
+    output2telem Alience
+    output2telem Start_Pos
+    output2telem badVar
+    // define the essential auto points
+    if (Alience == RED) start
+        if (Start_Pos == AT_GOAL) start
+            RUN RED_AT_GOAL
+        end
+        if (Start_Pos == AT_FAR) start
+            RUN RED_AT_FAR
+        end
+        if (Start_Pos == AT_SQUARE) start
+            RUN RED_AT_SQUARE
+        end
+    end
+    if (Alience == BLUE) start
+        if (Start_Pos == AT_GOAL) start
+            RUN BLUE_AT_GOAL
+        end
+        if (Start_Pos == AT_FAR) start
+            RUN BLUE_AT_FAR
+        end
+        if (Start_Pos == AT_SQUARE) start
+            RUN BLUE_AT_SQUARE
+        end
+    end
+    // run the auto sequence
+end
+
+autoPath Main

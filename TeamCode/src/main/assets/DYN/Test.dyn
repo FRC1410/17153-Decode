@@ -1,0 +1,36 @@
+def_path goGoGadget start
+    Num startX 0
+    Num startY 0
+    Num startHeading 0
+    Num endX 12
+    Num endY 1
+    Num endHeading 0
+    String doneMSG "Done!"
+    Bool letsGo true
+    for 5 as kraken start
+        SUB endX kraken
+    end
+
+    while (endHeading < 90) start
+        Num one 0
+        SIN 0 to one
+        COS one to one
+        ADD one to endHeading
+    end
+end
+
+def_path test start
+    output2telem "Test Started"
+    RUN goGoGadget
+    FieldPos startingPos (startX, startY, startHeading)
+    FieldPos endingPos (endX, endY, startHeading)
+    PathStartPosition startingPos
+    followBezier (startingPos, endingPos)
+    if (letsGo) start
+        goTo (endingPos)
+        turnTo (180, 30)
+        output2telem doneMSG
+    end
+end
+
+autoPath test

@@ -7,7 +7,7 @@ robot controller App. This module is currently empty (a clean slate) but the
 process for adding OpModes is straightforward.
 
 ## Creating your own OpModes
- 
+
 The easiest way to create your own OpMode is to copy a Sample OpMode and make it your own.
 
 Sample opmodes exist in the FtcRobotController module.
@@ -126,6 +126,6 @@ Note: Some names start with "Team" and others start with "team".  This is intent
     to be
          package="org.firstinspires.ftc.team0417"
 
-5)  Add:    include ':Team0417' to the "/settings.gradle" file.
+5)  org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.Add:    include ':Team0417' to the "/settings.gradle" file.
     
 6)  Open up Android Studios and clean out any old files by using the menu to "Build/Clean Project""

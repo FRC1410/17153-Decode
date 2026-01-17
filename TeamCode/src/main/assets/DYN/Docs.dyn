@@ -1,0 +1,237 @@
+//this document assumes that you know basic python, lua, and java syntax and variables to a minimal extent.
+
+// this programming lang has the following groups of commands
+// Basic variables, and ones for FTC autos.
+// Mathematical operations
+// FTC movement commands
+// Starting/Ending declarations
+// loop declarators
+// auto function declarators
+
+'''
+NOTES
+    Functions and definitions with commas need to have a space after each comma, like so:
+        List lis [2, 4, w, 4, s, 6, 7]
+
+VARIABLE DEFINITION/CREATION CREATION:
+    FieldCoord:
+        Syntax:
+            FieldCoord name (6, 7)
+        Usage:
+            'name' is the name given to the variable
+            and (x,y) is the defined position when making the variable
+            if the name is alredy defined, it will be updated to the new given value.
+    FieldPos:
+        Syntax:
+            FieldPos name (6, 7, 9)
+        Usage:
+            'name' is the name of the variable
+            x and y are the coordinates of the position.
+            and h is the heading where 0 or 360 is facing towards the obelisk
+    Num:
+        Syntax:
+            Num name value
+        usage:
+            name is the name of the variable.
+            the value follows the same rules as a java double.
+    Bool:
+        Syntax:
+            Bool name true/false
+        Usage:
+            how do you not know what this is. its either true or false.
+            how much simpler could it be?
+    String:
+        Syntax:
+            String "tee hee"
+        Usage:
+            anything between the the DOUBLE QUOTES will be part of the strings contents.
+            if any variable is placed in here
+    List:
+        Syntax:
+            List name ["6", 7, ... [6,9]]
+        Usage:
+            may contain any assortment of different variables.
+            may be as long as you want.
+            has the functions: .get(index), .insert(index, data), .append(data) and .remove(index)
+    Json:
+        Syntax:
+            Json name {"6":7, 6:"7", six:seven, ...}
+        Usage:
+            as said many times before, the name is the name of the variable.
+            works just like normal json. to get a value with an id use the .id(id) method to
+MATH OPERATIONS:
+    ADD:
+        Syntax:
+            ADD val1 val2 to var
+            ADD val1 val2        // adds together and sets val1 to the sum, if val1 is a raw number, then set it to val2 instead, if both are raw numbers then if there is no target output, throw an error
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    SUB:
+        Syntax:
+            SUB val1 val2 to var
+            SUB val1 val2        // behaves the same as the ADD function
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    MUX:
+        Syntax:
+            MUX val1 val2 to var
+            MUX val1 val2        // behaves the same as ADD
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    DIV:
+        Syntax:
+            DIV val1 val2 to var
+            DIV val1 val2        // behaves the same as ADD
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    POW:
+        Syntax:
+            POW val1 val2 to var
+            POW val1 val2        // behaves the same as ADD
+        Usage:
+            var is where the calculation is outputed
+            val1 and val2 are the inputs to the operation.
+    SQR:
+        Syntax:
+            SQR val to var
+            SQR val         // sets val to the resut of the calculation, if val is a raw number, and there is no output variable, throw a error.
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    SIN:
+        Syntax:
+            SIN val to var
+            SIN val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invSIN:
+        Syntax:
+            invSIN val to var
+            invSIN val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    COS:
+        Syntax:
+            COS val to var
+            COS val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invCOS:
+        Syntax:
+            invCOS val to var
+            invCOS val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    TAN:
+        Syntax:
+            TAN val to var
+            TAN val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+    invTAN:
+        Syntax:
+            invTAN val to var
+            invTAN val        // behaves the same as SQR
+        Usage:
+            val is the inputed value
+            var is where the ouput goes.
+BASIC MOVEMENT COMMANDS:
+    turnTo:
+        syntax:
+            turnTo(headingInDegree, deg/s)
+        args:
+            headingInDegree:
+                this is the heading angle that we want to end with after the
+            deg/s:
+                this argument defines how fast to turn th robot in degrees per second
+    goTo:
+        syntax:
+            goTo(field coordinate/position)
+        args:
+            field coordinate/position:
+                this argument tells the auto to go to the given point in a straight line
+    followBezier:
+        syntax:
+            followBezier (midPose/Cord... ,endPos)
+        args:
+            midPos/Cord:
+                these args define all of the weight points in the bezier curve from start to finish.
+            endPos:
+                this defines where the bot should end after the bezier curve.
+STARTING DECLARATIONS:
+    PathStartPosition:
+        Syntax:
+            PathStartPosition = pos
+        Usage:
+            pos = a position on the field, this defines where the robot starts in the auto sequence.
+            must be the first command in an auto function
+ENDING DECLARATIONS:
+    autoPath:
+        Syntax:
+            autoPath pathName
+        Usage:
+            pathName is the name of the path function that will be ran when this config is used
+LOOPS:
+    while:
+        syntax:
+            while Bool Wstart ... Wend
+        usage:
+            the code in the while loop will be ran until the given Bool becomes false
+    for:
+        syntax:
+            for number/list as value start ... end
+        Usage:
+            the number MUST be a whole number with no decimals, and the value will be set to the current loop count.
+            the list will be processed element by element and the value will be set to the current element
+PATH DECLARATORS:
+    def_path:
+        syntax:
+            def_path main start ... end
+        Usage:
+            main = the name of the function, will throw a fit if the name is already used as a function name beforehand in the script
+            between the start and end lines put the code you want to run during auto.
+    RUN:
+        Syntax:
+            RUN pathFunctionName
+        Usage:
+            runs the given function name.
+TELEMETRY:
+    output2telem:
+        syntax:
+            output2telem var
+        Usage:
+            the var is any variable, its data will be added to telemetry output the next time it is updated.
+    clearTelem: (WIP)
+        syntax:
+            clearTelem
+        Usage:
+            call this to clear the telemetry output
+JAVA MOTHOD INTEGRATION:
+    jFunc:
+        syntax:
+            jFunc funcID
+            jFunc funcID valIN ...
+            jFunc funcID to valOUT ...
+            jFunc funcID valIN ... to valOUT
+        Usage:
+            the functions that are given to DYN, must only have inputs and outputs as DynVars, either as DynVar or as DynVar[].
+            this can be used to get input from an op (for testing), get the angle of a servo, state of a subsystem, the current position etc.
+
+
+
+The rest of this program is a systems test for the language interpreter
+'''
+
+
+def_path Main start
+    output2telem "DYN Language System Test Starting!"
+end

@@ -1,0 +1,40 @@
+// this is a simple auto path that moves the robot to 10,10 with a heading of 0
+// from 0,0 heading 90. (using pedro pathing coordinate system)
+// indents are not necessary
+// all variables are global
+
+// there can be multiple auto functions in one config
+def_path setStartEnd start
+    // define some variables as numbers
+    Num startX 0
+    Num startY 0
+    Num startHeading 0
+    // define some more
+    Num endX 0
+    Num endY 1
+    Num endHeading 0
+    // calculate ending positon
+    // loop demo
+    for 10 as X start
+        ADD endX 1 to endX
+    end
+    while (startHeading < 90) start
+        ADD startHeading 1 to startHeading
+    end
+end
+
+def_path mainPath start
+    output2telem "starting auto"
+    // call the function that sets up all of our variables
+    RUN setStartEnd
+    // set the starting and ending positions
+    FieldPos startPos (startX, startY, startHeading)
+    FieldPos endPos (endX, endY, startHeading)
+    // set starting position (Mandatory)
+    PathStartPosition startPos
+    // move along the path in pedro pathing's bezier curve
+    followBezier (startPos, endPos)
+end
+
+// tells the interpreter with auto function to use
+autoPath mainPath

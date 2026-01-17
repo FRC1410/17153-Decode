@@ -1,0 +1,284 @@
+NOTE: the tokenization system and guide was made by Claude Opus 4.5, then later modified and refined by Isaac Clark (EonCuber28/EonCuber)
+================================================================================
+                    DYN TOKENIZER SYSTEM - COMPREHENSIVE GUIDE
+================================================================================
+
+The tokenizer is the FIRST STAGE of a language interpreter/compiler pipeline.
+It converts raw source code (a string of characters) into a sequence of TOKENS -
+meaningful units that the parser can understand.
+
+================================================================================
+                           ARCHITECTURE OVERVIEW
+================================================================================
+
+    Source Code (.dyn file)
+            ↓
+       [DynTokenizer]  ← Reads character by character
+            ↓
+       List<Token>     ← Stream of classified tokens
+            ↓
+       [Parser]        ← (Next stage - not yet implemented)
+            ↓
+       [Interpreter]   ← (Executes on robot)
+
+================================================================================
+                    1. TokenType.java - Token Classification
+================================================================================
+
+This enum defines EVERY POSSIBLE TYPE OF TOKEN in your DYN language:
+
+┌─────────────────┬─────────────────────────────────────────┬─────────────────────────────┐
+│ Category        │ Token Types                             │ Example in DYN              │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Variable Types  │ FIELD_COORD, FIELD_POS, NUM, BOOL,      │ FieldPos startPos (0,0,90)  │
+│                 │ STRING, LIST, JSON                      │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Math Ops        │ ADD, SUB, MUX, DIV, MOD, POW, SQR,      │ ADD x y to result           │
+│                 │ SIN, COS, TAN, invSin, invCos, invTan,  │ toRad degrees to radians    │
+│                 │ TO_RAD, TO_DEG                          │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Movement        │ TURN_TO, GO_TO, FOLLOW_BEZIER           │ goTo(waypoint1)             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Control Flow    │ WHILE, FOR, IF, START, END,             │ while running Wstart...Wend │
+│                 │ WSTART, WEND                            │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Declarations    │ DEF_PATH, PATH_START_POSITION,          │ def_path main start...end   │
+│                 │ AUTO_PATH, RUN                          │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Literals        │ NUMBER_LITERAL, STRING_LITERAL,         │ 42, "hello", true, myVar    │
+│                 │ BOOLEAN_LITERAL, IDENTIFIER             │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Symbols         │ LPAREN, RPAREN, LBRACKET, RBRACKET,     │ ( ) [ ] , . = + - * / %     │
+│                 │ COMMA, DOT, EQUALS, PLUS, MINUS,        │                             │
+│                 │ STAR, SLASH, PERCENT, etc.              │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Comparison      │ EQUAL_EQUAL, NOT_EQUAL, LESS_THAN,      │ == != < > <= >=             │
+│                 │ GREATER_THAN, LESS_EQUAL, GREATER_EQUAL │                             │
+├─────────────────┼─────────────────────────────────────────┼─────────────────────────────┤
+│ Logical         │ AND, OR, NOT                            │ and or not && || !          │
+└─────────────────┴─────────────────────────────────────────┴─────────────────────────────┘
+
+================================================================================
+                    2. Token.java - The Token Data Structure
+================================================================================
+
+Each token stores:
+  • type   - What kind of token (from TokenType)
+  • value  - The actual text ("goTo", "42", "myVariable")
+  • line   - Line number in source (for error messages)
+  • column - Column position (for precise error location)
+
+Example token output:
+    Token{type=GO_TO, value='goTo', line=5, col=1}
+    Token{type=LPAREN, value='(', line=5, col=5}
+    Token{type=IDENTIFIER, value='waypoint1', line=5, col=6}
+    Token{type=RPAREN, value=')', line=5, col=15}
+
+================================================================================
+                    3. DynTokenizer.java - The Core Lexer Logic
+================================================================================
+
+This is the heart of the system. Here's how it works:
+
+INITIALIZATION
+--------------
+    DynTokenizer tokenizer = new DynTokenizer(sourceCode);
+
+  • Stores the source code string
+  • Initializes a KEYWORD MAP that maps strings like "goTo" → TokenType.GO_TO
+  • Sets up position tracking (current, line, column)
+
+THE MAIN LOOP (tokenize())
+--------------------------
+    while (!isAtEnd()) {
+        start = current;    // Mark where this token begins
+        scanToken();        // Identify and emit one token
+    }
+
+CHARACTER-BY-CHARACTER SCANNING (scanToken())
+---------------------------------------------
+The tokenizer reads one character and decides what to do:
+
+    Character    Action
+    ─────────────────────────────────────────────
+    '('          → Emit LPAREN token
+    ')'          → Emit RPAREN token
+    '['          → Emit LBRACKET token
+    '"'          → Enter string mode, read until closing '"'
+    '/'          → Check if '//' (comment) - skip to end of line
+    '''          → Check if '''' (multi-line comment block)
+    '='          → Check if '==' (comparison) or '=' (assignment)
+    '0'-'9'      → Enter number mode, read full number (including decimals)
+    'a'-'z'      → Enter identifier mode, read full word, check if keyword
+    ' ', '\t'    → Skip whitespace
+    '\n'         → Increment line counter, reset column
+
+KEYWORD RECOGNITION (identifier())
+----------------------------------
+When the tokenizer sees a letter, it reads the whole word:
+
+    g → go → goT → goTo  (stop at non-alphanumeric)
+
+Then it checks the keyword map:
+    keywords.get("goTo")  → TokenType.GO_TO  ✓ It's a keyword!
+    keywords.get("myVar") → null             → It's an IDENTIFIER
+
+NUMBER PARSING (number())
+-------------------------
+    Input: "3.14159"
+           ^
+    Read digits: "3"
+    See '.': check if next is digit
+    Read more digits: "14159"
+    Result: Token{NUMBER_LITERAL, "3.14159"}
+
+STRING PARSING (string())
+-------------------------
+    Input: "hello world"
+            ^
+    Skip opening quote
+    Read until closing quote: "hello world"
+    Result: Token{STRING_LITERAL, "hello world"}
+
+COMMENT HANDLING
+----------------
+    //  - Skip everything until newline
+    ''' - Skip everything until matching '''
+
+================================================================================
+                    4. Custom Commands System
+================================================================================
+
+The registerCustomCommand() method allows FTC teams to add robot-specific commands:
+
+    tokenizer.registerCustomCommand("grabSample");
+    tokenizer.registerCustomCommand("extendArm");
+
+When the tokenizer sees "grabSample" in the code, it recognizes it as a valid
+identifier that the parser should handle specially via the "cmd" keyword:
+
+    cmd grabSample from position to armState
+
+================================================================================
+                    5. Error Handling (org.firstinspires.ftc.teamcode.dynamite.DynExceptions.TokenizerException.java)
+================================================================================
+
+When something goes wrong, the exception provides:
+  • Exact line number
+  • Exact column number
+  • Descriptive message
+
+Example:
+    org.firstinspires.ftc.teamcode.dynamite.DynExceptions.TokenizerException: Tokenizer error at line 7, column 15: Unterminated string
+
+================================================================================
+                           EXAMPLE WALKTHROUGH
+================================================================================
+
+INPUT DYN SCRIPT:
+-----------------
+    FieldPos start (0, 0, 90)
+    goTo(start)
+
+TOKENIZATION PROCESS:
+---------------------
+┌──────┬──────────────┬─────────────────────────────┬───────────────────────────┐
+│ Step │ Current Char │ Action                      │ Token Emitted             │
+├──────┼──────────────┼─────────────────────────────┼───────────────────────────┤
+│ 1    │ F            │ Read identifier "FieldPos"  │ FIELD_POS, "FieldPos"     │
+│ 2    │ (space)      │ Skip whitespace             │ -                         │
+│ 3    │ s            │ Read identifier "start"     │ IDENTIFIER, "start"       │
+│ 4    │ (space)      │ Skip whitespace             │ -                         │
+│ 5    │ (            │ Single char symbol          │ LPAREN, "("               │
+│ 6    │ 0            │ Read number "0"             │ NUMBER_LITERAL, "0"       │
+│ 7    │ ,            │ Single char symbol          │ COMMA, ","                │
+│ 8    │ (space)      │ Skip whitespace             │ -                         │
+│ 9    │ 0            │ Read number "0"             │ NUMBER_LITERAL, "0"       │
+│ 10   │ ,            │ Single char symbol          │ COMMA, ","                │
+│ 11   │ (space)      │ Skip whitespace             │ -                         │
+│ 12   │ 9            │ Read number "90"            │ NUMBER_LITERAL, "90"      │
+│ 13   │ )            │ Single char symbol          │ RPAREN, ")"               │
+│ 14   │ \n           │ Increment line              │ -                         │
+│ 15   │ g            │ Read identifier "goTo"      │ GO_TO, "goTo"             │
+│ 16   │ (            │ Single char symbol          │ LPAREN, "("               │
+│ 17   │ s            │ Read identifier "start"     │ IDENTIFIER, "start"       │
+│ 18   │ )            │ Single char symbol          │ RPAREN, ")"               │
+│ 19   │ EOF          │ End of file                 │ EOF, ""                   │
+└──────┴──────────────┴─────────────────────────────┴───────────────────────────┘
+
+OUTPUT TOKEN LIST:
+------------------
+    Token{type=FIELD_POS, value='FieldPos', line=1, col=1}
+    Token{type=IDENTIFIER, value='start', line=1, col=10}
+    Token{type=LPAREN, value='(', line=1, col=16}
+    Token{type=NUMBER_LITERAL, value='0', line=1, col=17}
+    Token{type=COMMA, value=',', line=1, col=18}
+    Token{type=NUMBER_LITERAL, value='0', line=1, col=20}
+    Token{type=COMMA, value=',', line=1, col=21}
+    Token{type=NUMBER_LITERAL, value='90', line=1, col=23}
+    Token{type=RPAREN, value=')', line=1, col=25}
+    Token{type=GO_TO, value='goTo', line=2, col=1}
+    Token{type=LPAREN, value='(', line=2, col=5}
+    Token{type=IDENTIFIER, value='start', line=2, col=6}
+    Token{type=RPAREN, value=')', line=2, col=11}
+    Token{type=EOF, value='', line=2, col=12}
+
+================================================================================
+                           FTC INTEGRATION
+================================================================================
+
+The tokenizer uses ONLY STANDARD JAVA (no external libraries), making it fully
+compatible with the FTC SDK. In your OpMode:
+
+    @Autonomous
+    public class DynAuto extends LinearOpMode {
+        @Override
+        public void runOpMode() {
+            // Load script (from asset file or hardcoded)
+            String script = loadDynScript("auto_blue.dyn");
+            
+            // Tokenize
+            DynTokenizer tokenizer = new DynTokenizer(script);
+            tokenizer.registerCustomCommand("intake");
+            tokenizer.registerCustomCommand("outtake");
+            
+            List<Token> tokens = tokenizer.tokenize();
+            
+            // Next: Parse tokens into executable commands
+            // DynProcessor parser = new DynProcessor(tokens);
+            // DynProgram program = parser.parse();
+            
+            waitForStart();
+            
+            // Execute
+            // program.run(this);
+        }
+    }
+
+================================================================================
+                           NEXT STEPS
+================================================================================
+
+The next stage is building a PARSER that reads this token stream and constructs
+an Abstract Syntax Tree (AST) or directly executes commands.
+
+The parser will:
+  1. Read tokens sequentially
+  2. Match token patterns to grammar rules
+  3. Build structured command objects
+  4. Handle syntax errors with meaningful messages
+  5. Produce executable instructions for the robot
+
+================================================================================
+                           FILE STRUCTURE
+================================================================================
+
+    src/DYNtokeniser/
+    ├── TokenType.java          # Enum of all token types
+    ├── Token.java              # Token data structure
+    ├── DynTokenizer.java       # Main tokenization logic
+    ├── org.firstinspires.ftc.teamcode.dynamite.DynExceptions.TokenizerException.java # Error handling
+    ├── DynTokenizerExample.java# Usage examples
+    └── guide.txt               # This file
+
+================================================================================

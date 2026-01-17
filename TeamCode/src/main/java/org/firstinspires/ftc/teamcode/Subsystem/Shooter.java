@@ -17,8 +17,8 @@ public class Shooter {
     private DcMotorEx motorFeeder;
     public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
-    private static final double TARGET_RPM = 1500;
-    private static final double RPM_TOLERANCE = 50; // RPM threshold to start feeder
+    private static final double TARGET_RPM = 6000;
+    private static final double RPM_TOLERANCE = 1500; // RPM threshold to start feeder
 
     public void init(HardwareMap hardwareMap) {
         this.motorShooter = hardwareMap.get(DcMotorEx.class, SHOOTER_MOTOR_ID);
@@ -62,8 +62,8 @@ public class Shooter {
     }
 
     public void runBackward() {
-        this.motorShooter.setVelocity(-500);
-        this.motorFeeder.setPower(-0.5);
+        this.motorShooter.setVelocity(-1500);
+        this.motorFeeder.setVelocity(-1500);
     }
 
     public void stopBackward() {
@@ -74,11 +74,15 @@ public class Shooter {
             double currentVelocity = this.motorShooter.getVelocity();
 
             if (Math.abs(currentVelocity - TARGET_RPM) < RPM_TOLERANCE) {
-                this.motorFeeder.setPower(1.0);
+                this.motorFeeder.setVelocity(4500);
             } else {
                 this.motorFeeder.setPower(0);
             }
         }
+    }
+
+    public void feed(float power){
+        this.motorFeeder.setVelocity(power * 4500);
     }
     public boolean isAtTargetRPM() {
         double currentVelocity = this.motorShooter.getVelocity();

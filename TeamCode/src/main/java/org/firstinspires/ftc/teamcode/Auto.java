@@ -81,7 +81,7 @@ public class Auto extends OpMode {
 
     // "AT GOAL" means that we are starting in the, if it is anything else, it will assume we are starting in the small starting area.
     private String startingLocation = "AT GOAL";
-    private String ALIENCE = "RED"; // defines what it is named. what allience we are on.
+    private String ALIENCE = "BLUE"; // defines what it is named. what allience we are on.
     private void shiftPosesBasedOnAlliance(){
         if (ALIENCE.equals("BLUE")){
             // flip along the middle by modifying X values with: -x + 144

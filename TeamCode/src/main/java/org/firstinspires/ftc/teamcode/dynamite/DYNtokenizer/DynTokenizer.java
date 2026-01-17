@@ -16,6 +16,7 @@ public class DynTokenizer {
     private final List<Token> tokens = new ArrayList<>();
     private final Map<String, TokenType> keywords = new HashMap<>();
     private final Map<String, TokenType> customCommands = new HashMap<>();
+    private final String[] sourceLines;
 
     private int start = 0;
     private int current = 0;
@@ -24,7 +25,22 @@ public class DynTokenizer {
 
     public DynTokenizer(String source) {
         this.source = source;
+        this.sourceLines = source.split("\\r?\\n", -1);
         initKeywords();
+    }
+
+    private String buildCaretContext(int line, int column) {
+        // Lines are 1-based; columns are 1-based
+        String lineText = (line >= 1 && line <= sourceLines.length) ? sourceLines[line - 1] : "";
+        int col = Math.max(1, column);
+        int caretPos = Math.min(col - 1, Math.max(0, lineText.length()));
+        StringBuilder caret = new StringBuilder();
+        for (int i = 0; i < caretPos; i++) {
+            char ch = i < lineText.length() ? lineText.charAt(i) : ' ';
+            caret.append(ch == '\t' ? '\t' : ' ');
+        }
+        caret.append('^');
+        return lineText + "\n" + caret.toString();
     }
 
     private void initKeywords() {
@@ -164,7 +180,13 @@ public class DynTokenizer {
                 if (match('&')) {
                     addToken(TokenType.AND);
                 } else {
-                    throw new TokenizerException("Unexpected character '&'. Did you mean '&&'?", line, column);
+                    throw new TokenizerException(
+                            "Unexpected character '&'. Did you mean '&&'?",
+                            line,
+                            column,
+                            buildCaretContext(line, column),
+                            TokenizerException.ErrorType.UNEXPECTED_CHARACTER
+                    );
                 }
                 break;
 
@@ -172,7 +194,13 @@ public class DynTokenizer {
                 if (match('|')) {
                     addToken(TokenType.OR);
                 } else {
-                    throw new TokenizerException("Unexpected character '|'. Did you mean '||'?", line, column);
+                    throw new TokenizerException(
+                            "Unexpected character '|'. Did you mean '||'?",
+                            line,
+                            column,
+                            buildCaretContext(line, column),
+                            TokenizerException.ErrorType.UNEXPECTED_CHARACTER
+                    );
                 }
                 break;
 
@@ -187,11 +215,15 @@ public class DynTokenizer {
                 break;
 
             case '\'':
-                // Multi-line comment (triple single-quote)
+                // Multi-line comment (triple single-quote) or single-quoted string
                 if (match('\'') && match('\'')) {
                     multiLineComment();
                 } else {
-                    throw new TokenizerException("Unexpected character '''", line, column);
+                    // Reset to re-parse as a single-quoted string
+                    current = start;
+                    column--;
+                    char quote = advance();
+                    stringWithQuote(quote);
                 }
                 break;
 
@@ -216,7 +248,13 @@ public class DynTokenizer {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    throw new TokenizerException("Unexpected character '" + c + "'", line, column);
+                    throw new TokenizerException(
+                            "Unexpected character '" + c + "'",
+                            line,
+                            column,
+                            buildCaretContext(line, column),
+                            TokenizerException.ErrorType.UNEXPECTED_CHARACTER
+                    );
                 }
                 break;
         }
@@ -236,14 +274,24 @@ public class DynTokenizer {
             }
             advance();
         }
-        throw new TokenizerException("Unterminated multi-line comment", line, column);
+        throw new TokenizerException(
+                "Unterminated multi-line comment",
+                line,
+                column,
+                buildCaretContext(line, column),
+                TokenizerException.ErrorType.UNTERMINATED_COMMENT
+        );
     }
 
     private void string() {
+        stringWithQuote('"');
+    }
+
+    private void stringWithQuote(char quoteChar) {
         int startLine = line;
         int startColumn = column;
 
-        while (peek() != '"' && !isAtEnd()) {
+        while (peek() != quoteChar && !isAtEnd()) {
             if (peek() == '\n') {
                 line++;
                 column = 1;
@@ -252,10 +300,16 @@ public class DynTokenizer {
         }
 
         if (isAtEnd()) {
-            throw new TokenizerException("Unterminated string", startLine, startColumn);
+            throw new TokenizerException(
+                    "Unterminated string",
+                    startLine,
+                    startColumn,
+                    buildCaretContext(startLine, startColumn),
+                    TokenizerException.ErrorType.UNTERMINATED_STRING
+            );
         }
 
-        // Consume the closing "
+        // Consume the closing quote
         advance();
 
         // Trim the surrounding quotes

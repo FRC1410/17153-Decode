@@ -37,6 +37,8 @@ public class DynProcessor {
     private Token[] tokens;
     private int currentIndex = 0;
     private int literalCounter = 0;
+    private String scriptSource;
+    private String[] scriptLines;
 
     // Runtime components
     private DynVarBuffer varBuffer;
@@ -83,6 +85,8 @@ public class DynProcessor {
      * Initialize and process a DYN script.
      */
     public void init(Telemetry telemetry, String scriptData, String[] funcIDs) {
+        this.scriptSource = scriptData;
+        this.scriptLines = scriptData.split("\\r?\\n", -1);
         // Set up telemetry - wrap addData to match Consumer<String>
         if (this.telemOutput == null) {
             this.telemOutput = new java.util.function.Consumer<String>() {
@@ -187,11 +191,19 @@ public class DynProcessor {
 
             safety++;
             if (safety > tokens.length * 5) {
-                throw new DynAutoStepException("Parser stuck at top level near token: " + current);
+                throw new DynAutoStepException(buildErrorWithCaret(
+                        "Parser stuck at top level near token: " + current,
+                        current.getLine(),
+                        current.getColumn()
+                ));
             }
 
             if (System.currentTimeMillis() - startMs > 1500) {
-                throw new DynAutoStepException("Parser timeout at top level near token: " + current);
+                throw new DynAutoStepException(buildErrorWithCaret(
+                        "Parser timeout at top level near token: " + current,
+                        current.getLine(),
+                        current.getColumn()
+                ));
             }
         }
     }
@@ -255,11 +267,19 @@ public class DynProcessor {
 
             safety++;
             if (safety > tokens.length * 5) {
-                throw new DynAutoStepException("Parser stuck inside block near token: " + current);
+                throw new DynAutoStepException(buildErrorWithCaret(
+                        "Parser stuck inside block near token: " + current,
+                        current.getLine(),
+                        current.getColumn()
+                ));
             }
 
             if (System.currentTimeMillis() - startMs > 1500) {
-                throw new DynAutoStepException("Parser timeout inside block near token: " + current);
+                throw new DynAutoStepException(buildErrorWithCaret(
+                        "Parser timeout inside block near token: " + current,
+                        current.getLine(),
+                        current.getColumn()
+                ));
             }
         }
     }
@@ -874,8 +894,11 @@ public class DynProcessor {
     private Token expect(TokenType type) {
         if (check(type)) return advance();
         Token current = peek();
-        throw new DynAutoStepException("Expected " + type + " but got " + current.getType() +
-                " at line " + current.getLine() + ", col " + current.getColumn());
+        throw new DynAutoStepException(buildErrorWithCaret(
+            "Expected " + type + " but got " + current.getType(),
+            current.getLine(),
+            current.getColumn()
+        ));
     }
 
     private boolean isAtEnd() {
@@ -883,6 +906,22 @@ public class DynProcessor {
             return true;
         }
         return tokens[currentIndex].getType() == TokenType.EOF;
+    }
+
+    // ==================== Error Context Helpers ====================
+
+    private String buildErrorWithCaret(String message, int line, int column) {
+        String lineText = (scriptLines != null && line >= 1 && line <= scriptLines.length)
+                ? scriptLines[line - 1] : "";
+        int col = Math.max(1, column);
+        int caretPos = Math.min(col - 1, Math.max(0, lineText.length()));
+        StringBuilder caret = new StringBuilder();
+        for (int i = 0; i < caretPos; i++) {
+            char ch = i < lineText.length() ? lineText.charAt(i) : ' ';
+            caret.append(ch == '\t' ? '\t' : ' ');
+        }
+        caret.append('^');
+        return String.format("%s at line %d, col %d\n%s\n%s", message, line, column, lineText, caret.toString());
     }
 
     // ==================== Execution ====================

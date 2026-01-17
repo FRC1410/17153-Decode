@@ -23,12 +23,12 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(27.06)//46.12)
-            .yVelocity(20.22);//37.07);
+            .xVelocity(283.365)//46.12)
+            .yVelocity(318.666);//37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName(FRONT_RIGHT_MOTOR_ID)
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
@@ -40,13 +40,13 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
-            .forwardTicksToInches(0.00440555683476)
-            .strafeTicksToInches(0.00383179729959)
-            .turnTicksToInches(0.00896866643441);
+            .forwardTicksToInches(0.18725222552)
+            .strafeTicksToInches(-0.00196595917667)
+            .turnTicksToInches(0.03431603597337871);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8)
-            .forwardZeroPowerAcceleration(-101.494285714)
-            .lateralZeroPowerAcceleration(-108.808571429)
+            .forwardZeroPowerAcceleration(-5694.70773653)
+            .lateralZeroPowerAcceleration(-590.471673225)
             .translationalPIDFCoefficients(new PIDFCoefficients(
                     0.04,
                     0,
@@ -66,7 +66,7 @@ public class Constants {
                     0.7,
                     0.006
             ))
-            .centripetalScaling(0);
+            .centripetalScaling(-0.01);
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,

@@ -28,9 +28,6 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
     private final LinearOpMode opMode;
     
     // Configuration
-    private double defaultMaxVelocity = 50;      // inches/sec
-    private double defaultMaxAcceleration = 40;  // inches/sec^2
-    private double turnTimeout = 3000;           // ms
     private boolean holdEndOfPath = true;        // Whether to hold position at end of path
 
     public DynPedroPathingBridge(Follower follower, LinearOpMode opMode) {
@@ -40,18 +37,6 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
     }
 
     // ==================== CONFIGURATION ====================
-
-    public void setDefaultMaxVelocity(double velocity) {
-        this.defaultMaxVelocity = velocity;
-    }
-
-    public void setDefaultMaxAcceleration(double acceleration) {
-        this.defaultMaxAcceleration = acceleration;
-    }
-
-    public void setTurnTimeout(double timeoutMs) {
-        this.turnTimeout = timeoutMs;
-    }
 
     public void setHoldEndOfPath(boolean hold) {
         this.holdEndOfPath = hold;

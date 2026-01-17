@@ -92,32 +92,64 @@ public class WhileBlock implements DynCommand {
             return condVar.isTrue();
         }
 
-        // Comparison operation
-        double leftValue = condVar.asDouble();
-        double rightValue;
-
+        // Comparison operation (number/boolean/string)
         DynVar rightVar = getVar.apply(compareValue);
-        if (rightVar != null) {
-            rightValue = rightVar.asDouble();
-        } else {
-            rightValue = Double.parseDouble(compareValue);
+
+        // Try number comparison first
+        try {
+            double leftValue = condVar.asDouble();
+            double rightValue = rightVar != null ? rightVar.asDouble() : Double.parseDouble(compareValue);
+            switch (compareOp) {
+                case "==":
+                    return leftValue == rightValue;
+                case "!=":
+                    return leftValue != rightValue;
+                case "<":
+                    return leftValue < rightValue;
+                case ">":
+                    return leftValue > rightValue;
+                case "<=":
+                    return leftValue <= rightValue;
+                case ">=":
+                    return leftValue >= rightValue;
+                default:
+                    throw new DynAutoStepException("Unknown comparison operator: " + compareOp);
+            }
+        } catch (Exception ignored) {
+            // Fall through to boolean/string comparison
         }
 
+        // Boolean comparison
+        try {
+            boolean leftBool = condVar.asBoolean();
+            boolean rightBool;
+            if (rightVar != null) {
+                rightBool = rightVar.asBoolean();
+            } else {
+                rightBool = Boolean.parseBoolean(compareValue);
+            }
+            switch (compareOp) {
+                case "==":
+                    return leftBool == rightBool;
+                case "!=":
+                    return leftBool != rightBool;
+                default:
+                    throw new DynAutoStepException("Invalid boolean comparison operator: " + compareOp);
+            }
+        } catch (Exception ignored) {
+            // Fall through to string comparison
+        }
+
+        // String comparison
+        String leftStr = condVar.asString();
+        String rightStr = rightVar != null ? rightVar.asString() : compareValue;
         switch (compareOp) {
             case "==":
-                return leftValue == rightValue;
+                return leftStr.equals(rightStr);
             case "!=":
-                return leftValue != rightValue;
-            case "<":
-                return leftValue < rightValue;
-            case ">":
-                return leftValue > rightValue;
-            case "<=":
-                return leftValue <= rightValue;
-            case ">=":
-                return leftValue >= rightValue;
+                return !leftStr.equals(rightStr);
             default:
-                throw new DynAutoStepException("Unknown comparison operator: " + compareOp);
+                throw new DynAutoStepException("Invalid string comparison operator: " + compareOp);
         }
     }
 

@@ -30,7 +30,7 @@ public class DynSystemTestOpMode extends DynAutoOpMode {
 
     @Override
     protected String getScriptName() {
-        return "AutoTest.dyn";
+        return "teehee.dyn";
     }
 
     @Override

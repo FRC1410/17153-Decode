@@ -37,7 +37,6 @@ import java.util.function.Consumer;
  * - Override registerCustomCommands() to add your robot's mechanisms
  * - Override getScriptName() to specify which .dyn file to use
  */
-@Autonomous(name="DynAuto",group="Dyn")
 public class DynAutoOpMode extends LinearOpMode {
 
     // ==================== CONFIGURATION ====================

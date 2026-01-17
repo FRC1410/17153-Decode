@@ -16,9 +16,21 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.PoseHistory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Subsystem.Intake;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 @Autonomous(name="Pedro Pathing Auto", group="Tests")
 public class Auto extends OpMode {
+    private Intake intake = new Intake();
+    private Shooter shooter = new Shooter();
+    private ElapsedTime runtime = new ElapsedTime();
+    private boolean isFiring;
+    private double fireStart;
+    private double firelength = 7000;
+    private double fireSpool = 1000;
     private Follower follower;
     private PoseHistory poseHistory;
     private int pathState = 0;
@@ -36,7 +48,7 @@ public class Auto extends OpMode {
 
     private Pose ClassifierGatePose = new Pose(128.5, 70.5, 270);
 
-    private Pose shootPose = new Pose(84,83, Math.toRadians(50)); // shooting pose
+    private Pose shootPose = new Pose(120,120, Math.toRadians(54)); // shooting pose
 
     private Pose endPose = new Pose(73,120, Math.toRadians(270)); // end of path pose, it currently goes to the center (ish) of the larger shooting area
 
@@ -83,6 +95,19 @@ public class Auto extends OpMode {
     private String startingLocation = "AT GOAL";
     private String ALIENCE = "BLUE"; // defines what it is named. what allience we are on.
     private void shiftPosesBasedOnAlliance(){
+        if (startingLocation.equals("AT GOAL")){
+            if (ALIENCE.equals("BLUE")){
+                startPose = new Pose(23, 126, 143);
+            } else {
+                startPose = new Pose(120, 126, 37);
+            }
+        } else {
+            if (ALIENCE.equals("BLUE")){
+                startPose = new Pose(56.5, 8.5, 90);
+            } else {
+                startPose = new Pose(88, 8, 90);
+            }
+        }
         if (ALIENCE.equals("BLUE")){
             // flip along the middle by modifying X values with: -x + 144
             SmiddleArtifactPose = new Pose(-1*SfirstArtifactPose.getX()+144, SfirstArtifactPose.getY(), SfirstArtifactPose.getHeading());
@@ -94,7 +119,7 @@ public class Auto extends OpMode {
             SfirstArtifactPose = new Pose(-1*SfirstArtifactPose.getX()+144, SfirstArtifactPose.getY(), SfirstArtifactPose.getHeading());
             EfirstArtifactPose = new Pose(-1*EfirstArtifactPose.getX()+144, EfirstArtifactPose.getY(), EfirstArtifactPose.getHeading());
 
-            shootPose = new Pose(-1*shootPose.getX()+144, shootPose.getY(), 130);
+            shootPose = new Pose(-1*shootPose.getX()+144, shootPose.getY(), 128);
 
             endPose = new Pose(-1*endPose.getX()+144, endPose.getY(), endPose.getHeading());
 
@@ -102,19 +127,9 @@ public class Auto extends OpMode {
 
             controlPoint0 = new Pose(-1*controlPoint0.getX()+144, controlPoint0.getY());
         }
-        if (startingLocation.equals("AT GOAL")){
-            if (ALIENCE.equals("BLUE")){
-                startPose = new Pose(23, 126, 323);
-            } else {
-                startPose = new Pose(120, 126, 217);
-            }
-        } else {
-            if (ALIENCE.equals("BLUE")){
-                startPose = new Pose(56.5, 8.5, 90);
-            } else {
-                startPose = new Pose(88, 8, 90);
-            }
-        }
+        startPose = new Pose(0,0,0);
+        shootPose = new Pose(-20,0,0);
+        endPose = new Pose(-20,20,0);
     }
     public void buildPaths(){
         // i have not tested this function, lets hope it works!
@@ -232,117 +247,56 @@ public class Auto extends OpMode {
 
     public void runPath() {
         switch (pathState) {
-            // you can consider each case in this to be 1 whole step in the auto sequence.
             case 0: {
+                if (!follower.isBusy()) {
+                    shooter.cycle(telemetry);
+                    pathState++;
+                }
+                break;
+            }
+            // you can consider each case in this to be 1 whole step in the auto sequence.
+            case 1: {
                 // wait for robot to not be running a path.
+                if (!follower.isBusy()) {
+                    // start next auto step
+                    if (isFiring) {
+                        if (runtime.milliseconds() > fireStart + fireSpool) {
+                            pathState++;
+                            isFiring = false;
+                        }
+                    } else {
+                        isFiring = true;
+                        fireStart = runtime.milliseconds();
+                    }
+                }
+                break;
+            }
+            case 2:{
+                if (!follower.isBusy()){
+                    if (isFiring) {
+                        if (runtime.milliseconds() > fireStart+firelength){
+                            pathState++;
+                        }else{
+                            intake.run(1,0);
+                            shooter.feed(1);
+                        }
+                    } else {
+                        fireStart = runtime.milliseconds();
+                        isFiring = true;
+                    }
+                }
+            }
+            case 3:{
                 if (!follower.isBusy()){
                     follower.followPath(FromStartToShootingPathChain);
-                    // start next auto step
                     pathState++;
                 }
-                break;
             }
-            case 1: {
-                if (!follower.isBusy()) {
-                    // if you wanted to start a subsystem here just do it like so:
-                    //follower.pausePathFollowing();
-                    // [insert subsystem method here]
-                    //follower.resumePathFollowing();
-                    // make sure the function gives enough time for it to startup
-                    // here since we are at the shooting position, we want to shoot the balls
-                    // shoot the balls
-                    follower.followPath(FromShootingToLastArtifactsPathCain, false);
-                    // start intake
-                    pathState++;
-                }
-                break;
-            }
-            case 2: {
+            case 4:{
                 if (!follower.isBusy()){
-                    follower.followPath(LastArtifactsPathChain, false);
-                    pathState++;
-                }
-                break;
-            }
-            case 3: {
-                if (!follower.isBusy()){
-                    // stop intake
-                    follower.followPath(FromLastArtifactsToShootPathChain, true);
-                    // shoot
-                    pathState++;
-                }
-                break;
-            }
-            case 4: {
-                if (!follower.isBusy()){
-                    follower.followPath(FromShootingToMiddleArtifactsPathChain,false);
-                    // start intake
-                    pathState++;
-                }
-                break;
-            }
-            case 5:{
-                if (!follower.isBusy()){
-                    follower.followPath(MiddleArtifactsPathChain, false);
-                    pathState++;
-                }
-                break;
-            }
-            case 6: {
-                if (!follower.isBusy()){
-                    // stop intake
-                    follower.followPath(FromMiddleArtifactsToShootPathChain, true);
-                    pathState++;
-                }
-                break;
-            }
-            case 7: {
-                if (!follower.isBusy()){
-                    // shoot
-                    follower.followPath(FromShootingToClassifierGatePathChain, true); //this opens the gate to clear the classifier
-                    pathState++;
-                }
-                break;
-            }
-            case 8: {
-                if (!follower.isBusy()){
-                    // shoot
-                    follower.followPath(FromClasifierGateToFirstArtifactsPathChain, false);
-                    // intake start
-                    pathState++;
-                }
-                break;
-            }
-            case 9: {
-                if (!follower.isBusy()){
-                    follower.followPath(FirstArtifactsPathChain, false);
-                    pathState++;
-                }
-                break;
-            }
-            case 10: {
-                if (!follower.isBusy()){
-                    // intake stop
-                    follower.followPath(FromFirstArtifactsToShootPathChain, true);
-                    pathState++;
-                }
-                break;
-            }
-            case 11:
-                if (!follower.isBusy()){
-                    // shoot
-                    follower.followPath(FromShootingToStartPathChain, true);
-                    pathState++;
-                }
-                break;
-            case 12: {
-                if (!follower.isBusy()){
-                    // setting this variable to -1 will cause the path to stop running because the switch case has no code to run for this case.
+                    follower.followPath(FromShootingToEndPathChain);
                     pathState = -1;
-                    // pause pedro (for safety)
-                    follower.pausePathFollowing();
                 }
-                break;
             }
             default: {}
         }
@@ -350,30 +304,25 @@ public class Auto extends OpMode {
 
     @Override
     public void init() {
+        shooter.init(hardwareMap);
+        shooter.run(RobotStates.ShooterStates.NEUTRAL);
         initialize();
         buildPaths();
         follower.setStartingPose(startPose);
-        runPath();
         PanelsConfigurables.INSTANCE.refreshClass(this);
         Drawing.init();
         poseHistory = follower.getPoseHistory();
         Drawing.drawPoseHistory(poseHistory);
         Drawing.drawRobot(follower.getPose());
         Drawing.sendPacket();
+        intake.init(hardwareMap);
+        shooter.run(RobotStates.ShooterStates.NEUTRAL);
     }
-    public void stop(){
-        telemetry.addData("X: ",follower.getPose().getX());
-        telemetry.addData("Y: ",follower.getPose().getY());
-        telemetry.addData("X: ",follower.getPose().getHeading());
-        telemetry.update();
+    public void start(){
+        runtime.reset();
     }
 
     public void loop(){
-        if (!follower.isBusy()){
-            stop();
-        } else {
-            telemetry.addData("Follower status: ","Busy");
-        }
         follower.update();
         runPath();
         poseHistory = follower.getPoseHistory();
@@ -384,6 +333,7 @@ public class Auto extends OpMode {
         telemetry.addData("Y(inc)",follower.getPose().getY());
         telemetry.addData("H(deg)",Math.toDegrees(follower.getPose().getHeading()));
         telemetry.addData("Path State", pathState);
+        telemetry.addData("runtime", runtime.milliseconds());
         switch (pathState){
             //case 0: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose :", Math.toDegrees(pose2.getHeading()));
             //case 1: telemetry.addData("Next Pose X", pose3.getX());telemetry.addData("Next Pose Y", pose3.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose3.getHeading()));

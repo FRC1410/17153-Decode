@@ -34,19 +34,19 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontEncoderDirection(Encoder.REVERSE)
+            .leftFrontEncoderDirection(Encoder.FORWARD)
             .leftRearEncoderDirection(Encoder.FORWARD)
             .rightFrontEncoderDirection(Encoder.FORWARD)
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
-            .forwardTicksToInches(0.0121120209294)
-            .strafeTicksToInches(-0.00196595917667)
-            .turnTicksToInches(0.03431603597337871);
+            .forwardTicksToInches(0.00440555683476)
+            .strafeTicksToInches(0.00383179729959)
+            .turnTicksToInches(0.00896866643441);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8)
-            .forwardZeroPowerAcceleration(-5694.70773653)
-            .lateralZeroPowerAcceleration(-590.471673225)
+            .forwardZeroPowerAcceleration(-101.494285714)
+            .lateralZeroPowerAcceleration(-108.808571429)
             .translationalPIDFCoefficients(new PIDFCoefficients(
                     0.04,
                     0,
@@ -61,12 +61,14 @@ public class Constants {
             ))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
                     0.06,
+
                     0,
                     0.0015,
                     0.7,
                     0.006
+
             ))
-            .centripetalScaling(-0.01);
+            .centripetalScaling(0);
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,

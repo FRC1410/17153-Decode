@@ -74,7 +74,7 @@ public class Shooter {
             double currentVelocity = this.motorShooter.getVelocity();
 
             if (Math.abs(currentVelocity - TARGET_RPM) < RPM_TOLERANCE) {
-                this.motorFeeder.setVelocity(4500);
+                this.motorFeeder.setVelocity(2000);
             } else {
                 this.motorFeeder.setPower(0);
             }
@@ -82,7 +82,7 @@ public class Shooter {
     }
 
     public void feed(float power){
-        this.motorFeeder.setVelocity(power * 4500);
+        this.motorFeeder.setVelocity(power * 2000);
     }
     public boolean isAtTargetRPM() {
         double currentVelocity = this.motorShooter.getVelocity();

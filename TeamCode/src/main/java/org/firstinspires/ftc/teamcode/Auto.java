@@ -302,8 +302,9 @@ public class Auto extends OpMode {
         }
     }
 
-    @Override
-    public void init() {
+    public void init(){}
+
+    public void start() {
         shooter.init(hardwareMap);
         shooter.run(RobotStates.ShooterStates.NEUTRAL);
         initialize();
@@ -317,8 +318,6 @@ public class Auto extends OpMode {
         Drawing.sendPacket();
         intake.init(hardwareMap);
         shooter.run(RobotStates.ShooterStates.NEUTRAL);
-    }
-    public void start(){
         runtime.reset();
     }
 

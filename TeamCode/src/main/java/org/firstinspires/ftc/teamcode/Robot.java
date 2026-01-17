@@ -35,7 +35,7 @@ public class Robot extends OpMode {
         this.drivetrain.init(hardwareMap);
         this.intake.init(hardwareMap);
         this.shooter.init(hardwareMap);
-        this.hoodServo.init(hardwareMap);
+//        this.hoodServo.init(hardwareMap);
     }
 
     @Override
@@ -81,13 +81,15 @@ public class Robot extends OpMode {
             );
         }
 
-        this.hoodServo.loop(
-                ControlScheme.HOOD_POS_ONE.get(),
-                ControlScheme.HOOD_POS_TWO.get(),
-                ControlScheme.HOOD_POS_THREE.get(),
-                ControlScheme.HOOD_POS_FOUR.get(),
-                ControlScheme.HOOD_POS_FIVE.get()
-        );
+        this.shooter.feed(ControlScheme.FEED.get());
+
+//        this.hoodServo.loop(
+//                ControlScheme.HOOD_POS_ONE.get(),
+//                ControlScheme.HOOD_POS_TWO.get(),
+//                ControlScheme.HOOD_POS_THREE.get(),
+//                ControlScheme.HOOD_POS_FOUR.get(),
+//                ControlScheme.HOOD_POS_FIVE.get()
+//        );
 
 //        this.driverRumbler.halftimeRumble(gamepad1);
 //        this.operatorRumbler.halftimeRumble(gamepad2);

@@ -39,8 +39,8 @@ public class Intake {
     }
 
     public void run(double intake, double outtake){
-        this.intake.setVelocity((outtake * 1500) - (intake * 1500));
-        this.transfer.setVelocity((outtake * 1500) - (intake * 1500));
+        this.intake.setVelocity((outtake * 3000) - (intake * 3000));
+        this.transfer.setVelocity((outtake * 3000) - (intake * 3000));
     }
 
     public void intakeTelem(Telemetry telemetry){

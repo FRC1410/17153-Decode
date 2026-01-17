@@ -40,7 +40,7 @@ public class MinimumAuto extends OpMode {
 
     private Pose ClassifierGatePose = new Pose(128.5, 70.5, 270);
 
-    private Pose shootPose = new Pose(84,83, Math.toRadians(50)); // shooting pose
+    private Pose shootPose = new Pose(120,120, Math.toRadians(43)); // shooting pose
 
     private Pose endPose = new Pose(73,120, Math.toRadians(270)); // end of path pose, it currently goes to the center (ish) of the larger shooting area
 

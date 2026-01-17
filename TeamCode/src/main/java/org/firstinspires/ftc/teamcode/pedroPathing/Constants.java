@@ -27,8 +27,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(283.365)//46.12)
-            .yVelocity(318.666);//37.07);
+            .xVelocity(10)//46.12)
+            .yVelocity(7);//37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName(FRONT_RIGHT_MOTOR_ID)
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
@@ -40,7 +40,7 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
-            .forwardTicksToInches(0.18725222552)
+            .forwardTicksToInches(0.0121120209294)
             .strafeTicksToInches(-0.00196595917667)
             .turnTicksToInches(0.03431603597337871);
     public static FollowerConstants followerConstants = new FollowerConstants()

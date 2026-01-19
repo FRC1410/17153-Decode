@@ -28,6 +28,8 @@ public class Drivetrain {
     private IMU imu;
     private double[] wheelSpeeds = new double[4];
     private double maxPower = 1;
+
+    private double maxVelocity = 3000;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
 
     public void init(HardwareMap hardwareMap) {
@@ -91,6 +93,7 @@ public class Drivetrain {
 
         strafeSpeed = Range.clip(input.x, -1, 1);
         forwardSpeed = Range.clip(input.y, -1, 1);
+        forwardSpeed = Range.clip(input.y, -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
         this.wheelSpeeds[0] = forwardSpeed - strafeSpeed - turnSpeed;
@@ -106,13 +109,13 @@ public class Drivetrain {
                     (this.wheelSpeeds[i] + Math.signum(this.wheelSpeeds[i]) * 0.085) * voltageCorrection;
         }
 
-        for(double wheelSpeeds : wheelSpeeds) maxPower = Math.max(maxPower, Math.abs(wheelSpeeds));
+        for(double wheelSpeeds : wheelSpeeds) maxVelocity = Math.max(maxVelocity, Math.abs(wheelSpeeds));
 
-        if (maxPower > 1) {
-            this.wheelSpeeds[0] /= maxPower;
-            this.wheelSpeeds[1] /= maxPower;
-            this.wheelSpeeds[2] /= maxPower;
-            this.wheelSpeeds[3] /= maxPower;
+        if (maxVelocity > 3000) {
+            this.wheelSpeeds[0] /= maxVelocity;
+            this.wheelSpeeds[1] /= maxVelocity;
+            this.wheelSpeeds[2] /= maxVelocity;
+            this.wheelSpeeds[3] /= maxVelocity;
         }
 
         if (isHalfSpeed) {

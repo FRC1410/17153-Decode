@@ -4,9 +4,11 @@ import org.firstinspires.ftc.teamcode.dynamite.DynCommands.DynCommand;
 import org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar;
 import org.firstinspires.ftc.teamcode.dynamite.PPintegration.PedroPathingBridge;
 import org.firstinspires.ftc.teamcode.dynamite.PPintegration.FieldPose;
+import org.firstinspires.ftc.teamcode.dynamite.PPintegration.FieldPoint;
 import org.firstinspires.ftc.teamcode.dynamite.DynExceptions.DynAutoStepException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -45,7 +47,20 @@ public class FollowBezierCommand implements DynCommand {
         }
 
         if (pathingBridge != null) {
-            pathingBridge.followBezier(startVar, endVar);
+            Object startVal = startVar.getValue();
+
+            // If first arg is a FieldCoord (double[2]), treat it as a control point from current pose
+            if (startVal instanceof double[] && ((double[]) startVal).length == 2) {
+                double[] cp = (double[]) startVal;
+                FieldPoint controlPoint = new FieldPoint(cp[0], cp[1]);
+                FieldPose startPose = pathingBridge.getCurrentPose();
+                FieldPose endPose = FieldPose.fromDynVar(endVar);
+
+                pathingBridge.followBezier(startPose, endPose, Collections.singletonList(controlPoint));
+            } else {
+                // Default: both args are poses
+                pathingBridge.followBezier(startVar, endVar);
+            }
         } else {
             System.out.println("[FollowBezier] " + startVarId + " -> " + endVarId);
         }

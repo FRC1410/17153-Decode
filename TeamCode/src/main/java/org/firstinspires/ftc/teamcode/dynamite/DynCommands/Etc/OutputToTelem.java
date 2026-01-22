@@ -8,22 +8,23 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Command to output text to telemetry.
+ * Command to add text to the telemetry buffer (does not send immediately).
+ * Use the Update command to send the buffer to the driver station.
  */
 public class OutputToTelem implements DynCommand {
     private final String messageOrVarId;
     private final boolean isLiteral;
 
     private Function<String, DynVar> getVar;
-    private Consumer<String> telemOutput;
+    private Consumer<String> addToBuffer;
 
     public OutputToTelem(String messageOrVarId, boolean isLiteral) {
         this.messageOrVarId = messageOrVarId;
         this.isLiteral = isLiteral;
     }
 
-    public void setTelemOutput(Consumer<String> telemOutput) {
-        this.telemOutput = telemOutput;
+    public void setTelemOutput(Consumer<String> addToBuffer) {
+        this.addToBuffer = addToBuffer;
     }
 
     @Override
@@ -41,8 +42,8 @@ public class OutputToTelem implements DynCommand {
             output = var != null ? var.toTelemetryString() : messageOrVarId;
         }
 
-        if (telemOutput != null) {
-            telemOutput.accept(output);
+        if (addToBuffer != null) {
+            addToBuffer.accept(output);
         } else {
             System.out.println("[TELEM] " + output);
         }

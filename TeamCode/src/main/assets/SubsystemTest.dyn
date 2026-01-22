@@ -1,0 +1,34 @@
+def_path Main start
+    // initial variables
+    Num SleepTime 5
+    Mux SleepTime 1000 to SleepTime
+    Num RemainingTime SleepTime
+    Num TimeStep 10
+    // turn the motor
+    cmd IntakeOn
+    while (RemainingTime > 0) start
+        // update timer variables
+        Num RemainingSecs 0
+        DIV RemainingTime 1000 to RemainingSecs
+        // get motor stats
+        Num motorRPM 0
+        cmd "getIntakeRPM" to motorRPM
+        // update telemetry
+        AddData "intake ON"
+        AddData motorRPM
+        AddData RemainingSecs
+        Update
+        // decrement and wait5sw
+        SUB RemainingTime TimeStep to RemainingTime
+        Wait TimeStep
+    end
+    // turn motor off
+    cmd IntakeOff
+    // update telemetry
+    AddData "intake OFF"
+    Update
+end
+end
+
+// define runner function
+autoPath Main

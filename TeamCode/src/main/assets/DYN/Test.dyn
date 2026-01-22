@@ -20,7 +20,7 @@ def_path goGoGadget start
 end
 
 def_path test start
-    output2telem "Test Started"
+    AddData "Test Started"
     RUN goGoGadget
     FieldPos startingPos (startX, startY, startHeading)
     FieldPos endingPos (endX, endY, startHeading)
@@ -29,7 +29,7 @@ def_path test start
     if (letsGo) start
         goTo (endingPos)
         turnTo (180, 30)
-        output2telem doneMSG
+        AddData doneMSG
     end
 end
 

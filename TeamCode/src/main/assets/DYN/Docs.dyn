@@ -205,23 +205,23 @@ PATH DECLARATORS:
         Usage:
             runs the given function name.
 TELEMETRY:
-    output2telem:
+    AddData:
         syntax:
-            output2telem var
+            AddData var
         Usage:
             the var is any variable, its data will be added to telemetry output the next time it is updated.
-    clearTelem: (WIP)
+    Update:
         syntax:
-            clearTelem
+            Update
         Usage:
-            call this to clear the telemetry output
+            sends the current telemetry buffer to the driver station and clears it for the next cycle.
 JAVA MOTHOD INTEGRATION:
     jFunc:
         syntax:
             jFunc funcID
-            jFunc funcID valIN ...
-            jFunc funcID to valOUT ...
-            jFunc funcID valIN ... to valOUT
+            jFunc funcID valIN
+            jFunc funcID to valOUT
+            jFunc funcID valIN to valOUT
         Usage:
             the functions that are given to DYN, must only have inputs and outputs as DynVars, either as DynVar or as DynVar[].
             this can be used to get input from an op (for testing), get the angle of a servo, state of a subsystem, the current position etc.
@@ -233,5 +233,5 @@ The rest of this program is a systems test for the language interpreter
 
 
 def_path Main start
-    output2telem "DYN Language System Test Starting!"
+    AddData "DYN Language System Test Starting!"
 end

@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 
-@Autonomous(name="Pedro Pathing Auto", group="Tests")
+@Autonomous(name="PP Auto Min", group="Tests")
 public class MinimumAuto extends OpMode {
     private Shooter shooter = new Shooter();
 

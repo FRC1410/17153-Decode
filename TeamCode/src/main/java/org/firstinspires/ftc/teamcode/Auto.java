@@ -22,15 +22,15 @@ import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
-@Autonomous(name="Pedro Pathing Auto", group="Tests")
+@Autonomous(name="PP Auto MAIN", group="Tests")
 public class Auto extends OpMode {
     private Intake intake = new Intake();
     private Shooter shooter = new Shooter();
     private ElapsedTime runtime = new ElapsedTime();
     private boolean isFiring;
     private double fireStart;
-    private double firelength = 7000;
-    private double fireSpool = 1000;
+    final private double firelength = 5000;
+    final private double fireSpool = 2000;
     private Follower follower;
     private PoseHistory poseHistory;
     private int pathState = 0;
@@ -87,8 +87,9 @@ public class Auto extends OpMode {
     private PathChain FromShootingToStartPathChain = new PathChain();
     private PathChain FromStartToShootingPathChain = new PathChain();
 
-    public void initialize() {
+    public void init() {
         this.follower = createFollower(hardwareMap);
+        this.shooter.init(hardwareMap);
     }
 
     // "AT GOAL" means that we are starting in the, if it is anything else, it will assume we are starting in the small starting area.
@@ -247,22 +248,38 @@ public class Auto extends OpMode {
 
     public void runPath() {
         switch (pathState) {
-            case 0: {
-                if (!follower.isBusy()) {
-                    shooter.cycle(telemetry);
-                    pathState++;
+            case 0:{
+                if (!follower.isBusy()){
+                    if (isFiring){
+                        if (runtime.milliseconds()>fireStart+fireSpool){
+                            pathState++;
+                            isFiring = false;
+                        } else {
+                            shooter.run(RobotStates.ShooterStates.FORWARD);
+                            shooter.update();
+                        }
+                    } else {
+                        isFiring = true;
+                        fireStart = runtime.milliseconds();
+                    }
                 }
                 break;
             }
-            // you can consider each case in this to be 1 whole step in the auto sequence.
-            case 1: {
-                // wait for robot to not be running a path.
-                if (!follower.isBusy()) {
-                    // start next auto step
-                    if (isFiring) {
-                        if (runtime.milliseconds() > fireStart + fireSpool) {
+            case 1:{
+                if (!follower.isBusy()){
+                    if (isFiring){
+                        if (runtime.milliseconds()>fireStart+firelength){
                             pathState++;
                             isFiring = false;
+                            intake.run(0,0);
+                            shooter.feed(0);
+                            shooter.run(RobotStates.ShooterStates.NEUTRAL);
+                            shooter.update();
+                        } else {
+                            intake.run(1,0);
+                            shooter.feed(1);
+                            shooter.run(RobotStates.ShooterStates.FORWARD);
+                            shooter.update();
                         }
                     } else {
                         isFiring = true;
@@ -273,41 +290,31 @@ public class Auto extends OpMode {
             }
             case 2:{
                 if (!follower.isBusy()){
-                    if (isFiring) {
-                        if (runtime.milliseconds() > fireStart+firelength){
-                            pathState++;
-                        }else{
-                            intake.run(1,0);
-                            shooter.feed(1);
-                        }
-                    } else {
-                        fireStart = runtime.milliseconds();
-                        isFiring = true;
-                    }
-                }
-            }
-            case 3:{
-                if (!follower.isBusy()){
                     follower.followPath(FromStartToShootingPathChain);
                     pathState++;
                 }
+                break;
+            }
+            case 3:{
+                if (!follower.isBusy()){
+                    follower.followPath(FromShootingToEndPathChain);
+                    pathState++;
+                }
+                break;
             }
             case 4:{
                 if (!follower.isBusy()){
-                    follower.followPath(FromShootingToEndPathChain);
                     pathState = -1;
                 }
+                break;
             }
             default: {}
         }
     }
 
-    public void init(){}
-
     public void start() {
         shooter.init(hardwareMap);
         shooter.run(RobotStates.ShooterStates.NEUTRAL);
-        initialize();
         buildPaths();
         follower.setStartingPose(startPose);
         PanelsConfigurables.INSTANCE.refreshClass(this);
@@ -333,6 +340,7 @@ public class Auto extends OpMode {
         telemetry.addData("H(deg)",Math.toDegrees(follower.getPose().getHeading()));
         telemetry.addData("Path State", pathState);
         telemetry.addData("runtime", runtime.milliseconds());
+        telemetry.addData("isFiring", isFiring);
         switch (pathState){
             //case 0: telemetry.addData("Next Pose X", pose2.getX());telemetry.addData("Next Pose Y", pose2.getY());telemetry.addData("Next Pose :", Math.toDegrees(pose2.getHeading()));
             //case 1: telemetry.addData("Next Pose X", pose3.getX());telemetry.addData("Next Pose Y", pose3.getY());telemetry.addData("Next Pose H", Math.toDegrees(pose3.getHeading()));

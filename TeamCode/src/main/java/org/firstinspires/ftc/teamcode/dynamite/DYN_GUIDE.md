@@ -56,7 +56,7 @@ def_path main start
     
     goTo(target)
     turnTo(180, 30)
-    output2telem "Done!"
+    AddData "Done!"
 end
 
 autoPath main
@@ -74,6 +74,28 @@ public class MyDynAuto extends DynAutoOpMode {
     @Override
     protected Pose getStartPose() {
         return new Pose(0, 0, 0);
+    }
+}
+```
+
+#### Optional: One-time Initialization Hook
+Subclasses can override `onInit()` to run custom setup after hardware, PedroPathing, and the DYN system are ready, and before the script is loaded and `waitForStart()`:
+
+```java
+@Autonomous(name = "My DYN Auto")
+public class MyDynAuto extends DynAutoOpMode {
+    @Override
+    protected String getScriptName() { return "MyAuto.dyn"; }
+
+    @Override
+    protected Pose getStartPose() { return new Pose(0, 0, 0); }
+
+    @Override
+    protected void onInit() {
+        // Example: set initial servo positions, zero sensors, etc.
+        // hoodServo.setPosition(INIT_POS);
+        // imu.resetYaw();
+        telemetry.addData("Init", "Robot primed for autonomous");
     }
 }
 ```
@@ -326,7 +348,7 @@ Example:
 Num total 0
 for 5 as i start
     ADD total i to total
-    output2telem total
+    AddData total
 end
 ```
 
@@ -342,7 +364,7 @@ Example:
 ```dyn
 Bool isReady true
 if isReady start
-    output2telem "Let's go!"
+    AddData "Let's go!"
     goTo(targetPos)
 end
 ```
@@ -396,7 +418,7 @@ def_path main start
     PathStartPosition startPos
     RUN pickupSample
     RUN scoreSample
-    output2telem "Done!"
+    AddData "Done!"
 end
 
 autoPath main
@@ -474,20 +496,20 @@ cmd setArmPosition from armPosition
 
 // With output
 cmd getArmPosition to currentPosition
-output2telem currentPosition
+AddData currentPosition
 ```
 
 ---
 
 ## Telemetry
 
-### output2telem
+### AddData
 Output a variable or string to telemetry.
 
 ```dyn
-output2telem variableName
-output2telem "String message"
-output2telem counter
+AddData variableName
+AddData "String message"
+AddData counter
 ```
 
 ---
@@ -529,7 +551,7 @@ def_path main start
     
     // Go to submersible
     goTo(submersible)
-    output2telem "At submersible"
+    AddData "At submersible"
     
     // Score preload
     goTo(scoringPos)
@@ -537,7 +559,7 @@ def_path main start
     
     // Park
     goTo(parkPos)
-    output2telem "Parked!"
+    AddData "Parked!"
 end
 
 autoPath main
@@ -590,7 +612,7 @@ def_path main start
     Num parkH 0
     FieldPos parkPos (parkX parkY parkH)
     goTo(parkPos)
-    output2telem "Done!"
+    AddData "Done!"
 end
 
 autoPath main
@@ -645,10 +667,10 @@ def_path main start
         
         FieldPos target (targetX targetY angleDeg)
         goTo(target)
-        output2telem "Visited point"
+        AddData "Visited point"
     end
     
-    output2telem "Circle complete!"
+    AddData "Circle complete!"
 end
 
 autoPath main
@@ -682,11 +704,11 @@ autoPath main
 
 ### Debugging Tips
 
-1. **Use output2telem statements**
+1. **Use AddData statements**
    ```dyn
-   output2telem "Starting movement"
+   AddData "Starting movement"
    goTo(target)
-   output2telem "Movement complete"
+   AddData "Movement complete"
    ```
 
 2. **Check telemetry** - DYN outputs to telemetry during execution
@@ -761,8 +783,8 @@ cmd name to outVar
 cmd name from inVar to outVar
 
 // Output
-output2telem variable
-output2telem "string"
+AddData variable
+AddData "string"
 
 // Comments
 // single line

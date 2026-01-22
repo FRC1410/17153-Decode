@@ -220,8 +220,24 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
     /**
      * Check if the follower is currently busy following a path.
      */
+    @Override
     public boolean isBusy() {
         return follower.isBusy();
+    }
+
+    /**
+     * Wait for the robot to stop moving before continuing execution.
+     * Uses follower.isBusy() to check if movement is complete.
+     */
+    @Override
+    public void waitForIdle() {
+        if (!opMode.opModeIsActive()) return;
+        
+        // Wait until robot is no longer busy
+        while (opMode.opModeIsActive() && !opMode.isStopRequested() && follower.isBusy()) {
+            follower.update();
+            opMode.idle();
+        }
     }
 
     /**

@@ -4,51 +4,51 @@
 
 def_path main
 start
-    output2telem "========================="
-    output2telem "DYN SYSTEM TEST STARTING"
-    output2telem "========================="
+    AddData "========================="
+    AddData "DYN SYSTEM TEST STARTING"
+    AddData "========================="
     
     // TEST 1: Variables
-    output2telem "=== TEST 1: Variables ==="
+    AddData "=== TEST 1: Variables ==="
     Num testInt 42
     Num testFloat 3.14159
-    output2telem testInt
-    output2telem testFloat
-    output2telem "Variables: PASS"
+    AddData testInt
+    AddData testFloat
+    AddData "Variables: PASS"
     
     // TEST 2: Basic Math
-    output2telem "=== TEST 2: Basic Math ==="
+    AddData "=== TEST 2: Basic Math ==="
     Num a 10
     Num b 3
     Num result 0
     
     ADD a b to result
-    output2telem result
+    AddData result
     
     SUB a b to result
-    output2telem result
+    AddData result
     
     MUX a b to result
-    output2telem result
+    AddData result
     
     DIV a b to result
-    output2telem result
+    AddData result
     
-    output2telem "Basic Math: PASS"
+    AddData "Basic Math: PASS"
     
     // TEST 3: Trigonometry
-    output2telem "=== TEST 3: Trig ==="
+    AddData "=== TEST 3: Trig ==="
     Num angle90 1.5708
     Num trigResult 0
     
     SIN angle90 to trigResult
-    output2telem trigResult
+    AddData trigResult
     
-    output2telem "Trig: PASS"
+    AddData "Trig: PASS"
     
-    output2telem "========================="
-    output2telem "ALL TESTS COMPLETE!"
-    output2telem "========================="
+    AddData "========================="
+    AddData "ALL TESTS COMPLETE!"
+    AddData "========================="
 end
 
 autoPath main

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.dynamite.DynCommands.DynCommand;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.CustomCommand;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.DeclareVar;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.OutputToTelem;
+import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.Update;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Math.*;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Movement.DynPath;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Movement.FollowBezierCommand;
@@ -49,6 +50,7 @@ public class DynProcessor {
     private PedroPathingBridge pathingBridge;
     private CustomCommand.CustomCommandHandler customCommandHandler;
     private Consumer<String> telemOutput;
+    private Runnable updateCallback;
 
     // Registered custom function IDs
     private Set<String> customFuncIds = new HashSet<>();
@@ -79,6 +81,21 @@ public class DynProcessor {
         if (pathingBridge != null) {
             pathingBridge.setTelemOutput(telemOutput);
         }
+    }
+
+    /**
+     * Set the callback for sending and clearing telemetry buffer.
+     */
+    public void setUpdateCallback(Runnable callback) {
+        this.updateCallback = callback;
+        Update.setUpdateCallback(callback);
+    }
+
+    /**
+     * Get the update telemetry callback.
+     */
+    public Runnable getUpdateCallback() {
+        return updateCallback;
     }
 
     /**
@@ -136,6 +153,11 @@ public class DynProcessor {
         // Initialize all paths
         for (DynPath path : pathRegistry.values()) {
             path.init(varBuffer::setVar, varBuffer::getVar, telemOutput);
+        }
+
+        // Set the update telemetry callback for Update command
+        if (updateCallback != null) {
+            Update.setUpdateCallback(updateCallback);
         }
 
         telemetry.addData("DYN", "Init: paths initialized");
@@ -416,8 +438,14 @@ public class DynProcessor {
                 return parseRunPath();
 
             // Output
-            case OUTPUT_2_TELEM:
-                return parseOutputToTelem();
+            case ADD_DATA:
+                return parseAddData();
+            case UPDATE:
+                return parseUpdate();
+
+            // Timing
+            case WAIT:
+                return parseWait();
 
             // Custom commands
             case CMD:
@@ -821,8 +849,8 @@ public class DynProcessor {
 
     // ==================== Output ====================
 
-    private DynCommand parseOutputToTelem() {
-        expect(TokenType.OUTPUT_2_TELEM);
+    private DynCommand parseAddData() {
+        expect(TokenType.ADD_DATA);
 
         Token valueToken = peek();
         boolean isLiteral = valueToken.getType() == TokenType.STRING_LITERAL;
@@ -833,8 +861,41 @@ public class DynProcessor {
         return cmd;
     }
 
+    private DynCommand parseUpdate() {
+        expect(TokenType.UPDATE);
+        return new Update();
+    }
+
+    // ==================== Timing ====================
+
+    private DynCommand parseWait() {
+        expect(TokenType.WAIT);
+        
+        Token valueToken = advance();
+        
+        // Check if it's a number literal or a variable name
+        if (valueToken.getType() == TokenType.NUMBER_LITERAL) {
+            long delayMs = (long) Double.parseDouble(valueToken.getValue());
+            return new org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.Wait(delayMs);
+        } else if (valueToken.getType() == TokenType.IDENTIFIER) {
+            String varName = valueToken.getValue();
+            return new org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.Wait(varName);
+        } else {
+            throw new RuntimeException("Expected number or variable name after Wait, got: " + valueToken.getValue());
+        }
+    }
+
     // ==================== Custom Commands ====================
 
+    /**
+     * Parse custom command in all 4 scenarios:
+     * 1. cmd functionName                          (no input/output)
+     * 2. cmd functionName from inputVar            (input only)
+     * 3. cmd functionName to outputVar             (output only)
+     * 4. cmd functionName from inputVar to outputVar (both)
+     * 
+     * All variants create a CustomCommand with appropriate input/output parameters.
+     */
     private DynCommand parseCustomCommand() {
         expect(TokenType.CMD);
         String funcName = expect(TokenType.IDENTIFIER).getValue();

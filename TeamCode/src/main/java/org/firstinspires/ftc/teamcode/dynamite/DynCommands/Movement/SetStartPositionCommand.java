@@ -11,7 +11,7 @@ import java.util.function.Function;
 /**
  * Command to set the starting position for the autonomous path.
  * Syntax: PathStartPosition posVar
- * MUST be the first movement command in an auto.
+ * Can be called at any time, but movement commands will fail if this hasn't been called first.
  */
 public class SetStartPositionCommand implements DynCommand {
     private final String positionVarId;

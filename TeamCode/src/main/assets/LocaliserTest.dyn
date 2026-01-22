@@ -1,0 +1,29 @@
+def_path F start
+    // initial variables
+    FieldPos startPos (0,0,0)
+    FieldPos endPos (20,0,0)
+    // move robot
+    PathStartPosition startPos
+    goTo endPos
+end
+
+def_path S start
+    // initial variables
+    FieldPos startPos (0,0,0)
+    FieldPos endPos (0,20,0)
+    // move robot
+    PathStartPosition startPos
+    goTo endPos
+end
+
+def_path T start
+    // initial variables
+    FieldPos startPos (0,0,0)
+    FieldPos endPos (0,0,180)
+    // move robot
+    PathStartPosition startPos
+    goTo endPos
+end
+
+// define runner function
+autoPath S

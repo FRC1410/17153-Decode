@@ -17,7 +17,7 @@ public class Shooter {
     private DcMotorEx motorFeeder;
     public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
-    private static final double TARGET_RPM = 6000;
+    private static final double TARGET_RPM = 1;
     private static final double RPM_TOLERANCE = 1500; // RPM threshold to start feeder
 
     public void init(HardwareMap hardwareMap) {
@@ -35,6 +35,8 @@ public class Shooter {
 
         this.motorShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.motorFeeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterStatus = RobotStates.ShooterStates.NEUTRAL;
+        run(shooterStatus);
     }
 
     public void cycle(Telemetry telemetry) {
@@ -52,7 +54,7 @@ public class Shooter {
     public void run(RobotStates.ShooterStates shooterState){
         switch (shooterState) {
             case FORWARD:
-                this.motorShooter.setVelocity(TARGET_RPM);
+                this.motorShooter.setPower(TARGET_RPM);
                 break;
             case NEUTRAL:
                 this.motorShooter.setVelocity(0);

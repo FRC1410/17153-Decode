@@ -1,0 +1,31 @@
+// CustomCommandTest.dyn
+// Demonstrates all 4 custom command scenarios
+
+// Scenario 1: No input, no output - simple action
+cmd startIntake
+Wait 100
+AddData "Intake started"
+
+// Scenario 2: Input only - pass parameter
+Num desiredSpeed 0.75
+cmd setMotorSpeed from desiredSpeed
+Wait 100
+AddData "Motor speed set"
+
+// Scenario 3: Output only - get sensor reading
+cmd getArmPosition to currentPos
+AddData currentPos
+
+// Scenario 4: Both input and output
+Num targetHeight 500
+Num actualHeight 0
+cmd moveArm from targetHeight to actualHeight
+Wait 500
+AddData actualHeight
+
+// Demonstrate using output in conditional
+if (actualHeight) start
+    AddData "Arm movement completed successfully"
+else
+    AddData "Arm movement failed"
+end

@@ -27,9 +27,9 @@ public class Drivetrain {
     private VoltageSensor controlHubVoltageSensor;
     private IMU imu;
     private double[] wheelSpeeds = new double[4];
-    private double maxPower = 1;
 
-    private double maxVelocity = 3000;
+    // Maximum velocity in ticks per second - adjust based on your robot's capabilities
+    private static final double MAX_VELOCITY_TICKS_PER_SEC = 6000;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
 
     public void init(HardwareMap hardwareMap) {
@@ -93,48 +93,52 @@ public class Drivetrain {
 
         strafeSpeed = Range.clip(input.x, -1, 1);
         forwardSpeed = Range.clip(input.y, -1, 1);
-        forwardSpeed = Range.clip(input.y, -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
+        // Calculate wheel speeds as normalized values (-1 to 1)
         this.wheelSpeeds[0] = forwardSpeed - strafeSpeed - turnSpeed;
         this.wheelSpeeds[1] = -forwardSpeed - strafeSpeed - turnSpeed;
         this.wheelSpeeds[2] = forwardSpeed + strafeSpeed - turnSpeed;
         this.wheelSpeeds[3] = -forwardSpeed + strafeSpeed - turnSpeed;
 
-        double voltageCorrection = 12 / controlHubVoltageSensor.getVoltage();
+        // Normalize wheel speeds to keep them within -1 to 1 range
+        double maxPower = 0;
+        for (double wheelSpeed : this.wheelSpeeds) {
+            maxPower = Math.max(maxPower, Math.abs(wheelSpeed));
+        }
 
+        if (maxPower > 1.0) {
+            for (int i = 0; i < this.wheelSpeeds.length; i++) {
+                this.wheelSpeeds[i] /= maxPower;
+            }
+        }
+
+        // Apply voltage correction
+        double voltageCorrection = 12.0 / controlHubVoltageSensor.getVoltage();
         for (int i = 0; i < this.wheelSpeeds.length; i++) {
-            this.wheelSpeeds[i] = Math.abs(this.wheelSpeeds[i]) < 0.01 ?
-                    this.wheelSpeeds[i] * voltageCorrection :
-                    (this.wheelSpeeds[i] + Math.signum(this.wheelSpeeds[i]) * 0.085) * voltageCorrection;
+            this.wheelSpeeds[i] *= voltageCorrection;
         }
 
-        for(double wheelSpeeds : wheelSpeeds) maxVelocity = Math.max(maxVelocity, Math.abs(wheelSpeeds));
-
-        if (maxVelocity > 3000) {
-            this.wheelSpeeds[0] /= maxVelocity;
-            this.wheelSpeeds[1] /= maxVelocity;
-            this.wheelSpeeds[2] /= maxVelocity;
-            this.wheelSpeeds[3] /= maxVelocity;
+        // Clamp wheel speeds after voltage correction
+        for (int i = 0; i < this.wheelSpeeds.length; i++) {
+            this.wheelSpeeds[i] = Range.clip(this.wheelSpeeds[i], -1.0, 1.0);
         }
 
+        // Set drivetrain mode based on isHalfSpeed
         if (isHalfSpeed) {
             this.setDrivetrainMode(RobotStates.Drivetrain.HALF_SPEED);
         } else {
             this.setDrivetrainMode(RobotStates.Drivetrain.FULL_SPEED);
         }
 
-        if (this.getDrivetrainMode() == RobotStates.Drivetrain.HALF_SPEED) {
-            this.motorFL.setPower(this.wheelSpeeds[0]);
-            this.motorFR.setPower(this.wheelSpeeds[1]);
-            this.motorBL.setPower(this.wheelSpeeds[2]);
-            this.motorBR.setPower(this.wheelSpeeds[3]);
-        } else {
-            this.motorFL.setPower(this.wheelSpeeds[0] * 2);
-            this.motorFR.setPower(this.wheelSpeeds[1] * 2);
-            this.motorBL.setPower(this.wheelSpeeds[2] * 2);
-            this.motorBR.setPower(this.wheelSpeeds[3] * 2);
-        }
+        // Apply speed multiplier based on mode
+        double speedMultiplier = (this.getDrivetrainMode() == RobotStates.Drivetrain.HALF_SPEED) ? 0.5 : 1.0;
+
+        // Set motor velocities with proper max velocity limiting
+        this.motorFL.setVelocity(this.wheelSpeeds[0] * MAX_VELOCITY_TICKS_PER_SEC * speedMultiplier);
+        this.motorFR.setVelocity(this.wheelSpeeds[1] * MAX_VELOCITY_TICKS_PER_SEC * speedMultiplier);
+        this.motorBL.setVelocity(this.wheelSpeeds[2] * MAX_VELOCITY_TICKS_PER_SEC * speedMultiplier);
+        this.motorBR.setVelocity(this.wheelSpeeds[3] * MAX_VELOCITY_TICKS_PER_SEC * speedMultiplier);
     }
 
     // These parameters are in Inches per second

@@ -17,7 +17,7 @@ public class Shooter {
     private DcMotorEx motorFeeder;
     public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
-    private static final double TARGET_RPM = 6000;
+    private static final double TARGET_RPM = 3000;
     private static final double RPM_TOLERANCE = 1500; // RPM threshold to start feeder
 
     public void init(HardwareMap hardwareMap) {

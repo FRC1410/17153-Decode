@@ -51,7 +51,7 @@ public class ControlScheme {
     }
 
     public static void initOperator(Gamepad gamepad2) {
-        SHOOTER_CYCLE = () -> gamepad2.right_bumper;
+           SHOOTER_CYCLE = () -> gamepad2.right_bumper;
         SHOOTER_REVERSE = () -> gamepad2.left_bumper;
         FEED = () -> gamepad2.right_trigger;
 

@@ -64,7 +64,7 @@ public class Intake {
     public void intakeTelem(Telemetry telemetry){
         double intakep = this.intake.getPower();
         double transferp = this.transfer.getPower();
-        double feederp = this.transfer.getPower();
+        double feederp = this.feeder.getPower();
         telemetry.addData("Intake Power: ", intakep);
         telemetry.addLine();
         telemetry.addData("Transfer Power: ", transferp);

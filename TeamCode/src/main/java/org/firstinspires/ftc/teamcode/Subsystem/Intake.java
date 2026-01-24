@@ -12,8 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 public class Intake {
+    // Intake the Artifact into the Robot.
     DcMotorEx intake;
+    //Transfer the Artifacts into storage.
     DcMotorEx transfer;
+    // Feed the Artifacts in storage into the shooter to get ready to score.
     DcMotorEx feeder;
 
     public void init(HardwareMap hardwareMap) {
@@ -52,13 +55,20 @@ public class Intake {
     }
 
     public void run(double intake, double outtake, double feederin, double feederout){
-        this.intake.setVelocity((outtake * 1500) - (intake * 1500));
-        this.transfer.setVelocity((outtake * 1500) - (intake * 1500));
-        this.feeder.setVelocity((feederin * 1500) - (feederout * 1500));
+        // The max gear speed we can currently run on this is 6000rpm per motor.
+        this.intake.setVelocity((outtake * 3000) - (intake * 3000));
+        this.transfer.setVelocity((outtake * 3000) - (intake * 3000));
+        this.feeder.setVelocity((feederin * 3000) - (feederout * 3000));
     }
 
     public void intakeTelem(Telemetry telemetry){
-        double p = this.intake.getPower();
-        telemetry.addData("Power: ", p);
+        double intakep = this.intake.getPower();
+        double transferp = this.transfer.getPower();
+        double feederp = this.transfer.getPower();
+        telemetry.addData("Intake Power: ", intakep);
+        telemetry.addLine();
+        telemetry.addData("Transfer Power: ", transferp);
+        telemetry.addLine();
+        telemetry.addData("Feeder Power: ", feederp);
     }
 }

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     DcMotorEx intake;
     DcMotorEx transfer;
+    DcMotorEx feeder;
 
     public void init(HardwareMap hardwareMap) {
         this.intake = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_ID);
@@ -36,11 +37,24 @@ public class Intake {
 
         this.transfer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        this.feeder = hardwareMap.get(DcMotorEx.class, FEEDER_MOTOR_ID);
+
+        this.feeder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.feeder.setDirection(DcMotorEx.Direction.FORWARD);
+
+        this.feeder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.feeder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
     }
 
-    public void run(double intake, double outtake){
+    public void run(double intake, double outtake, double feederin, double feederout){
         this.intake.setVelocity((outtake * 1500) - (intake * 1500));
         this.transfer.setVelocity((outtake * 1500) - (intake * 1500));
+        this.feeder.setVelocity((feederin * 1500) - (feederout * 1500));
     }
 
     public void intakeTelem(Telemetry telemetry){

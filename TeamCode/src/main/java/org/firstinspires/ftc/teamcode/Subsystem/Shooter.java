@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Util.RobotStates;
 public class Shooter {
 
     private DcMotorEx motorShooter;
-    private DcMotorEx motorFeeder;
+    //private DcMotorEx motorFeeder;
     public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
     private static final double TARGET_RPM = 1500;
@@ -22,19 +22,19 @@ public class Shooter {
 
     public void init(HardwareMap hardwareMap) {
         this.motorShooter = hardwareMap.get(DcMotorEx.class, SHOOTER_MOTOR_ID);
-        this.motorFeeder = hardwareMap.get(DcMotorEx.class, FEEDER_MOTOR_ID);
+        //this.motorFeeder = hardwareMap.get(DcMotorEx.class, FEEDER_MOTOR_ID);
 
         this.motorShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.motorFeeder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //this.motorFeeder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         this.motorShooter.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.motorFeeder.setDirection(DcMotorSimple.Direction.FORWARD);
+        //this.motorFeeder.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.motorShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorFeeder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //this.motorFeeder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.motorShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorFeeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //this.motorFeeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void cycle(Telemetry telemetry) {
@@ -56,14 +56,14 @@ public class Shooter {
                 break;
             case NEUTRAL:
                 this.motorShooter.setVelocity(0);
-                this.motorFeeder.setPower(0);
+                //this.motorFeeder.setPower(0);
                 break;
         }
     }
 
     public void runBackward() {
         this.motorShooter.setVelocity(-500);
-        this.motorFeeder.setPower(-0.5);
+        //this.motorFeeder.setPower(-0.5);
     }
 
     public void stopBackward() {
@@ -74,9 +74,9 @@ public class Shooter {
             double currentVelocity = this.motorShooter.getVelocity();
 
             if (Math.abs(currentVelocity - TARGET_RPM) < RPM_TOLERANCE) {
-                this.motorFeeder.setPower(1.0);
+                //this.motorFeeder.setPower(1.0);
             } else {
-                this.motorFeeder.setPower(0);
+                //this.motorFeeder.setPower(0);
             }
         }
     }
@@ -89,6 +89,6 @@ public class Shooter {
         telemetry.addData("Shooter RPM", this.motorShooter.getVelocity());
         telemetry.addData("Target RPM", TARGET_RPM);
         telemetry.addData("At Target", isAtTargetRPM());
-        telemetry.addData("Feeder Power", this.motorFeeder.getPower());
+        //telemetry.addData("Feeder Power", this.motorFeeder.getPower());
     }
 }

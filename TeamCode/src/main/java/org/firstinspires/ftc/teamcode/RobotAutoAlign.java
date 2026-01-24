@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Subsystem.HoodServo;
+//import org.firstinspires.ftc.teamcode.Subsystem.HoodServo;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
@@ -38,7 +38,7 @@ public class RobotAutoAlign extends OpMode {
     private final Rumbler driverRumbler = new Rumbler();
     private final Rumbler operatorRumbler = new Rumbler();
     private final Intake intake = new Intake();
-    private final HoodServo hoodServo = new HoodServo();
+    //private final HoodServo hoodServo = new HoodServo();
 
     private final Toggle drivetrainToggle = new Toggle();
 
@@ -48,7 +48,7 @@ public class RobotAutoAlign extends OpMode {
         ControlScheme.initOperator(gamepad2);
         this.intake.init(hardwareMap);
         this.shooter.init(hardwareMap);
-        this.hoodServo.init(hardwareMap);
+        //this.hoodServo.init(hardwareMap);
         // starts pedro localiser and drivetrain
         setupPoses();
         this.follower = createFollower(hardwareMap);
@@ -172,7 +172,7 @@ public class RobotAutoAlign extends OpMode {
         telemetry.addData("Robot Field Pos", follower.getPose().toString());
         telemetry.addData("Auto Aligning",autoAligning);
         // normal
-        this.hoodServo.hoodTelem(telemetry);
+        //this.hoodServo.hoodTelem(telemetry);
         this.shooter.addTelemetry(telemetry);
         telemetry.update();
     }
@@ -237,19 +237,21 @@ public class RobotAutoAlign extends OpMode {
         if (this.shooter.isAtTargetRPM() && this.shooter.shooterStatus == RobotStates.ShooterStates.FORWARD) {
             this.intake.run(
                     ControlScheme.INTAKE_IN.get(),
-                    ControlScheme.INTAKE_OUT.get()
+                    ControlScheme.INTAKE_OUT.get(),
+                    ControlScheme.FEEDER_IN.get(),
+                    ControlScheme.FEEDER_OUT.get()
             );
         } else {
-            this.intake.run(0, 0);
+            this.intake.run(0, 0,0, 0);
         }
 
-        this.hoodServo.loop(
-                ControlScheme.HOOD_POS_ONE.get(),
-                ControlScheme.HOOD_POS_TWO.get(),
-                ControlScheme.HOOD_POS_THREE.get(),
-                ControlScheme.HOOD_POS_FOUR.get(),
-                ControlScheme.HOOD_POS_FIVE.get()
-        );
+//        this.hoodServo.loop(
+//                ControlScheme.HOOD_POS_ONE.get(),
+//                ControlScheme.HOOD_POS_TWO.get(),
+//                ControlScheme.HOOD_POS_THREE.get(),
+//                ControlScheme.HOOD_POS_FOUR.get(),
+//                ControlScheme.HOOD_POS_FIVE.get()
+//        );
 
         this.driverRumbler.halftimeRumble(gamepad1);
         this.operatorRumbler.halftimeRumble(gamepad2);

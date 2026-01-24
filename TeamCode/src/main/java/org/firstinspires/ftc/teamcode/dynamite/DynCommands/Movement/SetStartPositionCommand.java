@@ -37,7 +37,9 @@ public class SetStartPositionCommand implements DynCommand {
         }
 
         if (pathingBridge != null) {
+            System.out.println("[PathStartPosition] Setting start pose var: " + positionVarId + " -> " + posVar);
             pathingBridge.setStartPose(posVar);
+            System.out.println("[PathStartPosition] Start pose set.");
         } else {
             System.out.println("[PathStartPosition] " + positionVarId + " = " + posVar);
         }

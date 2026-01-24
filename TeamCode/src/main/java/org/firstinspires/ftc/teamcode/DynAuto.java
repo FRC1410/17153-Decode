@@ -62,11 +62,16 @@ public class DynAuto extends DynAutoOpMode{
                 // rev the shooter
                 shooter.run(RobotStates.ShooterStates.FORWARD);
                 // wait
-                safeSleep(500);
+                safeSleep(1000);
                 // feed the shooter
                 shooter.feed(1);
+                intake.run(1,0);
                 // wait
-                safeSleep(5000);
+                safeSleep(4000);
+                // stop feeding and running the shooter
+                shooter.run(RobotStates.ShooterStates.NEUTRAL);
+                shooter.feed(0);
+                intake.run(0,0);
                 return null;
             }
         });
@@ -86,50 +91,11 @@ public class DynAuto extends DynAutoOpMode{
                 return null;
             }
         });
-        dynAuto.registerCustomCommand("Sleep1s", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                return null;
-            }
-        });
-
-        dynAuto.registerCustomCommand("Sleep2s", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                return null;
-            }
-        });
-
-        dynAuto.registerCustomCommand("Sleep3s", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                return null;
-            }
-        });
         dynAuto.registerCustomCommand("Sleep", new CustomCommand.CustomCommandHandler() {
             @Override
             public DynVar execute(String functionName, DynVar input) {
                 long wait = (long)((double)input.toJava());
-                try {
-                    Thread.sleep(wait);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                safeSleep(wait);
                 return null;
             }
         });

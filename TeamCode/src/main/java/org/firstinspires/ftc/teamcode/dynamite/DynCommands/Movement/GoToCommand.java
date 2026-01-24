@@ -36,7 +36,15 @@ public class GoToCommand implements DynCommand {
         }
 
         if (pathingBridge != null) {
+            // Debug: log variable contents and current Pedro pose before executing
+            try {
+                System.out.println("[GoTo] Invoking goTo for var: " + positionVarId + " -> " + posVar);
+                System.out.println("[GoTo] Bridge current pose: " + pathingBridge.getCurrentPose());
+            } catch (Exception e) {
+                System.out.println("[GoTo] Debug logging failed: " + e.getMessage());
+            }
             pathingBridge.goTo(posVar);
+            System.out.println("[GoTo] Completed goTo for var: " + positionVarId);
         } else {
             System.out.println("[GoTo] " + positionVarId + " = " + posVar);
         }

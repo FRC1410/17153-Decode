@@ -70,7 +70,9 @@ public class DynPath {
         for (int i = 0; i < commands.size(); i++) {
             DynCommand cmd = commands.get(i);
             try {
+                System.out.println("[DynPath] Running command #" + i + ": " + cmd.getDescription());
                 cmd.run();
+                System.out.println("[DynPath] Completed command #" + i + ": " + cmd.getDescription());
             } catch (Exception e) {
                 String msg = "[ERROR] Command failed (#" + i + "): " + cmd.getDescription() + " -> " + e.getMessage();
                 if (telemOutput != null) {

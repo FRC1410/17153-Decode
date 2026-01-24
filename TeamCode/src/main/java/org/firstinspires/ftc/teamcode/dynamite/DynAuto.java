@@ -76,7 +76,7 @@ public class DynAuto {
      */
     public void setTelemOutput(Consumer<String> output) {
         processor.setTelemOutput(output);
-        pathingBridge.setTelemOutput(output);
+        //pathingBridge.setTelemOutput(output);
     }
 
     /**

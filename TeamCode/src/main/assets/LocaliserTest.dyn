@@ -1,29 +1,42 @@
-def_path F start
-    // initial variables
-    FieldPos startPos (0,0,0)
-    FieldPos endPos (20,0,0)
-    // move robot
-    PathStartPosition startPos
-    goTo endPos
-end
-
-def_path S start
-    // initial variables
-    FieldPos startPos (0,0,0)
-    FieldPos endPos (0,20,0)
-    // move robot
-    PathStartPosition startPos
-    goTo endPos
-end
-
-def_path T start
-    // initial variables
-    FieldPos startPos (0,0,0)
-    FieldPos endPos (0,0,180)
-    // move robot
-    PathStartPosition startPos
-    goTo endPos
+def_path Main start
+    String Type "F"
+    if (Type == "F") start
+        AddData "Forward test START"
+        Update
+        // initial variables
+        FieldPos startPos (0,0,0)
+        FieldPos endPos (24,0,0)
+        // move robot
+        PathStartPosition startPos
+        goTo endPos
+        AddData "Forward test END"
+        Update
+    end
+    if (Type == "S") start
+        AddData "Strafe test START"
+        Update
+        // initial variables
+        FieldPos startPos (0,0,0)
+        FieldPos endPos (0,24,0)
+        // move robot
+        PathStartPosition startPos
+        goTo endPos
+        AddData "Strafe test END"
+        Update
+    end
+    if (Type == "T") start
+        AddData "Turn test START"
+        Update
+        // initial variables
+        FieldPos startPos (0,0,0)
+        FieldPos endPos (0,0,3.1415926535)
+        // move robot
+        PathStartPosition startPos
+        goTo endPos
+        AddData "Turn test END"
+        Update
+    end
 end
 
 // define runner function
-autoPath S
+autoPath Main

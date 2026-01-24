@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -72,7 +73,7 @@ public class DynAutoOpMode extends LinearOpMode {
     protected DynPedroPathingBridge pathingBridge;
 
     private static final int DYN_TELEM_MAX_LINES = 255;
-    private final java.util.ArrayList<String> dynTelemBuffer = new java.util.ArrayList<>();
+    private java.util.ArrayList<String> dynTelemBuffer = new java.util.ArrayList<>();
     
     /**
      * Add a line to the DYN telemetry buffer.
@@ -90,12 +91,11 @@ public class DynAutoOpMode extends LinearOpMode {
      * Called by the Update command.
      */
     public void sendTelemBuffer() {
-        telemetry.clear();
         for (String line : dynTelemBuffer) {
             telemetry.addData("DYN", line);
         }
         telemetry.update();
-        dynTelemBuffer.clear();
+        dynTelemBuffer = new ArrayList<>();
     }
 
     // Hardware references (set these in your subclass)

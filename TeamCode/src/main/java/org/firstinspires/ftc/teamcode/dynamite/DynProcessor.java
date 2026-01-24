@@ -858,6 +858,7 @@ public class DynProcessor {
 
         OutputToTelem cmd = new OutputToTelem(message, isLiteral);
         cmd.setTelemOutput(telemOutput);
+
         return cmd;
     }
 

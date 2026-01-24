@@ -1,189 +1,148 @@
-// global esc variables (cus all variables are global)
-String RED "RED"
-String BLUE "BLUE"
-String AT_GOAL "AT_GOAL"
-String AT_FAR "AT_FAR"
-String AT_SQUARE "AT_SQUARE"
-
-
-def_path RED_AT_GOAL start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (96,84,0)
-    FieldPos Pickup0End (128,84,0)
-    FieldPos Pickup1 (96,59,0)
-    FieldPos Pickup1End (135,59,0)
-    FieldPos Pickup2 (96,35,0)
-    FieldPos Pickup2End (135,35,0)
-    // fire point
-    FieldPos FirePos (118,127,37)
-    // start/end points
-    FieldPos StartPos (118,126,37)
-    FieldPos EndPos (120,100,90)
-    // extra points
-    FieldPos classifierPoint (128,70,180)
-    FieldCoord pickup1toShoot (104.5,55)
-    FieldCoord pickup2toShoot (115,34)
-end
-def_path RED_AT_FAR start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (96,84,0)
-    FieldPos Pickup0End (128,84,0)
-    FieldPos Pickup1 (96,59,0)
-    FieldPos Pickup1End (135,59,0)
-    FieldPos Pickup2 (96,35,0)
-    FieldPos Pickup2End (135,35,0)
-    // fire point
-    FieldPos FirePos (118,127,37)
-    // start/end points
-    FieldPos StartPos (88,8,90)
-    FieldPos EndPos (112,8,90)
-    // extra points
-    FieldPos classifierPoint (128,70,180)
-    FieldCoord pickup1toShoot (104.5,55)
-    FieldCoord pickup2toShoot (115,34)
-end
-def_path RED_AT_SQUARE start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (96,84,0)
-    FieldPos Pickup0End (128,84,0)
-    FieldPos Pickup1 (96,59,0)
-    FieldPos Pickup1End (135,59,0)
-    FieldPos Pickup2 (96,35,0)
-    FieldPos Pickup2End (135,35,0)
-    // fire point
-    FieldPos FirePos (118,127,37)
-    // start/end points
-    FieldPos StartPos (129,8,90)
-    FieldPos EndPos (112,8,90)
-    // extra points
-    FieldPos classifierPoint (128,70,180)
-    FieldCoord pickup1toShoot (104.5,55)
-    FieldCoord pickup2toShoot (115,34)
-end
-
-def_path BLUE_AT_GOAL start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (48,84,180)
-    FieldPos Pickup0End (15,84,180)
-    FieldPos Pickup1 (48,59,180)
-    FieldPos Pickup1End (9,59,180)
-    FieldPos Pickup2 (48,36,180)
-    FieldPos Pickup2End (9,36,180)
-    // fire point
-    FieldPos FirePos (24,124,144)
-    // start/end points
-    FieldPos StartPos (23,126,143)
-    FieldPos EndPos (25,95,90)
-    // extra points
-    FieldPos classifierPoint (16.5,71.5,0)
-    FieldCoord pickup1toShoot (39.5,55)
-    FieldCoord pickup2toShoot (29,34)
-end
-def_path BLUE_AT_FAR start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (48,84,180)
-    FieldPos Pickup0End (15,84,180)
-    FieldPos Pickup1 (48,59,180)
-    FieldPos Pickup1End (9,59,180)
-    FieldPos Pickup2 (48,36,180)
-    FieldPos Pickup2End (9,36,180)
-    // fire point
-    FieldPos FirePos (24,124,144)
-    // start/end points
-    FieldPos StartPos (56,8,90)
-    FieldPos EndPos (35,8,90)
-    // extra points
-    FieldPos classifierPoint (16.5,71.5,0)
-    FieldCoord pickup1toShoot (39.5,55)
-    FieldCoord pickup2toShoot (29,34)
-end
-def_path BLUE_AT_SQUARE start
-    // define points
-    // pickup points
-    FieldPos Pickup0 (48,84,180)
-    FieldPos Pickup0End (15,84,180)
-    FieldPos Pickup1 (48,59,180)
-    FieldPos Pickup1End (9,59,180)
-    FieldPos Pickup2 (48,36,180)
-    FieldPos Pickup2End (9,36,180)
-    // fire point
-    FieldPos FirePos (24,124,144)
-    // start/end points
-    FieldPos StartPos (15,8,90)
-    FieldPos EndPos (35,8,90)
-    // extra points
-    FieldPos classifierPoint (16.5,71.5,0)
-    FieldCoord pickup1toShoot (39.5,55)
-    FieldCoord pickup2toShoot (29,34)
-end
-
 def_path Main start
+    // const vars
+    String RED "RED"
+    String BLUE "BLUE"
+    String AT_FAR "AT_FAR"
+    String AT_GOAL "AT_GOAL"
+    String AT_SQUARE "AT_SQUARE"
     // define variables
     String Alience "BLUE" // RED or BLUE
     String Start_Pos "AT_GOAL" //either AT_GOAL or AT_FAR
-    Num targetAutoArtifacts 3 // either 3, 6, 9, or 12
+    Num targetAutoArtifacts 6 // either 3, 6, 9, or 12
     // telemetry
     AddData Alience
     AddData Start_Pos
     AddData targetAutoArtifacts
+    Update
     // define the essential auto points
     if (Alience == RED) start
+        // define angles
+        Num EndAngle 90
+        Num FireAngle 37
+        Num StartAngle 90
+        Num PickupAngle 0
+        Num GoalStartAngle 37
+        Num ClassifierAngle 180
+        // calculate angles
+        toRad EndAngle to EndAngle
+        toRad FireAngle to FireAngle
+        toRad StartAngle to StartAngle
+        toRad PickupAngle to PickupAngle
+        toRad GoalStartAngle to GoalStartAngle
+        toRad ClassifierAngle to ClassifierAngle
+        // define points
+        // pickup points
+        FieldPos Pickup0 (96,84,PickupAngle)
+        FieldPos Pickup0End (128,84,PickupAngle)
+        FieldPos Pickup1 (96,59,PickupAngle)
+        FieldPos Pickup1End (135,59,PickupAngle)
+        FieldPos Pickup2 (96,35,PickupAngle)
+        FieldPos Pickup2End (135,35,PickupAngle)
+        // fire point
+        FieldPos FirePos (118,127,FireAngle)
+        // extra points
+        FieldPos classifierPoint (128,70,ClassifierAngle)
+        FieldCoord pickup1toShoot (104.5,55)
+        FieldCoord pickup2toShoot (115,34)
         if (Start_Pos == AT_GOAL) start
-            RUN RED_AT_GOAL
+            // start/end points
+            FieldPos StartPos (118,126,GoalStartAngle)
+            FieldPos EndPos (120,100,EndAngle)
         end
         if (Start_Pos == AT_FAR) start
-            RUN RED_AT_FAR
+            // start/end points
+            FieldPos StartPos (88,8,StartAngle)
+            FieldPos EndPos (112,8,EndAngle)
         end
         if (Start_Pos == AT_SQUARE) start
-            RUN RED_AT_SQUARE
+            // start/end points
+            FieldPos StartPos (129,8,StartAngle)
+            FieldPos EndPos (112,8,EndAngle)
         end
     end
     if (Alience == BLUE) start
+        // define angles
+        Num EndAngle 90
+        Num FireAngle 144
+        Num StartAngle 90
+        Num PickupAngle 180
+        Num GoalStartAngle 143
+        Num ClassifierAngle 0
+        // calculate angles
+        toRad EndAngle to EndAngle
+        toRad FireAngle to FireAngle
+        toRad StartAngle to StartAngle
+        toRad PickupAngle to PickupAngle
+        toRad GoalStartAngle to GoalStartAngle
+        toRad ClassifierAngle to ClassifierAngle
+        // define points
+        // pickup points
+        FieldPos Pickup0 (48,84,PickupAngle)
+        FieldPos Pickup0End (15,84,PickupAngle)
+        FieldPos Pickup1 (48,59,PickupAngle)
+        FieldPos Pickup1End (9,59,PickupAngle)
+        FieldPos Pickup2 (48,36,PickupAngle)
+        FieldPos Pickup2End (9,36,PickupAngle)
+        // fire point
+        FieldPos FirePos (24,124,FireAngle)
+        // extra points
+        FieldPos classifierPoint (16.5,71.5,ClassifierAngle)
+        FieldCoord pickup1toShoot (39.5,55)
+        FieldCoord pickup2toShoot (29,34)
         if (Start_Pos == AT_GOAL) start
-            RUN BLUE_AT_GOAL
+            // start/end points
+            FieldPos StartPos (23,126,GoalStartAngle)
+            FieldPos EndPos (25,95,EndAngle)
         end
         if (Start_Pos == AT_FAR) start
-            RUN BLUE_AT_FAR
+            // start/end points
+            FieldPos StartPos (56,8,StartAngle)
+            FieldPos EndPos (35,8,EndAngle)
         end
         if (Start_Pos == AT_SQUARE) start
-            RUN BLUE_AT_SQUARE
+            // start/end points
+            FieldPos StartPos (15,8,StartAngle)
+            FieldPos EndPos (35,8,EndAngle)
         end
     end
     // run the auto sequence
     PathStartPosition StartPos
     if (targetAutoArtifacts >= 3) start
         // fire
+        AddData "shooter spooling and firing"
+        Update
         cmd FireShooter
     end
     if (targetAutoArtifacts >= 6) start
         // collect artifacts
+        AddData "collecting Pickup zone 0:"
+        AddData Pickup0
+        Update
         goTo Pickup0
         cmd IntakeOn
-        cmd IntakeOff
         goTo Pickup0End
+        cmd IntakeOff
         // fire
+        AddData "Going to firePos:"
+        AddData FirePos
+        Update
         goTo FirePos
         cmd FireShooter
     end
     if (targetAutoArtifacts >= 9) start
         // collect artifacts
-        goTo Pickup1
         cmd IntakeOn
-        cmd IntakeOff
+        goTo Pickup1
         goTo Pickup1End
+        cmd IntakeOff
         // fire
         followBezier (pickup1toShoot, FirePos)
         cmd FireShooter
     end
     if (targetAutoArtifacts >= 12) start
-        // coolect last artifacts
-        goTo Pickup2
+        // collect last artifacts
         cmd IntakeOn
+        goTo Pickup2
         goTo Pickup2End
         cmd IntakeOff
         // final fire

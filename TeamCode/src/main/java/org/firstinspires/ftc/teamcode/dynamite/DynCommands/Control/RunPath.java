@@ -35,7 +35,9 @@ public class RunPath implements DynCommand {
     public void run() {
         DynPath target = pathRegistry.get(pathName);
         if (target != null) {
+            System.out.println("[RunPath] Running nested path: " + pathName);
             target.run();
+            System.out.println("[RunPath] Completed nested path: " + pathName);
         } else {
             throw new DynAutoStepException("Path not found: " + pathName);
         }

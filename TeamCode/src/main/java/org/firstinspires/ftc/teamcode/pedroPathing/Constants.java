@@ -23,10 +23,10 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD) // good
+            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)  // good
+            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)// good
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD) // good
             .xVelocity(10)//46.12)
             .yVelocity(7);//37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
@@ -34,10 +34,10 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontEncoderDirection(Encoder.REVERSE)
+            .leftFrontEncoderDirection(Encoder.FORWARD)
             .leftRearEncoderDirection(Encoder.REVERSE)
             .rightFrontEncoderDirection(Encoder.REVERSE)
-            .rightRearEncoderDirection(Encoder.REVERSE)
+            .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
             .forwardTicksToInches(0.00619766)
@@ -61,7 +61,6 @@ public class Constants {
             ))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(
                     0.06,
-
                     0,
                     0.0015,
                     0.7,

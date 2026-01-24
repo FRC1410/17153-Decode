@@ -52,6 +52,13 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         Pose ppPose = toPedroPose(pose);
         follower.setStartingPose(ppPose);
         
+        // Debug: confirm follower starting pose after set
+        try {
+            System.out.println("[DynPedro] setStartPose called with FieldPose: " + pose + ", mapped PedroPose: " + ppPose);
+            System.out.println("[DynPedro] follower.getPose() after set: " + follower.getPose());
+        } catch (Exception e) {
+            System.out.println("[DynPedro] setStartPose debug failed: " + e.getMessage());
+        }
         log("Start pose set: " + ppPose);
     }
 
@@ -64,6 +71,8 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         // Get current and target poses
         Pose currentPose = follower.getPose();
         Pose targetPose = toPedroPose(target);
+        // Debug: log mapping details
+        System.out.println("[DynPedro] goTo called with FieldPose: " + target + ", mapped to Pedro Pose: " + targetPose + ", follower pose: " + currentPose);
         
         // Build PathChain using follower.pathBuilder()
         PathChain pathChain = follower.pathBuilder()
@@ -161,6 +170,11 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         if (!opMode.opModeIsActive()) return;
         
         // Start following the path
+        try {
+            System.out.println("[DynPedro] Executing PathChain: " + pathChain.toString());
+        } catch (Exception e) {
+            System.out.println("[DynPedro] Executing PathChain (toString failed): " + e.getMessage());
+        }
         follower.followPath(pathChain, holdEndOfPath);
         
         // Timeout after 30 seconds to prevent infinite loop
@@ -189,8 +203,8 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         
         // Update current pose after path completes
         Pose finalPose = follower.getPose();
-        currentPose = new FieldPose(finalPose.getX(), finalPose.getY(), 
-                                     Math.toDegrees(finalPose.getHeading()));
+        // Convert Pedro pose back to DYN FieldPose
+        currentPose = toFieldPose(finalPose);
     }
 
     /**
@@ -253,7 +267,15 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
      * Convert DYN FieldPose to PedroPathing Pose.
      */
     private Pose toPedroPose(FieldPose pose) {
-        return new Pose(pose.getX(), pose.getY(), pose.getHeading());
+        // Map DYN coordinates to PedroPathing coordinates.
+        // Pedro's X-axis appears to run to robot-right and Y-axis runs forward on this robot.
+        // Desired mapping:
+        //  - DYN X (forward) -> Pedro Y (forward)
+        //  - DYN Y (strafe right) -> Pedro X (right)
+        // Also adjust heading because DYN heading=0 faces forward (DYN X),
+        // while Pedro heading=0 faces right (Pedro X). Convert by +90deg (pi/2).
+        double pedroHeading = pose.getHeading() + Math.PI / 2.0;
+        return new Pose(pose.getY(), pose.getX(), pedroHeading);
     }
 
     /**
@@ -261,14 +283,19 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
      * Used for control points in Bezier curves.
      */
     private Pose toPedroPoseFromPoint(FieldPoint point) {
-        return new Pose(point.getX(), point.getY(), 0);
+        // Same mapping for control points (no heading)
+        // For control points, set heading to Pedro's 0 reference (right).
+        return new Pose(point.getY(), point.getX(), Math.PI / 2.0);
     }
 
     /**
      * Convert PedroPathing Pose to DYN FieldPose.
      */
     private FieldPose toFieldPose(Pose pose) {
-        return new FieldPose(pose.getX(), pose.getY(), Math.toDegrees(pose.getHeading()));
+        // Inverse of toPedroPose: Pedro X -> DYN Y, Pedro Y -> DYN X
+        // Convert Pedro heading back to DYN heading by subtracting pi/2.
+        double dynHeading = pose.getHeading() - Math.PI / 2.0;
+        return new FieldPose(pose.getY(), pose.getX(), dynHeading);
     }
 
     // ==================== ACCESSORS ====================

@@ -267,7 +267,81 @@ public class DynAutoOpMode extends LinearOpMode {
             
             telemetry.addData("Script", "Asset loaded, processing...");
             telemetry.update();
+
+            // Diagnostic telemetry: show script length and tail to detect truncation
+            try {
+                telemetry.addData("ScriptLen", scriptContent.length());
+                String[] scriptLines = scriptContent.split("\\r?\\n", -1);
+                telemetry.addData("ScriptLines", scriptLines.length);
+                int lastIdx = scriptLines.length - 1;
+                telemetry.addData("ScriptLastLine", scriptLines[lastIdx]);
+                String tail = (lastIdx >= 2 ? scriptLines[lastIdx-2] + " | " : "")
+                        + (lastIdx >= 1 ? scriptLines[lastIdx-1] + " | " : "")
+                        + scriptLines[lastIdx];
+                telemetry.addData("ScriptTail", tail);
+                telemetry.update();
+
+                // Token-level diagnostics: token count, END token positions, and last tokens
+                try {
+                    org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.DynTokenizer tok = new org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.DynTokenizer(scriptContent);
+                    java.util.List<org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.Token> toks = tok.tokenize();
+                    telemetry.addData("TokenCount", toks.size());
+                    // collect END/WEND token lines
+                    java.util.List<Integer> endLines = new java.util.ArrayList<>();
+                    for (org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.Token t : toks) {
+                        if (t.getType() == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.END || t.getType() == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.WEND) {
+                            endLines.add(t.getLine());
+                        }
+                    }
+                    telemetry.addData("ENDlines", endLines.toString());
+
+                    // Build a short summary of the last ~12 tokens
+                    StringBuilder lastTokens = new StringBuilder();
+                    int startIdx = Math.max(0, toks.size() - 12);
+                    for (int i = startIdx; i < toks.size(); i++) {
+                        org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.Token t = toks.get(i);
+                        lastTokens.append(t.getType().name()).append(":").append(t.getValue()).append(" ");
+                    }
+                    telemetry.addData("LastTokens", lastTokens.toString());
+                    telemetry.update();
+                } catch (Exception e) {
+                    telemetry.addData("TokenDiagErr", e.getMessage());
+                    telemetry.update();
+                }
+
+            } catch (Exception e) {
+                telemetry.addData("ScriptDiagErr", e.getMessage());
+                telemetry.update();
+            }
             
+            // Preflight: check for unclosed blocks and auto-append missing 'end' tokens
+            try {
+                org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.DynTokenizer preTok = new org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.DynTokenizer(scriptContent);
+                java.util.List<org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.Token> preTokens = preTok.tokenize();
+                int openBlocks = 0;
+                for (org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.Token tk : preTokens) {
+                    org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType tt = tk.getType();
+                    if (tt == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.START || tt == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.WSTART) {
+                        openBlocks++;
+                    } else if (tt == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.END || tt == org.firstinspires.ftc.teamcode.dynamite.DYNtokenizer.TokenType.WEND) {
+                        if (openBlocks > 0) openBlocks--;
+                    }
+                }
+
+                if (openBlocks > 0) {
+                    telemetry.addData("ScriptFix", "Detected " + openBlocks + " unclosed block(s) - appending missing 'end' lines");
+                    StringBuilder sb = new StringBuilder(scriptContent);
+                    sb.append("\n// DYN_AUTO_FIX: Appended ").append(openBlocks).append(" missing end(s)\n");
+                    for (int i = 0; i < openBlocks; i++) sb.append("end\n");
+                    scriptContent = sb.toString();
+                    telemetry.addData("ScriptFixedLen", scriptContent.length());
+                    telemetry.update();
+                }
+            } catch (Exception e) {
+                telemetry.addData("ScriptFixErr", e.getMessage());
+                telemetry.update();
+            }
+
             dynAuto.loadScriptContent(scriptContent, getCustomFunctionIds());
             
             telemetry.addData("Script", "Loaded: " + getScriptName());

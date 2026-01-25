@@ -39,4 +39,4 @@ def_path Main start
 end
 
 // define runner function
-autoPath Main
+autoPath Main[]

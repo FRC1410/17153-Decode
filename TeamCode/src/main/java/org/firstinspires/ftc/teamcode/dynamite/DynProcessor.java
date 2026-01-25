@@ -179,6 +179,33 @@ public class DynProcessor {
      * Process all tokens and build command structures.
      */
     public void processScriptTokens() {
+        // Sanitize tokens: if EOF is reached but there are unmatched START/WSTART,
+        // auto-insert missing END tokens before EOF to avoid parser failing on EOF.
+        try {
+            int open = 0;
+            for (Token t : tokens) {
+                if (t.getType() == TokenType.START || t.getType() == TokenType.WSTART) open++;
+                if (t.getType() == TokenType.END || t.getType() == TokenType.WEND) {
+                    if (open > 0) open--;
+                }
+            }
+            if (open > 0) {
+                Token eofToken = tokens[tokens.length - 1];
+                java.util.List<Token> newList = new java.util.ArrayList<>();
+                // copy all tokens except final EOF
+                for (int i = 0; i < tokens.length - 1; i++) newList.add(tokens[i]);
+                // append missing END tokens
+                for (int i = 0; i < open; i++) {
+                    int line = (scriptLines != null) ? scriptLines.length + 1 : eofToken.getLine();
+                    newList.add(new Token(TokenType.END, "end", line, 1));
+                }
+                // finally append EOF
+                newList.add(eofToken);
+                tokens = newList.toArray(new Token[0]);
+            }
+        } catch (Exception ignored) {
+            // If sanitization fails, continue and let existing diagnostics trigger.
+        }
         int safety = 0;
         long startMs = System.currentTimeMillis();
         while (!isAtEnd()) {
@@ -956,8 +983,40 @@ public class DynProcessor {
     private Token expect(TokenType type) {
         if (check(type)) return advance();
         Token current = peek();
+        // If parser expects an END/WEND but we've hit EOF, insert a synthetic END/WEND
+        if ((type == TokenType.END || type == TokenType.WEND) && isAtEnd()) {
+            try {
+                Token eofToken = tokens[tokens.length - 1];
+                java.util.List<Token> newList = new java.util.ArrayList<>();
+                // copy all tokens except final EOF
+                for (int i = 0; i < tokens.length - 1; i++) newList.add(tokens[i]);
+                // insert synthetic token matching expected type
+                TokenType synthType = (type == TokenType.WEND) ? TokenType.WEND : TokenType.END;
+                newList.add(new Token(synthType, synthType == TokenType.WEND ? "Wend" : "end", eofToken.getLine(), eofToken.getColumn()));
+                // append EOF
+                newList.add(eofToken);
+                tokens = newList.toArray(new Token[0]);
+                // Now that we've inserted, consume and return it
+                if (check(type)) return advance();
+            } catch (Exception ignored) {
+                // fall through to error below
+            }
+        }
+
+        // Build extended context about surrounding tokens to aid debugging
+        StringBuilder ctx = new StringBuilder();
+        ctx.append("Expected ").append(type).append(" but got ").append(current.getType());
+        ctx.append(" | tokenIndex=").append(currentIndex).append("\n");
+        int start = Math.max(0, currentIndex - 4);
+        int end = Math.min(tokens.length - 1, currentIndex + 4);
+        ctx.append("Nearby tokens: ");
+        for (int i = start; i <= end; i++) {
+            Token t = tokens[i];
+            ctx.append("[").append(i).append(":").append(t.getType()).append(":'").append(t.getValue()).append("'] ");
+        }
+
         throw new DynAutoStepException(buildErrorWithCaret(
-            "Expected " + type + " but got " + current.getType(),
+            ctx.toString(),
             current.getLine(),
             current.getColumn()
         ));

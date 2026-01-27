@@ -49,7 +49,8 @@ public class PedroPathingBridge {
      */
     public void setStartPose(FieldPose pose) {
         this.startPose = pose;
-        this.currentPose = new FieldPose(pose.getX(), pose.getY(), pose.getHeadingDegrees());
+        // FieldPose stores heading in radians; keep the value as-is for a 1:1 mapping
+        this.currentPose = new FieldPose(pose.getX(), pose.getY(), pose.getHeading());
         this.startPoseSet = true;
         log("Start pose set: " + pose);
     }
@@ -139,6 +140,7 @@ public class PedroPathingBridge {
         waitForIdle();
         
         log("TurnTo: " + headingDegrees + "° at " + degreesPerSecond + "°/s");
+        // Convert degrees to radians when creating end pose - FieldPose stores heading in radians
         PathSegment segment = PathSegment.turn(currentPose, headingDegrees, degreesPerSecond);
         queuedSegments.add(segment);
         
@@ -146,7 +148,8 @@ public class PedroPathingBridge {
             executeSegment(segment);
         }
         
-        currentPose = new FieldPose(currentPose.getX(), currentPose.getY(), headingDegrees);
+        // Update currentPose with radians
+        currentPose = new FieldPose(currentPose.getX(), currentPose.getY(), Math.toRadians(headingDegrees));
     }
 
     /**

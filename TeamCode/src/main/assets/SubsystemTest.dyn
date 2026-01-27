@@ -1,7 +1,7 @@
 def_path Main start
-    // initial variables
-    Num SleepTime 5
-    Mux SleepTime 1000 to SleepTime
+    // initial variables (shortened for debug)
+    Num SleepTime 10
+    MUX SleepTime 1000 to SleepTime
     Num RemainingTime SleepTime
     Num TimeStep 10
     // turn the motor
@@ -18,7 +18,7 @@ def_path Main start
         AddData motorRPM
         AddData RemainingSecs
         Update
-        // decrement and wait5sw
+        // decrement and wait
         SUB RemainingTime TimeStep to RemainingTime
         Wait TimeStep
     end
@@ -26,8 +26,8 @@ def_path Main start
     cmd IntakeOff
     // update telemetry
     AddData "intake OFF"
+    Num subsystemRan 1
     Update
-end
 end
 
 // define runner function

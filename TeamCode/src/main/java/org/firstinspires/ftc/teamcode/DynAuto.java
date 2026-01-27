@@ -23,62 +23,10 @@ public class DynAuto extends DynAutoOpMode{
         intake.init(hardwareMap);
     }
 
-    @Override
-    protected void loadScript() {
-        // Embed canonical script to avoid asset/packaging discrepancies
-        String script = "def_path Main start\n"
-                + "    String Type \"F\"\n"
-                + "    if (Type == \"F\") start\n"
-                + "        AddData \"Forward test START\"\n"
-                + "        Update\n"
-                + "        // initial variables\n"
-                + "        FieldPos startPos (0,0,0)\n"
-                + "        FieldPos endPos (24,0,0)\n"
-                + "        // move robot\n"
-                + "        PathStartPosition startPos\n"
-                + "        goTo endPos\n"
-                + "        AddData \"Forward test END\"\n"
-                + "        Update\n"
-                + "    end\n"
-                + "    if (Type == \"S\") start\n"
-                + "        AddData \"Strafe test START\"\n"
-                + "        Update\n"
-                + "        // initial variables\n"
-                + "        FieldPos startPos (0,0,0)\n"
-                + "        FieldPos endPos (0,24,0)\n"
-                + "        // move robot\n"
-                + "        PathStartPosition startPos\n"
-                + "        goTo endPos\n"
-                + "        AddData \"Strafe test END\"\n"
-                + "        Update\n"
-                + "    end\n"
-                + "    if (Type == \"T\") start\n"
-                + "        AddData \"Turn test START\"\n"
-                + "        Update\n"
-                + "        // initial variables\n"
-                + "        FieldPos startPos (0,0,0)\n"
-                + "        FieldPos endPos (0,0,3.1415926535)\n"
-                + "        // move robot\n"
-                + "        PathStartPosition startPos\n"
-                + "        goTo endPos\n"
-                + "        AddData \"Turn test END\"\n"
-                + "        Update\n"
-                + "    end\n"
-                + "end\n\n"
-                + "// define runner function\n"
-                + "autoPath Main\n";
-
-        try {
-            dynAuto.loadScriptContent(script, getCustomFunctionIds());
-        } catch (Exception e) {
-            telemetry.addData("ERROR", "Embedded script load failed: " + e.getMessage());
-            telemetry.update();
-            throw new RuntimeException(e);
-        }
-    }
 
     // Use a fixed asset copy to avoid stale/packaging issues
-    String dynSctiptName = "LocaliserTest_fixed.dyn";
+    String Alience = "BLUE";
+    String Pos = "At_Goal";
     String[] jFuncIDs = new String[]{
             "FireShooter",
             "IntakeOn",
@@ -92,7 +40,23 @@ public class DynAuto extends DynAutoOpMode{
 
     @Override
     protected String getScriptName(){
-        return dynSctiptName;
+        if (Alience == "BLUE"){
+            if (Pos == "At_Goal"){
+                return  "B_AG.dyn";
+            } else if (Pos == "At_Far"){
+                return "B_AF.dyn";
+            } else {
+                return "B_AS.dyn";
+            }
+        } else {
+            if (Pos == "At_Goal"){
+                return "R_AG.dyn";
+            } else if (Pos == "At_Far"){
+                return "R_AF.dyn";
+            } else {
+                return "R_AS.dyn";
+            }
+        }
     }
 
     @Override

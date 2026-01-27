@@ -38,7 +38,6 @@ public class DynProcessor {
     private Token[] tokens;
     private int currentIndex = 0;
     private int literalCounter = 0;
-    private String scriptSource;
     private String[] scriptLines;
 
     // Runtime components
@@ -83,6 +82,10 @@ public class DynProcessor {
         }
     }
 
+
+
+
+
     /**
      * Set the callback for sending and clearing telemetry buffer.
      */
@@ -102,7 +105,6 @@ public class DynProcessor {
      * Initialize and process a DYN script.
      */
     public void init(Telemetry telemetry, String scriptData, String[] funcIDs) {
-        this.scriptSource = scriptData;
         this.scriptLines = scriptData.split("\\r?\\n", -1);
         // Set up telemetry - wrap addData to match Consumer<String>
         if (this.telemOutput == null) {
@@ -141,6 +143,23 @@ public class DynProcessor {
         telemetry.addData("DYN", "Init: tokenized " + tokens.length + " tokens");
         telemetry.update();
 
+        // Diagnostic: look for AUTO_PATH tokens and show context
+        StringBuilder autoDiag = new StringBuilder();
+        for (int i = 0; i < tokens.length; i++) {
+            Token t = tokens[i];
+            if (t.getType() == TokenType.AUTO_PATH) {
+                String target = (i + 1 < tokens.length) ? tokens[i + 1].getValue() : "<missing>";
+                autoDiag.append("AUTO_PATH at line ").append(t.getLine()).append(" -> ").append(target).append("; ");
+            }
+        }
+        if (autoDiag.length() > 0) {
+            if (telemOutput != null) telemOutput.accept("AutoPathDiag: " + autoDiag.toString());
+            System.out.println("[DIAG] " + autoDiag.toString());
+        } else {
+            if (telemOutput != null) telemOutput.accept("AutoPathDiag: NONE");
+            System.out.println("[DIAG] No AUTO_PATH tokens found");
+        }
+
         // Debug token dump disabled to avoid init slowdowns on FTC hardware
 
         // Process tokens into paths and commands
@@ -149,6 +168,24 @@ public class DynProcessor {
 
         telemetry.addData("DYN", "Init: processed script tokens");
         telemetry.update();
+
+        // If no autoPath was defined, attempt to select a reasonable default
+        if (mainPathName == null) {
+            // Prefer a path named 'main' (case-insensitive), otherwise pick the first defined path
+            for (String name : pathRegistry.keySet()) {
+                if (name.equalsIgnoreCase("main")) {
+                    mainPathName = name;
+                    break;
+                }
+            }
+            if (mainPathName == null && !pathRegistry.isEmpty()) {
+                mainPathName = pathRegistry.keySet().iterator().next();
+            }
+            if (mainPathName != null) {
+                if (telemOutput != null) telemOutput.accept("Warning: No autoPath defined - defaulting to: " + mainPathName);
+                System.out.println("[WARN] No autoPath declared - defaulting to: " + mainPathName);
+            }
+        }
 
         // Initialize all paths
         for (DynPath path : pathRegistry.values()) {
@@ -160,8 +197,10 @@ public class DynProcessor {
             Update.setUpdateCallback(updateCallback);
         }
 
-        telemetry.addData("DYN", "Init: paths initialized");
-        telemetry.update();
+        if (telemetry != null) {
+            telemetry.addData("DYN", "Init: paths initialized");
+            telemetry.update();
+        }
 
         // Debug: Print parsed structure
         System.out.println("=== Parsed Paths ===");
@@ -289,14 +328,28 @@ public class DynProcessor {
     private void parseBlockContents(DynPath path) {
         int safety = 0;
         long startMs = System.currentTimeMillis();
-        while (!isAtEnd() && !check(TokenType.END) && !check(TokenType.WEND)) {
+        int blockDepth = 0; // Track nested block depth
+        
+        while (!isAtEnd()) {
             int beforeIndex = currentIndex;
             Token current = peek();
+
+            // Check if we've reached the end of this block (only when not in nested blocks)
+            if ((check(TokenType.END) || check(TokenType.WEND)) && blockDepth == 0) {
+                break;
+            }
 
             try {
                 DynCommand cmd = parseCommand();
                 if (cmd != null) {
                     path.addCommand(cmd);
+                }
+                
+                // Update block depth based on START/END tokens
+                if (current.getType() == TokenType.START || current.getType() == TokenType.WSTART) {
+                    blockDepth++;
+                } else if (current.getType() == TokenType.END || current.getType() == TokenType.WEND) {
+                    blockDepth--;
                 }
             } catch (Exception e) {
                 System.err.println("[ERROR] Failed to parse at line " + current.getLine() + ": " + e.getMessage());
@@ -754,11 +807,26 @@ public class DynProcessor {
 
         ForLoop forLoop = new ForLoop(count, iteratorVar);
 
-        // Parse body
-        while (!isAtEnd() && !check(TokenType.END)) {
+        // Parse body with nested block support
+        int blockDepth = 0;
+        while (!isAtEnd()) {
+            Token current = peek();
+            
+            // Check if we've reached the end of this for loop
+            if (check(TokenType.END) && blockDepth == 0) {
+                break;
+            }
+            
             DynCommand cmd = parseCommand();
             if (cmd != null) {
                 forLoop.addCommand(cmd);
+            }
+            
+            // Update block depth based on START/END tokens
+            if (current.getType() == TokenType.START || current.getType() == TokenType.WSTART) {
+                blockDepth++;
+            } else if (current.getType() == TokenType.END || current.getType() == TokenType.WEND) {
+                blockDepth--;
             }
         }
 
@@ -800,11 +868,26 @@ public class DynProcessor {
             whileBlock = new WhileBlock(condVar);
         }
 
-        // Parse body
-        while (!isAtEnd() && !check(TokenType.END) && !check(TokenType.WEND)) {
+        // Parse body with nested block support
+        int blockDepth = 0;
+        while (!isAtEnd()) {
+            Token current = peek();
+            
+            // Check if we've reached the end of this while block
+            if ((check(TokenType.END) || check(TokenType.WEND)) && blockDepth == 0) {
+                break;
+            }
+            
             DynCommand cmd = parseCommand();
             if (cmd != null) {
                 whileBlock.addCommand(cmd);
+            }
+            
+            // Update block depth based on START/END tokens
+            if (current.getType() == TokenType.START || current.getType() == TokenType.WSTART) {
+                blockDepth++;
+            } else if (current.getType() == TokenType.END || current.getType() == TokenType.WEND) {
+                blockDepth--;
             }
         }
 
@@ -846,11 +929,26 @@ public class DynProcessor {
             ifBlock = new IfBlock(condVar);
         }
 
-        // Parse body
-        while (!isAtEnd() && !check(TokenType.END)) {
+        // Parse body with nested block support
+        int blockDepth = 0;
+        while (!isAtEnd()) {
+            Token current = peek();
+            
+            // Check if we've reached the end of this if block
+            if (check(TokenType.END) && blockDepth == 0) {
+                break;
+            }
+            
             DynCommand cmd = parseCommand();
             if (cmd != null) {
                 ifBlock.addCommand(cmd);
+            }
+            
+            // Update block depth based on START/END tokens
+            if (current.getType() == TokenType.START || current.getType() == TokenType.WSTART) {
+                blockDepth++;
+            } else if (current.getType() == TokenType.END || current.getType() == TokenType.WEND) {
+                blockDepth--;
             }
         }
 
@@ -926,7 +1024,22 @@ public class DynProcessor {
      */
     private DynCommand parseCustomCommand() {
         expect(TokenType.CMD);
-        String funcName = expect(TokenType.IDENTIFIER).getValue();
+
+        // Accept either an identifier or a quoted string as the function name
+        Token next = peek();
+        String funcName;
+        if (next.getType() == TokenType.IDENTIFIER) {
+            funcName = advance().getValue();
+        } else if (next.getType() == TokenType.STRING_LITERAL) {
+            funcName = advance().getValue();
+        } else {
+            // Provide diagnostic context and fail gracefully
+            throw new DynAutoStepException(buildErrorWithCaret(
+                    "Expected function name (identifier or quoted string) after 'cmd', but got: " + next.getType(),
+                    next.getLine(),
+                    next.getColumn()
+            ));
+        }
 
         String inputVar = null;
         String outputVar = null;
@@ -1046,6 +1159,13 @@ public class DynProcessor {
     }
 
     // ==================== Execution ====================
+
+    /**
+     * Get the name of the main auto path.
+     */
+    public String getMainPathName() {
+        return mainPathName;
+    }
 
     /**
      * Get the main path to execute.

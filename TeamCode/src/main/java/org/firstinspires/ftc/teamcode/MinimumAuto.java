@@ -238,12 +238,10 @@ public class MinimumAuto extends OpMode {
         switch (pathState) {
             // you can consider each case in this to be 1 whole step in the auto sequence.
             case 0: {
-                // wait for robot to not be running a path.
                 if (!follower.isBusy()){
-                    follower.pausePathFollowing();
-                    shooter.cycle(telemetry);
-                    follower.resumePathFollowing();
-                    // start next auto step
+
+                    follower.followPath(FromStartToShootingPathChain, false);
+
                     pathState++;
                 }
                 break;
@@ -254,7 +252,7 @@ public class MinimumAuto extends OpMode {
                     // make sure the function gives enough time for it to startup
                     // here since we are at the shooting position, we want to shoot the balls
                     // shoot the balls
-                    follower.followPath(FromStartToShootingPathChain, false);
+                    follower.followPath(FromShootingToEndPathChain, true);
                     // start intake
                     pathState = -1;
                 }

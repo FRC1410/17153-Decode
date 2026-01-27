@@ -24,8 +24,8 @@ public class Constants {
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
             .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD) // good
-            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)  // good
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)// good
+            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)  // good
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)// good
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD) // good
             .xVelocity(10)//46.12)
             .yVelocity(7);//37.07);
@@ -35,14 +35,14 @@ public class Constants {
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
             .leftFrontEncoderDirection(Encoder.FORWARD)
-            .leftRearEncoderDirection(Encoder.REVERSE)
-            .rightFrontEncoderDirection(Encoder.REVERSE)
+            .leftRearEncoderDirection(Encoder.FORWARD)
+            .rightFrontEncoderDirection(Encoder.FORWARD)
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
             .forwardTicksToInches(0.00619766)
-            .strafeTicksToInches(-0.00923572)
-            .turnTicksToInches(0.012874494);
+            .strafeTicksToInches(-0.00566105229387)
+            .turnTicksToInches(0.00976590041984);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8)
             .forwardZeroPowerAcceleration(-101.494285714)

@@ -91,6 +91,13 @@ public class DynAutoOpMode extends LinearOpMode {
      * Called by the Update command.
      */
     public void sendTelemBuffer() {
+        // Clear previous telemetry to prevent the DYN pane from growing indefinitely
+        try {
+            telemetry.clear();
+        } catch (Exception ignored) {}
+
+        // Diagnostic: report how many lines we are flushing
+        telemetry.addData("DYN_COUNT", dynTelemBuffer.size());
         for (String line : dynTelemBuffer) {
             telemetry.addData("DYN", line);
         }
@@ -185,8 +192,22 @@ public class DynAutoOpMode extends LinearOpMode {
         telemetry.addData("Status", "Autonomous Complete");
         telemetry.update();
     }
-    private void runAutonomous(){
+    /**
+     * Run the autonomous script. Subclasses may override this to perform
+     * additional checks or validation, but should call super.runAutonomous()
+     * to preserve default behavior (running the script and flushing telemetry).
+     */
+    protected void runAutonomous(){
+        // Flush any previously buffered telemetry before starting
+        sendTelemBuffer();
+
+        // Execute the DYN script
         dynAuto.run();
+
+        // Ensure remaining buffer is sent after run completes
+        sendTelemBuffer();
+
+        // Keep OpMode alive so telemetry remains visible until user stops
         while (opModeIsActive()){
             idle();
         }

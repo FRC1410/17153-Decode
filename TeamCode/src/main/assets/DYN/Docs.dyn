@@ -28,6 +28,7 @@ VARIABLE DEFINITION/CREATION CREATION:
             'name' is the name of the variable
             x and y are the coordinates of the position.
             and h is the heading where 0 or 360 is facing towards the obelisk
+            Note: DYN field positions map 1:1 to PedroPathing coordinates (x, y, heading). In code, `FieldPose` stores x and y in inches and heading in radians and is passed directly to PedroPathing.
     Num:
         Syntax:
             Num name value
@@ -235,3 +236,5 @@ The rest of this program is a systems test for the language interpreter
 def_path Main start
     AddData "DYN Language System Test Starting!"
 end
+
+autoPath Main

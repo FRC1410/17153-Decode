@@ -77,7 +77,23 @@ public class IfBlock implements DynCommand {
 
         // Simple boolean check
         if (compareOp == null || compareValue == null) {
-            return condVar.isTrue();
+            // Accept boolean variables, numeric truthiness (non-zero), and non-empty strings
+            try {
+                return condVar.asBoolean();
+            } catch (Exception ignored) {
+                // not a boolean, try numeric
+            }
+            try {
+                return condVar.asDouble() != 0.0;
+            } catch (Exception ignored) {
+                // not a number, try string
+            }
+            try {
+                return !condVar.asString().isEmpty();
+            } catch (Exception ignored) {
+                // fallback
+            }
+            throw new DynAutoStepException("Condition variable is not usable as boolean: " + conditionVarId);
         }
 
         // Comparison operation (number/boolean/string)

@@ -49,7 +49,7 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         super.setStartPose(pose);
         
         // Set PedroPathing starting pose
-        Pose ppPose = toPedroPose(pose);
+        Pose ppPose = MappingUtils.toPedroPose(pose);
         follower.setStartingPose(ppPose);
         
         // Debug: confirm follower starting pose after set
@@ -60,6 +60,9 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
             System.out.println("[DynPedro] setStartPose debug failed: " + e.getMessage());
         }
         log("Start pose set: " + ppPose);
+
+        // Verify mapping is 1:1 at runtime (will log a warning if not)
+        verifyMappingRoundTrip(pose);
     }
 
     @Override
@@ -117,8 +120,8 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
             // Simple line
             pathChain = follower.pathBuilder()
                 .addPath(new BezierLine(
-                    toPedroPose(start),
-                    toPedroPose(end)
+                    MappingUtils.toPedroPose(start),
+                    MappingUtils.toPedroPose(end)
                 ))
                 .setLinearHeadingInterpolation(startHeading, endHeading)
                 .build();
@@ -126,9 +129,9 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
             // Quadratic bezier (3 poses)
             pathChain = follower.pathBuilder()
                 .addPath(new BezierCurve(
-                    toPedroPose(start),
-                    toPedroPoseFromPoint(controlPoints.get(0)),
-                    toPedroPose(end)
+                    MappingUtils.toPedroPose(start),
+                    MappingUtils.toPedroPoseFromPoint(controlPoints.get(0)),
+                    MappingUtils.toPedroPose(end)
                 ))
                 .setLinearHeadingInterpolation(startHeading, endHeading)
                 .build();
@@ -136,10 +139,10 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
             // Cubic bezier (4 poses)
             pathChain = follower.pathBuilder()
                 .addPath(new BezierCurve(
-                    toPedroPose(start),
-                    toPedroPoseFromPoint(controlPoints.get(0)),
-                    toPedroPoseFromPoint(controlPoints.get(1)),
-                    toPedroPose(end)
+                    MappingUtils.toPedroPose(start),
+                    MappingUtils.toPedroPoseFromPoint(controlPoints.get(0)),
+                    MappingUtils.toPedroPoseFromPoint(controlPoints.get(1)),
+                    MappingUtils.toPedroPose(end)
                 ))
                 .setLinearHeadingInterpolation(startHeading, endHeading)
                 .build();
@@ -265,37 +268,55 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
 
     /**
      * Convert DYN FieldPose to PedroPathing Pose.
+     *
+     * Use a direct 1:1 mapping so DYN (x,y,heading) maps to Pedro (x,y,heading) without swapping
+     * axes or applying heading offsets. Heading is represented in radians in both systems.
      */
     private Pose toPedroPose(FieldPose pose) {
-        // Map DYN coordinates to PedroPathing coordinates.
-        // Pedro's X-axis appears to run to robot-right and Y-axis runs forward on this robot.
-        // Desired mapping:
-        //  - DYN X (forward) -> Pedro Y (forward)
-        //  - DYN Y (strafe right) -> Pedro X (right)
-        // Also adjust heading because DYN heading=0 faces forward (DYN X),
-        // while Pedro heading=0 faces right (Pedro X). Convert by +90deg (pi/2).
-        double pedroHeading = pose.getHeading() + Math.PI / 2.0;
-        return new Pose(pose.getY(), pose.getX(), pedroHeading);
+        // 1:1 mapping between DYN FieldPose and Pedro Pathing Pose:
+        // - DYN X -> Pedro X
+        // - DYN Y -> Pedro Y
+        // - Heading is the same (radians)
+        return new Pose(pose.getX(), pose.getY(), pose.getHeading());
     }
 
     /**
      * Convert DYN FieldPoint to PedroPathing Pose (heading defaults to 0).
      * Used for control points in Bezier curves.
+     *
+     * Use direct mapping: FieldPoint(x,y) -> Pedro Pose(x,y, heading=0)
      */
     private Pose toPedroPoseFromPoint(FieldPoint point) {
-        // Same mapping for control points (no heading)
-        // For control points, set heading to Pedro's 0 reference (right).
-        return new Pose(point.getY(), point.getX(), Math.PI / 2.0);
+        // 1:1 mapping for control points (x,y). Heading defaults to 0 radians.
+        return new Pose(point.getX(), point.getY(), 0.0);
     }
 
     /**
      * Convert PedroPathing Pose to DYN FieldPose.
+     *
+     * Inverse of the 1:1 mapping: Pedro (x,y,heading) -> DYN (x,y,heading)
      */
     private FieldPose toFieldPose(Pose pose) {
-        // Inverse of toPedroPose: Pedro X -> DYN Y, Pedro Y -> DYN X
-        // Convert Pedro heading back to DYN heading by subtracting pi/2.
-        double dynHeading = pose.getHeading() - Math.PI / 2.0;
-        return new FieldPose(pose.getY(), pose.getX(), dynHeading);
+        // Direct mapping back to FieldPose
+        return new FieldPose(pose.getX(), pose.getY(), pose.getHeading());
+    }
+
+    /**
+     * Runtime verification that the round-trip mapping preserves values.
+     * Logs a warning if a mismatch larger than small epsilons is detected.
+     */
+    private void verifyMappingRoundTrip(FieldPose pose) {
+        final double EPS_POS = 1e-6;
+        final double EPS_HEAD = 1e-4;
+        Pose pp = toPedroPose(pose);
+        FieldPose round = toFieldPose(pp);
+        if (Math.abs(round.getX() - pose.getX()) > EPS_POS ||
+            Math.abs(round.getY() - pose.getY()) > EPS_POS ||
+            Math.abs(round.getHeading() - pose.getHeading()) > EPS_HEAD) {
+            log("[DynPedro] Mapping mismatch: original " + pose + " -> Pedro " + pp + " -> round " + round);
+        } else {
+            log("[DynPedro] 1:1 mapping verified for pose: " + pose);
+        }
     }
 
     // ==================== ACCESSORS ====================

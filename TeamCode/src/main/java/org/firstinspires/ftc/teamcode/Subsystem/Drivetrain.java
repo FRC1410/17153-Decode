@@ -27,11 +27,10 @@ public class Drivetrain {
     private VoltageSensor controlHubVoltageSensor;
     private IMU imu;
     private double[] wheelSpeeds = new double[4];
-    private double maxPower = 1;
+    private double maxVelocity = 4500;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
 
     public void init(HardwareMap hardwareMap) {
-
         this.motorFL = hardwareMap.get(DcMotorEx.class, FRONT_LEFT_MOTOR_ID);
         this.motorBL = hardwareMap.get(DcMotorEx.class, BACK_LEFT_MOTOR_ID);
         this.motorFR = hardwareMap.get(DcMotorEx.class, FRONT_RIGHT_MOTOR_ID);
@@ -106,13 +105,13 @@ public class Drivetrain {
                     (this.wheelSpeeds[i] + Math.signum(this.wheelSpeeds[i]) * 0.085) * voltageCorrection;
         }
 
-        for(double wheelSpeeds : wheelSpeeds) maxPower = Math.max(maxPower, Math.abs(wheelSpeeds));
+        for(double wheelSpeeds : wheelSpeeds) maxVelocity = Math.max(maxVelocity, Math.abs(wheelSpeeds));
 
-        if (maxPower > 1) {
-            this.wheelSpeeds[0] /= maxPower;
-            this.wheelSpeeds[1] /= maxPower;
-            this.wheelSpeeds[2] /= maxPower;
-            this.wheelSpeeds[3] /= maxPower;
+        if (maxVelocity > 4500) {
+            this.wheelSpeeds[0] /= maxVelocity;
+            this.wheelSpeeds[1] /= maxVelocity;
+            this.wheelSpeeds[2] /= maxVelocity;
+            this.wheelSpeeds[3] /= maxVelocity;
         }
 
         if (isHalfSpeed) {

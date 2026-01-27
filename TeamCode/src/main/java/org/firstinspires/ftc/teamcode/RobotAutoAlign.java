@@ -242,7 +242,7 @@ public class RobotAutoAlign extends OpMode {
                     ControlScheme.FEEDER_OUT.get()
             );
         } else {
-            this.intake.run(0, 0,0, 0);
+            //    this.intake.run(0, 0,0, 0);
         }
 
 //        this.hoodServo.loop(

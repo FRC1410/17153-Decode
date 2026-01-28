@@ -27,8 +27,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)  // good
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)// good
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD) // good
-            .xVelocity(10)//46.12)
-            .yVelocity(7);//37.07);
+            .xVelocity(51.7903)//46.12)
+            .yVelocity(57.9381);//37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName(FRONT_RIGHT_MOTOR_ID)
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
@@ -40,13 +40,18 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
-            .forwardTicksToInches(0.00619766)
+            .forwardTicksToInches(0.00440555683476) //trying old values, from previous, more laborious, and precise sessions.
+            .strafeTicksToInches(0.00383179729959)
+            .turnTicksToInches(0.00896866643441);
+            /*
+            .forwardTicksToInches(0.00465096534977)
             .strafeTicksToInches(-0.00566105229387)
             .turnTicksToInches(0.00976590041984);
+             */
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8)
-            .forwardZeroPowerAcceleration(-101.494285714)
-            .lateralZeroPowerAcceleration(-108.808571429)
+            .forwardZeroPowerAcceleration(-68.4033)
+            .lateralZeroPowerAcceleration(-135.3333)
             .translationalPIDFCoefficients(new PIDFCoefficients(
                     0.04,
                     0,

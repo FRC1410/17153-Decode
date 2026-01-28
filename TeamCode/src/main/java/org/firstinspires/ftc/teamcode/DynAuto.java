@@ -40,6 +40,8 @@ public class DynAuto extends DynAutoOpMode{
 
     @Override
     protected String getScriptName(){
+        return "AutoTest.dyn";
+        /*
         if (Alience == "BLUE"){
             if (Pos == "At_Goal"){
                 return  "B_AG.dyn";
@@ -57,6 +59,7 @@ public class DynAuto extends DynAutoOpMode{
                 return "R_AS.dyn";
             }
         }
+         */
     }
 
     @Override

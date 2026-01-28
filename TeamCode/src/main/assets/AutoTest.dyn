@@ -62,19 +62,12 @@ def_path Main start
     end
     if (Alience == BLUE) start
         // define angles
-        Num EndAngle 90
-        Num FireAngle 144
-        Num StartAngle 90
-        Num PickupAngle 180
-        Num GoalStartAngle 143
-        Num ClassifierAngle 0
-        // calculate angles
-        toRad EndAngle to EndAngle
-        toRad FireAngle to FireAngle
-        toRad StartAngle to StartAngle
-        toRad PickupAngle to PickupAngle
-        toRad GoalStartAngle to GoalStartAngle
-        toRad ClassifierAngle to ClassifierAngle
+        Num EndAngle 1.570796327      //90deg
+        Num FireAngle 2.513274123     //144deg
+        Num StartAngle 1.570796327    //90deg
+        Num PickupAngle 3.141592654   //180deg
+        Num GoalStartAngle 2.49582083 //143deg
+        Num ClassifierAngle 0         //0deg
         // define points
         // pickup points
         FieldPos Pickup0 (48,84,PickupAngle)
@@ -109,6 +102,7 @@ def_path Main start
     PathStartPosition StartPos
     if (targetAutoArtifacts >= 3) start
         // fire
+        goTo FirePos //optimal place to fire artifacts from.
         AddData "shooter spooling and firing"
         Update
         cmd FireShooter

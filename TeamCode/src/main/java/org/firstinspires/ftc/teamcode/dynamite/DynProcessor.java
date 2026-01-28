@@ -582,8 +582,40 @@ public class DynProcessor {
         expect(TokenType.FIELD_POS);
         String varName = expect(TokenType.IDENTIFIER).getValue();
 
-        double[] coords = parseCoordinates(3);
-        return new DeclareVar("Field pos", varName, coords);
+        Object[] coords = parseCoordinatesFlexible(3);
+        // If all are numbers, store as double[] for efficiency, else as Object[]
+        boolean allNumbers = true;
+        for (Object o : coords) {
+            if (!(o instanceof Number)) { allNumbers = false; break; }
+        }
+        if (allNumbers) {
+            double[] arr = new double[coords.length];
+            for (int i = 0; i < coords.length; i++) arr[i] = ((Number)coords[i]).doubleValue();
+            return new DeclareVar("Field pos", varName, arr);
+        } else {
+            return new DeclareVar("Field pos", varName, coords);
+        }
+    }
+
+    /**
+     * Parse coordinates like (x, y) or (x, y, h) or just x y h, supporting variable references (Strings)
+     */
+    private Object[] parseCoordinatesFlexible(int count) {
+        Object[] result = new Object[count];
+
+        boolean hasParen = check(TokenType.LPAREN);
+        if (hasParen) advance();
+
+        for (int i = 0; i < count; i++) {
+            if (i > 0 && check(TokenType.COMMA)) advance(); // Skip comma
+
+            Object val = parseValue();
+            result[i] = val;
+        }
+
+        if (hasParen && check(TokenType.RPAREN)) advance();
+
+        return result;
     }
 
     /**

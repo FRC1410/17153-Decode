@@ -181,9 +181,9 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
         
         // Start following the path
         try {
-            System.out.println("[DynPedro] Executing PathChain: " + pathChain.toString());
+            System.out.println("[Dyn->Pedro] Executing PathChain: " + pathChain.toString());
         } catch (Exception e) {
-            System.out.println("[DynPedro] Executing PathChain (toString failed): " + e.getMessage());
+            System.out.println("[Dyn->Pedro] Executing PathChain (toString failed): " + e.getMessage());
         }
         follower.followPath(pathChain, holdEndOfPath);
         
@@ -367,7 +367,7 @@ public class DynPedroPathingBridge extends PedroPathingBridge {
 
 
 class Drawing {
-    public static final double ROBOT_RADIUS = 9; // woah
+    public static final double ROBOT_RADIUS = 7.175; // woah
     private static final FieldManager panelsField = PanelsField.INSTANCE.getField();
 
     private static final Style robotLook = new Style(

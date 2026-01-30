@@ -70,8 +70,6 @@ public class Robot extends OpMode {
             this.shooter.stopBackward();
         }
 
-        this.shooter.update();
-
         this.intake.run(
                 ControlScheme.INTAKE_IN.get(),
                 ControlScheme.INTAKE_OUT.get()

@@ -89,7 +89,7 @@ public class DynAuto extends DynAutoOpMode{
                 shooter.feed(1);
                 intake.run(1,0);
                 // wait
-                safeSleep(4000);
+                safeSleep(3000);
                 // stop feeding and running the shooter
                 shooter.run(RobotStates.ShooterStates.NEUTRAL);
                 shooter.feed(0);
@@ -129,6 +129,16 @@ public class DynAuto extends DynAutoOpMode{
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+        dynAuto.registerCustomCommand("stopMotors", new CustomCommand.CustomCommandHandler() {
+            @Override
+            public DynVar execute(String functionName, DynVar input) {
+                intake.run(0,0);
+                shooter.run(RobotStates.ShooterStates.NEUTRAL);
+                shooter.feed(0);
+                safeSleep(1/20);
+                return null;
             }
         });
     }

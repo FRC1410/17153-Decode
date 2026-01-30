@@ -71,17 +71,6 @@ public class Shooter {
     public void stopBackward() {
         run(this.shooterStatus);
     }
-    public void update() {
-        if (this.shooterStatus == RobotStates.ShooterStates.FORWARD) {
-            double currentVelocity = this.motorShooter.getVelocity();
-
-            if (Math.abs(currentVelocity - TARGET_RPM) < RPM_TOLERANCE) {
-                this.motorFeeder.setVelocity(2000);
-            } else {
-                this.motorFeeder.setPower(0);
-            }
-        }
-    }
 
     public void feed(float power){
         this.motorFeeder.setVelocity(power * 2000);

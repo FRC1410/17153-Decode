@@ -8,14 +8,14 @@ def_path Main start
     // define variables
     String Alience "BLUE" // RED or BLUE
     String Start_Pos "AT_GOAL" //either AT_GOAL or AT_FAR
-    Num targetAutoArtifacts 6 // either 3, 6, 9, or 12
+    Num targetAutoArtifacts 12 // either 3, 6, 9, or 12
     // telemetry
     AddData Alience
     AddData Start_Pos
     AddData targetAutoArtifacts
     Update
     // define the essential auto points
-    if (Alience == RED) start
+    if (Alience == RED) start // NEEDS UPDATES TO SHOOT, PICKUP, ANGLES, AND CONTROL POINTS/POSES
         // define angles
         Num EndAngle 90
         Num FireAngle 37
@@ -63,7 +63,7 @@ def_path Main start
     if (Alience == BLUE) start
         // define angles
         Num EndAngle 1.570796327      //90deg
-        Num FireAngle 2.513274123     //144deg
+        Num FireAngle 2.42600766      //139deg
         Num StartAngle 1.570796327    //90deg
         Num PickupAngle 3.141592654   //180deg
         Num GoalStartAngle 2.49582083 //143deg
@@ -71,15 +71,16 @@ def_path Main start
         // define points
         // pickup points
         FieldPos Pickup0 (48,84,PickupAngle)
-        FieldPos Pickup0End (15,84,PickupAngle)
+        FieldPos Pickup0End (19,84,PickupAngle)
         FieldPos Pickup1 (48,59,PickupAngle)
-        FieldPos Pickup1End (9,59,PickupAngle)
+        FieldPos Pickup1End (13,59,PickupAngle)
         FieldPos Pickup2 (48,36,PickupAngle)
-        FieldPos Pickup2End (9,36,PickupAngle)
+        FieldPos Pickup2End (13,36,PickupAngle)
         // fire point
-        FieldPos FirePos (24,124,FireAngle)
+        FieldPos FirePos (27,122,FireAngle)
         // extra points
         FieldPos classifierPoint (16.5,71.5,ClassifierAngle)
+        FieldCoord pickup0toShoot (29,84)
         FieldCoord pickup1toShoot (39.5,55)
         FieldCoord pickup2toShoot (29,34)
         if (Start_Pos == AT_GOAL) start
@@ -112,13 +113,13 @@ def_path Main start
         AddData "collecting Pickup zone 0:"
         AddData Pickup0
         Update
-        goTo Pickup0
         cmd IntakeOn
+        goTo Pickup0
         goTo Pickup0End
         cmd IntakeOff
         // fire
         AddData "Going to firePos:"
-        AddData FirePos
+        followBezier (pickup0toShoot, FirePos)
         Update
         goTo FirePos
         cmd FireShooter

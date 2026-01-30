@@ -14,8 +14,8 @@ public class ControlScheme {
     //Intake
     public static Supplier<Float> INTAKE_IN;
     public static Supplier<Float> INTAKE_OUT;
-    public static Supplier<Float> FEEDER_IN;
-    public static Supplier<Float> FEEDER_OUT;
+
+    public static Supplier<Float> FEED;
 
     //SUSAN
     public static Supplier<Boolean> SUSAN_MANUAL_ONE;
@@ -53,8 +53,7 @@ public class ControlScheme {
     public static void initOperator(Gamepad gamepad2) {
         SHOOTER_CYCLE = () -> gamepad2.right_bumper;
         SHOOTER_REVERSE = () -> gamepad2.left_bumper;
-        FEEDER_IN = () -> gamepad2.right_trigger;
-        FEEDER_OUT = () -> gamepad2.left_trigger;
+        FEED = () -> gamepad2.right_trigger;
 
         HOOD_POS_ONE = () -> gamepad2.dpad_left;
         HOOD_POS_TWO = () -> gamepad2.dpad_down;

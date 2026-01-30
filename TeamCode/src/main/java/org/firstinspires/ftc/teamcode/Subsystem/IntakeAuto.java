@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.Util.IDs.*;
-import static org.firstinspires.ftc.teamcode.Util.Constants.*;
+
+import static org.firstinspires.ftc.teamcode.Util.IDs.INTAKE_MOTOR_ID;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-
-public class Intake {
+public class IntakeAuto {
     DcMotorEx intake;
     DcMotorEx transfer;
 
@@ -39,8 +36,12 @@ public class Intake {
     }
 
     public void run(double intake, double outtake){
-        this.intake.setVelocity((outtake * 3000) - (intake * 3000));
-        this.transfer.setVelocity((outtake * 3000) - (intake * 3000));
+        this.intake.setPower(outtake-intake);
+        this.transfer.setPower(outtake-intake);
+    }
+
+    public double getRPM(){
+        return intake.getVelocity();
     }
 
     public void intakeTelem(Telemetry telemetry){

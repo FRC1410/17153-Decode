@@ -42,6 +42,7 @@ public class DynAuto {
     private Telemetry telemetry;
     private final Map<String, CustomCommand.CustomCommandHandler> customHandlers = new HashMap<>();
     private boolean isInitialized = false;
+    private Runnable updateCallback = null;
 
     /**
      * Create DynAuto with an existing telemetry instance.
@@ -75,7 +76,17 @@ public class DynAuto {
      */
     public void setTelemOutput(Consumer<String> output) {
         processor.setTelemOutput(output);
-        pathingBridge.setTelemOutput(output);
+        //pathingBridge.setTelemOutput(output);
+    }
+
+
+
+    /**
+     * Set callback for sending and clearing telemetry buffer.
+     */
+    public void setUpdateCallback(Runnable callback) {
+        this.updateCallback = callback;
+        processor.setUpdateCallback(callback);
     }
 
     /**

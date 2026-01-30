@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.DynCommands.Movement;
 
+import org.firstinspires.ftc.teamcode.dynamite.PPintegration.FieldPose;
 import org.firstinspires.ftc.teamcode.dynamite.DynCommands.DynCommand;
 import org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar;
 import org.firstinspires.ftc.teamcode.dynamite.PPintegration.PedroPathingBridge;
@@ -35,10 +36,47 @@ public class GoToCommand implements DynCommand {
             throw new DynAutoStepException("Position variable not found: " + positionVarId);
         }
 
+        // Resolve any variable references in FieldPos arrays at runtime
+        Object val = posVar.getValue();
+        double x = 0, y = 0, heading = 0;
+        if (val instanceof double[]) {
+            double[] arr = (double[]) val;
+            if (arr.length >= 3) {
+                x = arr[0]; y = arr[1]; heading = arr[2];
+            } else if (arr.length == 2) {
+                x = arr[0]; y = arr[1];
+            }
+        } else if (val instanceof Object[]) {
+            Object[] arr = (Object[]) val;
+            if (arr.length >= 3) {
+                x = arr[0] instanceof Number ? ((Number) arr[0]).doubleValue() : 0;
+                y = arr[1] instanceof Number ? ((Number) arr[1]).doubleValue() : 0;
+                if (arr[2] instanceof Number) {
+                    heading = ((Number) arr[2]).doubleValue();
+                } else if (arr[2] instanceof String) {
+                    DynVar ref = getVar.apply((String) arr[2]);
+                    if (ref != null && ref.getValue() instanceof Number) {
+                        heading = ((Number) ref.getValue()).doubleValue();
+                    }
+                }
+            } else if (arr.length == 2) {
+                x = arr[0] instanceof Number ? ((Number) arr[0]).doubleValue() : 0;
+                y = arr[1] instanceof Number ? ((Number) arr[1]).doubleValue() : 0;
+            }
+        }
+        FieldPose pose = new FieldPose(x, y, heading);
+
         if (pathingBridge != null) {
-            pathingBridge.goTo(posVar);
+            try {
+                System.out.println("[GoTo] Invoking goTo for var: " + positionVarId + " -> " + pose);
+                System.out.println("[GoTo] Bridge current pose: " + pathingBridge.getCurrentPose());
+            } catch (Exception e) {
+                System.out.println("[GoTo] Debug logging failed: " + e.getMessage());
+            }
+            pathingBridge.goTo(pose);
+            System.out.println("[GoTo] Completed goTo for var: " + positionVarId);
         } else {
-            System.out.println("[GoTo] " + positionVarId + " = " + posVar);
+            System.out.println("[GoTo] " + positionVarId + " = " + pose);
         }
     }
 

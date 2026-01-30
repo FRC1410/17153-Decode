@@ -52,7 +52,11 @@ public enum TokenType {
     RUN,
 
     // Telemetry
-    OUTPUT_2_TELEM,
+    ADD_DATA,
+    UPDATE,
+
+    // Timing
+    WAIT,
 
     // Logical
     IF,

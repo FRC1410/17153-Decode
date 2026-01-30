@@ -95,7 +95,11 @@ public class DynTokenizer {
         keywords.put("RUN", TokenType.RUN);
 
         // Telemetry
-        keywords.put("output2telem", TokenType.OUTPUT_2_TELEM);
+        keywords.put("AddData", TokenType.ADD_DATA);
+        keywords.put("Update", TokenType.UPDATE);
+
+        // Timing
+        keywords.put("Wait", TokenType.WAIT);
 
         // Logical
         keywords.put("if", TokenType.IF);

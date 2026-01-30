@@ -24,7 +24,7 @@ def_path setStartEnd start
 end
 
 def_path mainPath start
-    output2telem "starting auto"
+    AddData "starting auto"
     // call the function that sets up all of our variables
     RUN setStartEnd
     // set the starting and ending positions

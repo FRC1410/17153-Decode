@@ -4,11 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Drivetrain;
-import org.firstinspires.ftc.teamcode.Subsystem.HoodServo;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
-//import org.firstinspires.ftc.teamcode.Subsystem.LazySusan;
-//import org.firstinspires.ftc.teamcode.Subsystem.ContinuousServo;
-//import org.firstinspires.ftc.teamcode.Subsystem.liftShooter;
 import org.firstinspires.ftc.teamcode.Util.DriverUtil.Rumbler;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
@@ -23,7 +19,6 @@ public class Robot extends OpMode {
     private final Rumbler operatorRumbler = new Rumbler();
 //    private final LazySusan lazySusan = new LazySusan();
     private final Intake intake = new Intake();
-    private final HoodServo hoodServo = new HoodServo();
 //    private final ContinuousServo continuousServo = new ContinuousServo();
 
     private final Toggle drivetrainToggle = new Toggle();

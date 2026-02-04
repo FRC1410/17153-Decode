@@ -28,6 +28,7 @@ VARIABLE DEFINITION/CREATION CREATION:
             'name' is the name of the variable
             x and y are the coordinates of the position.
             and h is the heading where 0 or 360 is facing towards the obelisk
+            Note: DYN field positions map 1:1 to PedroPathing coordinates (x, y, heading). In code, `FieldPose` stores x and y in inches and heading in radians and is passed directly to PedroPathing.
     Num:
         Syntax:
             Num name value
@@ -205,23 +206,23 @@ PATH DECLARATORS:
         Usage:
             runs the given function name.
 TELEMETRY:
-    output2telem:
+    AddData:
         syntax:
-            output2telem var
+            AddData var
         Usage:
             the var is any variable, its data will be added to telemetry output the next time it is updated.
-    clearTelem: (WIP)
+    Update:
         syntax:
-            clearTelem
+            Update
         Usage:
-            call this to clear the telemetry output
+            sends the current telemetry buffer to the driver station and clears it for the next cycle.
 JAVA MOTHOD INTEGRATION:
     jFunc:
         syntax:
             jFunc funcID
-            jFunc funcID valIN ...
-            jFunc funcID to valOUT ...
-            jFunc funcID valIN ... to valOUT
+            jFunc funcID valIN
+            jFunc funcID to valOUT
+            jFunc funcID valIN to valOUT
         Usage:
             the functions that are given to DYN, must only have inputs and outputs as DynVars, either as DynVar or as DynVar[].
             this can be used to get input from an op (for testing), get the angle of a servo, state of a subsystem, the current position etc.
@@ -233,5 +234,7 @@ The rest of this program is a systems test for the language interpreter
 
 
 def_path Main start
-    output2telem "DYN Language System Test Starting!"
+    AddData "DYN Language System Test Starting!"
 end
+
+autoPath Main

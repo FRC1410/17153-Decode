@@ -1,0 +1,62 @@
+def_path Main start
+    // telemetry
+    AddData Alience
+    AddData Start_Pos
+    AddData targetAutoArtifacts
+    Update
+    // define angles
+    Num EndAngle 90
+    Num FireAngle 144
+    Num StartAngle 90
+    Num PickupAngle 180
+    Num GoalStartAngle 143
+    Num ClassifierAngle 0
+    // calculate angles
+    toRad EndAngle to EndAngle
+    toRad FireAngle to FireAngle
+    toRad StartAngle to StartAngle
+    toRad PickupAngle to PickupAngle
+    toRad GoalStartAngle to GoalStartAngle
+    toRad ClassifierAngle to ClassifierAngle
+    // define points
+    // pickup points
+    FieldPos Pickup0 (48,84,PickupAngle)
+    FieldPos Pickup0End (15,84,PickupAngle)
+    FieldPos Pickup1 (48,59,PickupAngle)
+    FieldPos Pickup1End (9,59,PickupAngle)
+    FieldPos Pickup2 (48,36,PickupAngle)
+    FieldPos Pickup2End (9,36,PickupAngle)
+    // fire point
+    FieldPos FirePos (24,124,FireAngle)
+    // extra points
+    FieldPos classifierPoint (16.5,71.5,ClassifierAngle)
+    FieldCoord pickup1toShoot (39.5,55)
+    FieldCoord pickup2toShoot (29,34)
+    // start/end points
+    FieldPos StartPos (15,8,StartAngle)
+    FieldPos EndPos (35,8,EndAngle)
+    // run the auto sequence
+    PathStartPosition StartPos
+    // fire
+    AddData "shooter spooling and firing"
+    Update
+    cmd FireShooter
+    // collect artifacts
+    AddData "collecting Pickup zone 0:"
+    AddData Pickup0
+    Update
+    goTo Pickup0
+    cmd IntakeOn
+    goTo Pickup0End
+    cmd IntakeOff
+    // fire
+    AddData "Going to firePos:"
+    AddData FirePos
+    Update
+    goTo FirePos
+    cmd FireShooter
+    // go to final position
+    goTo EndPos
+end
+
+autoPath Main

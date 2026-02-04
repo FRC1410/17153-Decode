@@ -39,12 +39,12 @@ public class DynTokenizerExample {
             "    \n" +
             "    // Logical operators - using keywords\n" +
             "    if (isBlueAlliance and isReady) start\n" +
-            "        output2telem \"Running blue auto\"\n" +
+            "        AddData \"Running blue auto\"\n" +
             "    end\n" +
             "    \n" +
             "    // Logical operators - using symbols\n" +
             "    if (isBlueAlliance && not isReady) start\n" +
-            "        output2telem \"Waiting...\"\n" +
+            "        AddData \"Waiting...\"\n" +
             "    end\n" +
             "    \n" +
             "    // Arithmetic operators\n" +

@@ -23,30 +23,35 @@ public class Constants {
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(10)//46.12)
-            .yVelocity(7);//37.07);
+            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD) // good
+            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)  // good
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)// good
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD) // good
+            .xVelocity(51.7903)//46.12)
+            .yVelocity(57.9381);//37.07);
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName(FRONT_RIGHT_MOTOR_ID)
             .rightRearMotorName(BACK_RIGHT_MOTOR_ID)
             .leftRearMotorName(BACK_LEFT_MOTOR_ID)
             .leftFrontMotorName(FRONT_LEFT_MOTOR_ID)
-            .leftFrontEncoderDirection(Encoder.REVERSE)
+            .leftFrontEncoderDirection(Encoder.FORWARD)
             .leftRearEncoderDirection(Encoder.FORWARD)
             .rightFrontEncoderDirection(Encoder.FORWARD)
             .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(15.35)
             .robotLength(14.35)
-            .forwardTicksToInches(0.0121120209294)
-            .strafeTicksToInches(-0.00196595917667)
-            .turnTicksToInches(0.03431603597337871);
+            .forwardTicksToInches(0.00440555683476) //trying old values, from previous, more laborious, and precise sessions.
+            .strafeTicksToInches(0.00383179729959)
+            .turnTicksToInches(0.00896866643441);
+            /*
+            .forwardTicksToInches(0.00465096534977)
+            .strafeTicksToInches(-0.00566105229387)
+            .turnTicksToInches(0.00976590041984);
+             */
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8)
-            .forwardZeroPowerAcceleration(-5694.70773653)
-            .lateralZeroPowerAcceleration(-590.471673225)
+            .forwardZeroPowerAcceleration(-68.4033)
+            .lateralZeroPowerAcceleration(-135.3333)
             .translationalPIDFCoefficients(new PIDFCoefficients(
                     0.04,
                     0,
@@ -65,8 +70,9 @@ public class Constants {
                     0.0015,
                     0.7,
                     0.006
+
             ))
-            .centripetalScaling(-0.01);
+            .centripetalScaling(0);
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,

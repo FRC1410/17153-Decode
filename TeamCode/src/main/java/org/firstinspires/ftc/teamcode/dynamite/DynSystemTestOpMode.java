@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar;
  * 
  * Watch telemetry output for test results.
  */
-@Autonomous(name = "DYN System Test", group = "Test")
 public class DynSystemTestOpMode extends DynAutoOpMode {
 
     private int testCommandCount = 0;

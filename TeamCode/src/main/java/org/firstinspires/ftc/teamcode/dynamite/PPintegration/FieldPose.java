@@ -12,12 +12,14 @@ public class FieldPose {
     private double y;
     private double heading; // radians
 
-    public FieldPose(double x, double y, double headingDegrees) {
+    // Primary constructor: accepts heading in radians (matches DYN spec)
+    public FieldPose(double x, double y, double headingRadians) {
         this.x = x;
         this.y = y;
-        this.heading = Math.toRadians(headingDegrees);
+        this.heading = headingRadians;
     }
 
+    // Alternate constructor: allow caller to specify degrees if needed
     public FieldPose(double x, double y, double heading, boolean radians) {
         this.x = x;
         this.y = y;

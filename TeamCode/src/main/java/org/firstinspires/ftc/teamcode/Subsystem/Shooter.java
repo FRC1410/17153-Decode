@@ -16,6 +16,7 @@ public class Shooter {
     private DcMotorEx motorShooter;
     //private DcMotorEx motorFeeder;
     //All things related to motorFeeder have been switched to a seperate class, for operating purposes.
+    private DcMotorEx motorFeeder;
     public RobotStates.ShooterStates shooterStatus = RobotStates.ShooterStates.NEUTRAL;
 
     private static final double TARGET_RPM = 1500;

@@ -80,6 +80,8 @@ public class DeclareVar implements DynCommand {
                 case "Field pos":
                     if (initialValue instanceof double[]) {
                         newVar = new DynVar("Field pos", varId, (double[]) initialValue);
+                    } else if (initialValue instanceof Object[]) {
+                        newVar = new DynVar("Field pos", varId, (Object[]) initialValue);
                     } else {
                         newVar = new DynVar("Field pos", varId, new double[]{0, 0, 0});
                     }

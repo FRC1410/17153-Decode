@@ -39,7 +39,8 @@ public class PathSegment {
      * Create a turn in place segment.
      */
     public static PathSegment turn(FieldPose pose, double targetHeadingDegrees, double degreesPerSecond) {
-        FieldPose endPose = new FieldPose(pose.getX(), pose.getY(), targetHeadingDegrees);
+        // Convert degrees to radians for FieldPose (which stores heading in radians)
+        FieldPose endPose = new FieldPose(pose.getX(), pose.getY(), Math.toRadians(targetHeadingDegrees));
         return new PathSegment(SegmentType.TURN_IN_PLACE, pose, endPose, null, degreesPerSecond);
     }
 

@@ -5,19 +5,19 @@
 
 def_path helper
 start
-    output2telem "Helper path ran"
+    AddData "Helper path ran"
 end
 
 // Main path
 
 def_path main
 start
-    output2telem "=================================="
-    output2telem "DYN FULL SYSTEM TEST STARTING"
-    output2telem "=================================="
+    AddData "=================================="
+    AddData "DYN FULL SYSTEM TEST STARTING"
+    AddData "=================================="
 
     // TEST 1: Variables
-    output2telem "=== TEST 1: Variables ==="
+    AddData "=== TEST 1: Variables ==="
     Num a 10
     Num b 3
     Num result 0
@@ -26,101 +26,101 @@ start
     FieldCoord fc (1, 2)
     FieldPos fp (3, 4, 90)
 
-    output2telem a
-    output2telem b
-    output2telem msg
-    output2telem flag
-    output2telem fc
-    output2telem fp
-    output2telem "Variables: PASS"
+    AddData a
+    AddData b
+    AddData msg
+    AddData flag
+    AddData fc
+    AddData fp
+    AddData "Variables: PASS"
 
     // TEST 2: Math
-    output2telem "=== TEST 2: Math ==="
+    AddData "=== TEST 2: Math ==="
     ADD a b to result
-    output2telem result
+    AddData result
 
     SUB a b to result
-    output2telem result
+    AddData result
 
     MUX a b to result
-    output2telem result
+    AddData result
 
     DIV a b to result
-    output2telem result
+    AddData result
 
     MOD a b to result
-    output2telem result
+    AddData result
 
     POW a b to result
-    output2telem result
+    AddData result
 
     SQR a to result
-    output2telem result
+    AddData result
 
-    output2telem "Math: PASS"
+    AddData "Math: PASS"
 
     // TEST 3: Trig + Conversions
-    output2telem "=== TEST 3: Trig ==="
+    AddData "=== TEST 3: Trig ==="
     Num angleDeg 90
     Num angleRad 0
     Num trigResult 0
     Num backToDeg 0
 
     toRad angleDeg to angleRad
-    output2telem angleRad
+    AddData angleRad
 
     SIN angleRad to trigResult
-    output2telem trigResult
+    AddData trigResult
 
     COS angleRad to trigResult
-    output2telem trigResult
+    AddData trigResult
 
     TAN angleRad to trigResult
-    output2telem trigResult
+    AddData trigResult
 
     invSIN trigResult to angleRad
-    output2telem angleRad
+    AddData angleRad
 
     invCOS trigResult to angleRad
-    output2telem angleRad
+    AddData angleRad
 
     invTAN trigResult to angleRad
-    output2telem angleRad
+    AddData angleRad
 
     toDeg angleRad to backToDeg
-    output2telem backToDeg
+    AddData backToDeg
 
-    output2telem "Trig: PASS"
+    AddData "Trig: PASS"
 
     // TEST 4: For Loop
-    output2telem "=== TEST 4: For Loop ==="
+    AddData "=== TEST 4: For Loop ==="
     for 3 as i start
-        output2telem i
+        AddData i
     end
-    output2telem "For Loop: PASS"
+    AddData "For Loop: PASS"
 
     // TEST 5: While Loop + If
-    output2telem "=== TEST 5: While + If ==="
+    AddData "=== TEST 5: While + If ==="
     Num counter 0
     while (counter < 3) start
         ADD counter 1 to counter
-        output2telem counter
+        AddData counter
     end
 
     if (counter == 3) start
-        output2telem "If: counter == 3"
+        AddData "If: counter == 3"
     end
 
-    output2telem "While/If: PASS"
+    AddData "While/If: PASS"
 
     // TEST 6: RUN
-    output2telem "=== TEST 6: RUN ==="
+    AddData "=== TEST 6: RUN ==="
     RUN helper
-    output2telem "RUN: PASS"
+    AddData "RUN: PASS"
 
-    output2telem "=================================="
-    output2telem "ALL TESTS COMPLETE!"
-    output2telem "=================================="
+    AddData "=================================="
+    AddData "ALL TESTS COMPLETE!"
+    AddData "=================================="
 end
 
 autoPath main

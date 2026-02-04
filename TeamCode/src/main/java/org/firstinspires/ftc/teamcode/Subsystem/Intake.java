@@ -20,17 +20,24 @@ public class Intake {
     DcMotorEx feeder;
 
     public void init(HardwareMap hardwareMap) {
-
         this.intake = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_ID);
+
         this.intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         this.intake.setDirection(DcMotorEx.Direction.FORWARD);
+
         this.intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         this.intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.transfer = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_ID);
+
         this.transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         this.transfer.setDirection(DcMotorEx.Direction.FORWARD);
+
         this.transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         this.transfer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.feeder = hardwareMap.get(DcMotorEx.class, FEEDER_MOTOR_ID);
@@ -61,5 +68,4 @@ public class Intake {
         telemetry.addData("Feeder Power: ", feederp);
         telemetry.update();
     }
-
 }

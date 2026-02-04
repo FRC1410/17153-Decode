@@ -635,6 +635,21 @@ public class DynVar {
         if (type == VarType.NUMBER) {
             return (double) value;
         }
+        // Support Object[] containing a single Number or DynVar (for late-bound variables)
+        if (value instanceof Object[]) {
+            Object[] arr = (Object[]) value;
+            if (arr.length == 1) {
+                if (arr[0] instanceof Number) {
+                    return ((Number) arr[0]).doubleValue();
+                } else if (arr[0] instanceof DynVar) {
+                    return ((DynVar) arr[0]).asDouble();
+                }
+            }
+        }
+        // Support value being a DynVar directly
+        if (value instanceof DynVar) {
+            return ((DynVar) value).asDouble();
+        }
         throw new DynVarException(ID, this, "Cannot convert to double, type is: " + type);
     }
 
@@ -665,7 +680,22 @@ public class DynVar {
      */
     public double[] asDoubleArray() {
         if (type == VarType.FIELD_CORD || type == VarType.FIELD_POS) {
-            return (double[]) value;
+            if (value instanceof double[]) {
+                return (double[]) value;
+            }
+            // Support Object[] containing only Numbers (for late-bound variables)
+            if (value instanceof Object[]) {
+                Object[] arr = (Object[]) value;
+                double[] result = new double[arr.length];
+                for (int i = 0; i < arr.length; i++) {
+                    if (arr[i] instanceof Number) {
+                        result[i] = ((Number) arr[i]).doubleValue();
+                    } else {
+                        throw new DynVarException(ID, this, "Cannot convert element to double: " + arr[i]);
+                    }
+                }
+                return result;
+            }
         }
         throw new DynVarException(ID, this, "Cannot convert to double[], type is: " + type);
     }
@@ -692,8 +722,31 @@ public class DynVar {
                     i ++;
                 }
                 return out+"}";
-            case FIELD_CORD: return "FIELD_CORD X: "+((double[])value)[0]+" Y: "+((double[])value)[1];
-            case FIELD_POS: return "FIELD_POS X: "+((double[])value)[0]+" Y: "+((double[])value)[1]+" H: "+((double[])value)[2];
+            case FIELD_CORD: {
+                if (value instanceof double[]) {
+                    return "FIELD_CORD X: "+((double[])value)[0]+" Y: "+((double[])value)[1];
+                } else if (value instanceof Object[]) {
+                    Object[] o = (Object[]) value;
+                    double x = o.length > 0 && o[0] instanceof Number ? ((Number)o[0]).doubleValue() : 0;
+                    double y = o.length > 1 && o[1] instanceof Number ? ((Number)o[1]).doubleValue() : 0;
+                    return "FIELD_CORD X: "+x+" Y: "+y;
+                } else {
+                    return "FIELD_CORD (invalid) "+String.valueOf(value);
+                }
+            }
+            case FIELD_POS: {
+                if (value instanceof double[]) {
+                    return "FIELD_POS X: "+((double[])value)[0]+" Y: "+((double[])value)[1]+" H: "+((double[])value)[2];
+                } else if (value instanceof Object[]) {
+                    Object[] o = (Object[]) value;
+                    double x = o.length > 0 && o[0] instanceof Number ? ((Number)o[0]).doubleValue() : 0;
+                    double y = o.length > 1 && o[1] instanceof Number ? ((Number)o[1]).doubleValue() : 0;
+                    double h = o.length > 2 && o[2] instanceof Number ? ((Number)o[2]).doubleValue() : 0;
+                    return "FIELD_POS X: "+x+" Y: "+y+" H: "+h;
+                } else {
+                    return "FIELD_POS (invalid) "+String.valueOf(value);
+                }
+            }
             default: throw new RuntimeException("WARNING: NO TYPE ASSIGNED TO org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar ID: "+ID+"!");
         }
     }
@@ -715,10 +768,29 @@ public class DynVar {
                 return "LIST " + id + " " + toString();
             case JSON:
                 return "JSON " + id + " " + toString();
-            case FIELD_CORD:
-                return "FC " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1];
-            case FIELD_POS:
-                return "FP " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1] + " " + ((double[]) value)[2];
+            case FIELD_CORD: {
+                if (value instanceof double[]) {
+                    return "FC " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1];
+                } else if (value instanceof Object[]) {
+                    Object[] o = (Object[]) value;
+                    double x = o.length > 0 && o[0] instanceof Number ? ((Number)o[0]).doubleValue() : 0;
+                    double y = o.length > 1 && o[1] instanceof Number ? ((Number)o[1]).doubleValue() : 0;
+                    return "FC " + id + " " + x + " " + y;
+                }
+                return "FC " + id + " " + String.valueOf(value);
+            }
+            case FIELD_POS: {
+                if (value instanceof double[]) {
+                    return "FP " + id + " " + ((double[]) value)[0] + " " + ((double[]) value)[1] + " " + ((double[]) value)[2];
+                } else if (value instanceof Object[]) {
+                    Object[] o = (Object[]) value;
+                    double x = o.length > 0 && o[0] instanceof Number ? ((Number)o[0]).doubleValue() : 0;
+                    double y = o.length > 1 && o[1] instanceof Number ? ((Number)o[1]).doubleValue() : 0;
+                    double h = o.length > 2 && o[2] instanceof Number ? ((Number)o[2]).doubleValue() : 0;
+                    return "FP " + id + " " + x + " " + y + " " + h;
+                }
+                return "FP " + id + " " + String.valueOf(value);
+            }
             default:
                 return toString();
         }

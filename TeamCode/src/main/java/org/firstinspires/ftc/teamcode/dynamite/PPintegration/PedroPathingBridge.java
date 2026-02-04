@@ -22,6 +22,7 @@ public class PedroPathingBridge {
     protected final List<PathSegment> queuedSegments = new ArrayList<>();
     protected Consumer<String> telemOutput;
     protected boolean isSimulation = true;
+    protected boolean startPoseSet = false; // Track if start pose has been set
 
     public PedroPathingBridge() {
         this.currentPose = new FieldPose(0, 0, 0);
@@ -44,11 +45,13 @@ public class PedroPathingBridge {
 
     /**
      * Set the starting position for the autonomous path.
-     * MUST be called before any movement commands.
+     * Can be called at any time, but movement commands will fail if not called before them.
      */
     public void setStartPose(FieldPose pose) {
         this.startPose = pose;
-        this.currentPose = new FieldPose(pose.getX(), pose.getY(), pose.getHeadingDegrees());
+        // FieldPose stores heading in radians; keep the value as-is for a 1:1 mapping
+        this.currentPose = new FieldPose(pose.getX(), pose.getY(), pose.getHeading());
+        this.startPoseSet = true;
         log("Start pose set: " + pose);
     }
 
@@ -67,10 +70,46 @@ public class PedroPathingBridge {
     }
 
     /**
+     * Check if the robot is currently moving.
+     * Override this in subclasses to use actual robot state.
+     * @return true if the robot is currently executing a movement, false otherwise
+     */
+    public boolean isBusy() {
+        // Base implementation always returns false (simulation mode)
+        return false;
+    }
+
+    /**
+     * Wait for robot to stop moving.
+     * Subclasses should override this to wait using actual robot state.
+     */
+    public void waitForIdle() {
+        // Base implementation does nothing (simulation mode)
+        while (isBusy()) {
+            // Wait loop - will be overridden in subclasses
+        }
+    }
+
+    /**
+     * Validate that start pose has been set before executing movement.
+     * Throws exception if start pose not set.
+     */
+    protected void validateStartPoseSet() {
+        if (!startPoseSet) {
+            throw new RuntimeException(
+                "[DYN ERROR] PathStartPosition must be called before any movement commands (goTo, turnTo, followBezier)"
+            );
+        }
+    }
+
+    /**
      * Move to a position in a straight line.
      * Override this method to implement actual PedroPathing goTo.
      */
     public void goTo(FieldPose target) {
+        validateStartPoseSet();
+        waitForIdle();
+        
         log("GoTo: " + target);
         PathSegment segment = PathSegment.line(currentPose, target);
         queuedSegments.add(segment);
@@ -97,7 +136,11 @@ public class PedroPathingBridge {
      * @param degreesPerSecond Turn speed in degrees per second
      */
     public void turnTo(double headingDegrees, double degreesPerSecond) {
+        validateStartPoseSet();
+        waitForIdle();
+        
         log("TurnTo: " + headingDegrees + "° at " + degreesPerSecond + "°/s");
+        // Convert degrees to radians when creating end pose - FieldPose stores heading in radians
         PathSegment segment = PathSegment.turn(currentPose, headingDegrees, degreesPerSecond);
         queuedSegments.add(segment);
         
@@ -105,7 +148,8 @@ public class PedroPathingBridge {
             executeSegment(segment);
         }
         
-        currentPose = new FieldPose(currentPose.getX(), currentPose.getY(), headingDegrees);
+        // Update currentPose with radians
+        currentPose = new FieldPose(currentPose.getX(), currentPose.getY(), Math.toRadians(headingDegrees));
     }
 
     /**
@@ -113,6 +157,9 @@ public class PedroPathingBridge {
      * Override this method to implement actual PedroPathing bezier paths.
      */
     public void followBezier(FieldPose start, FieldPose end, List<FieldPoint> controlPoints) {
+        validateStartPoseSet();
+        waitForIdle();
+        
         log("FollowBezier: " + start + " -> " + end + " with " + controlPoints.size() + " control points");
         PathSegment segment = PathSegment.bezier(start, end, controlPoints);
         queuedSegments.add(segment);

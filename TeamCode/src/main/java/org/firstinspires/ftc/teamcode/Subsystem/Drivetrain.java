@@ -154,9 +154,7 @@ public class Drivetrain {
         this.motorBR.setVelocity(encoderVelocity);
     }
 
-    public RobotStates.Drivetrain getDrivetrainMode() {
-        return this.currentDrivetrainMode;
-    }
+    public RobotStates.Drivetrain getDrivetrainMode() { return this.currentDrivetrainMode; }
 
     public void setDrivetrainMode(RobotStates.Drivetrain desiredMode) {
         this.currentDrivetrainMode = desiredMode;

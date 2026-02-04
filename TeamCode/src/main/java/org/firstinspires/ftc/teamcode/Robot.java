@@ -47,6 +47,7 @@ public class Robot extends OpMode {
     public void doTelemetry() {
 //        this.hoodServo.hoodTelem(telemetry);
 //        this.shooter.addTelemetry(telemetry);
+//        this.intake.intakeTelem(telemetry);
         this.drivetrain.drivetrainData(telemetry);
         telemetry.update();
     }

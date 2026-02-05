@@ -18,15 +18,13 @@ public class DynAuto extends DynAutoOpMode{
 
     @Override
     protected void onInit(){
-        telemetry.setMsTransmissionInterval(10);
+        telemetry.setMsTransmissionInterval(50);
         shooter.init(hardwareMap);
         intake.init(hardwareMap);
     }
 
 
     // Use a fixed asset copy to avoid stale/packaging issues
-    String Alience = "BLUE";
-    String Pos = "At_Goal";
     String[] jFuncIDs = new String[]{
             "FireShooter",
             "IntakeOn",

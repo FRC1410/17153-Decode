@@ -47,12 +47,27 @@ public class FieldPose {
         if (val instanceof double[]) {
             double[] arr = (double[]) val;
             if (arr.length >= 3) {
-                return new FieldPose(arr[0], arr[1], arr[2]);
+                return new FieldPose(arr[0], arr[1], normalizeHeadingRadians(arr[2]));
             } else if (arr.length == 2) {
                 return new FieldPose(arr[0], arr[1], 0);
             }
         }
         throw new DynAutoStepException("Cannot create FieldPose from org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar: " + var);
+    }
+
+    /**
+     * Normalize a heading value to radians.
+     * If the magnitude looks like degrees (e.g., > 2π), convert to radians.
+     */
+    public static double normalizeHeadingRadians(double heading) {
+        if (Double.isNaN(heading) || Double.isInfinite(heading)) {
+            return heading;
+        }
+        double abs = Math.abs(heading);
+        if (abs > (Math.PI * 2.0 + 1e-3)) {
+            return Math.toRadians(heading);
+        }
+        return heading;
     }
 
     @Override

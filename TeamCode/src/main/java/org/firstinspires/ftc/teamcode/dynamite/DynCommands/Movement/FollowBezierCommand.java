@@ -56,7 +56,7 @@ public class FollowBezierCommand implements DynCommand {
             // endVar is a FieldPos
             if (endVal instanceof double[] && ((double[]) endVal).length >= 3) {
                 double[] arr = (double[]) endVal;
-                endPose = new FieldPose(arr[0], arr[1], arr[2]);
+                endPose = new FieldPose(arr[0], arr[1], FieldPose.normalizeHeadingRadians(arr[2]));
             } else if (endVal instanceof Object[] && ((Object[]) endVal).length >= 3) {
                 Object[] arr = (Object[]) endVal;
                 double x = arr[0] instanceof Number ? ((Number) arr[0]).doubleValue() : 0;
@@ -70,7 +70,7 @@ public class FollowBezierCommand implements DynCommand {
                         heading = ((Number) ref.getValue()).doubleValue();
                     }
                 }
-                endPose = new FieldPose(x, y, heading);
+                endPose = new FieldPose(x, y, FieldPose.normalizeHeadingRadians(heading));
             }
             startPose = pathingBridge.getCurrentPose();
             pathingBridge.followBezier(startPose, endPose, Collections.singletonList(controlPoint));
@@ -109,8 +109,8 @@ public class FollowBezierCommand implements DynCommand {
                     }
                 }
             }
-            startPose = new FieldPose(x1, y1, h1);
-            endPose = new FieldPose(x2, y2, h2);
+            startPose = new FieldPose(x1, y1, FieldPose.normalizeHeadingRadians(h1));
+            endPose = new FieldPose(x2, y2, FieldPose.normalizeHeadingRadians(h2));
             pathingBridge.followBezier(startPose, endPose, new ArrayList<>());
         }
     }

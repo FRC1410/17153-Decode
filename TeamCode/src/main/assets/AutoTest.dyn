@@ -8,7 +8,7 @@ def_path Main start
     // define variables
     String Alience "BLUE" // RED or BLUE
     String Start_Pos "AT_GOAL" //either AT_GOAL or AT_FAR
-    Num targetAutoArtifacts 12 // either 3, 6, 9, or 12
+    Num targetAutoArtifacts 3 // either 3, 6, 9, or 12
     // telemetry
     AddData Alience
     AddData Start_Pos
@@ -39,7 +39,7 @@ def_path Main start
         FieldPos Pickup2 (96,35,PickupAngle)
         FieldPos Pickup2End (135,35,PickupAngle)
         // fire point
-        FieldPos FirePos (118,127,FireAngle)
+        FieldPos FirePos (72,72,FireAngle)
         // extra points
         FieldPos classifierPoint (128,70,ClassifierAngle)
         FieldCoord pickup1toShoot (104.5,55)
@@ -63,7 +63,7 @@ def_path Main start
     if (Alience == BLUE) start
         // define angles
         Num EndAngle 1.570796327      //90deg
-        Num FireAngle 2.42600766      //139deg
+        Num FireAngle 2.35619449      //135deg
         Num StartAngle 1.570796327    //90deg
         Num PickupAngle 3.141592654   //180deg
         Num GoalStartAngle 2.49582083 //143deg
@@ -77,7 +77,7 @@ def_path Main start
         FieldPos Pickup2 (48,36,PickupAngle)
         FieldPos Pickup2End (13,36,PickupAngle)
         // fire point
-        FieldPos FirePos (27,122,FireAngle)
+        FieldPos FirePos (72,72,FireAngle)
         // extra points
         FieldPos classifierPoint (16.5,71.5,ClassifierAngle)
         FieldCoord pickup0toShoot (29,84)
@@ -105,6 +105,7 @@ def_path Main start
         // fire
         goTo FirePos //optimal place to fire artifacts from.
         AddData "shooter spooling and firing"
+        AddData FirePos
         Update
         cmd FireShooter
     end

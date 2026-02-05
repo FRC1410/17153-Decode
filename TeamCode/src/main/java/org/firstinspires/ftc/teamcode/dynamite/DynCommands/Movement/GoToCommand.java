@@ -64,7 +64,7 @@ public class GoToCommand implements DynCommand {
                 y = arr[1] instanceof Number ? ((Number) arr[1]).doubleValue() : 0;
             }
         }
-        FieldPose pose = new FieldPose(x, y, heading);
+        FieldPose pose = new FieldPose(x, y, FieldPose.normalizeHeadingRadians(heading));
 
         if (pathingBridge != null) {
             try {

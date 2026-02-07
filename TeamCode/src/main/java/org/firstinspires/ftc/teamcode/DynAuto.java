@@ -84,7 +84,7 @@ public class DynAuto extends DynAutoOpMode{
                 // rev the shooter
                 shooter.run(RobotStates.ShooterStates.FORWARD);
                 // wait
-                safeSleep(1000);
+                safeSleep(2000);
                 // feed the shooter
                 shooter.feed(1);
                 intake.run(1,0);

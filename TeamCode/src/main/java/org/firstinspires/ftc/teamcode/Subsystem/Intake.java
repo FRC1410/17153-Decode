@@ -50,6 +50,13 @@ public class Intake {
 
     }
 
+    public void run(double intake, double outtake){ // for legacy usage (does the same thing, just subjectively better)
+        // The max gear speed we can currently run on this is 6000rpm per motor.
+        this.intake.setVelocity((outtake * 3000) - (intake * 3000));
+        this.transfer.setVelocity((outtake * 3000) - (intake * 3000));
+        this.feeder.setVelocity((outtake * 300) - (intake * 300));
+    }
+
     public void run(double intake, double outtake, double feederin, double feederout){
         // The max gear speed we can currently run on this is 6000rpm per motor.
         this.intake.setVelocity((outtake * 3000) - (intake * 3000));

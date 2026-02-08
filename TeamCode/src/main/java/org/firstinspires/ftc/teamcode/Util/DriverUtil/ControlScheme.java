@@ -28,6 +28,7 @@ public class ControlScheme {
 
     //SHOOTER
     public static Supplier<Boolean> SHOOTER_CYCLE;
+    public static Supplier<Boolean> NEAR_SHOOTER_CYCLE;
     public static Supplier<Boolean> SHOOTER_REVERSE;
 
     //HOOD SERVO
@@ -52,7 +53,8 @@ public class ControlScheme {
 
     public static void initOperator(Gamepad gamepad2) {
         SHOOTER_CYCLE = () -> gamepad2.right_bumper;
-        SHOOTER_REVERSE = () -> gamepad2.left_bumper;
+        NEAR_SHOOTER_CYCLE = () -> gamepad2.left_bumper;
+        SHOOTER_REVERSE = () -> (gamepad2.left_trigger > 0.3); // triggers are weird
         FEED = () -> gamepad2.right_trigger;
 
         HOOD_POS_ONE = () -> gamepad2.dpad_left;

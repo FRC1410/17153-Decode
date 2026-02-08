@@ -12,7 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class Shooter {
-    private double targetRPM = 2100;
+    private double targetRPM = 1850; // modify these values for further shooter RPM tuning
+    private double lowRPM = 1310;
 
     private DcMotorEx motorShooter;
     private DcMotorEx motorFeeder;
@@ -42,6 +43,9 @@ public class Shooter {
 
     public void cycle(Telemetry telemetry) {
         switch (this.shooterStatus) {
+            case LOW_POW:
+                this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
+                break;
             case FORWARD:
                 this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
                 break;
@@ -51,9 +55,38 @@ public class Shooter {
         }
         run(this.shooterStatus);
     }
+    public void nearCycle(Telemetry telemetry) {
+        switch (this.shooterStatus) {
+            case LOW_POW:
+                this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
+                break;
+            case FORWARD:
+                this.shooterStatus = RobotStates.ShooterStates.NEUTRAL;
+                break;
+            case NEUTRAL:
+                this.shooterStatus = RobotStates.ShooterStates.LOW_POW;
+                break;
+        }
+        run(this.shooterStatus);
+    }
+
+    public String geTelem(){
+        switch (shooterStatus){
+            case NEUTRAL:
+                return "OFF";
+            case FORWARD:
+                return "FAR SHOOT";
+            case LOW_POW:
+                return "NEAR SHOOT";
+        }
+        return "N/A";
+    }
 
     public void run(RobotStates.ShooterStates shooterState){
         switch (shooterState) {
+            case LOW_POW:
+                this.motorShooter.setVelocity(TARGET_RPM*lowRPM);
+                break;
             case FORWARD:
                 this.motorShooter.setVelocity(TARGET_RPM*targetRPM);
                 break;

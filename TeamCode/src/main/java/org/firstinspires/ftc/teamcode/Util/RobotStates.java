@@ -20,7 +20,7 @@ public class RobotStates {
         FORWARD,
         NEUTRAL,
         BACKWARD,
-        HALF_POWER
+        LOW_POW
     }
 
     public enum HoodPosition {

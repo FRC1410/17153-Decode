@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 
 @TeleOp
 public class Robot extends OpMode {
+    private final boolean noTelem = false;
+    private final boolean fastTelem = false;
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
     private final Rumbler driverRumbler = new Rumbler();
@@ -23,6 +25,7 @@ public class Robot extends OpMode {
 
     private final Toggle drivetrainToggle = new Toggle();
     private final Toggle shooterToggle = new Toggle();
+    private final Toggle nearShooterToggle = new Toggle();
 
     public void init() {
         ControlScheme.initDriver(gamepad1);
@@ -31,6 +34,7 @@ public class Robot extends OpMode {
         this.intake.init(hardwareMap);
         this.shooter.init(hardwareMap);
 //        this.hoodServo.init(hardwareMap);
+        if (fastTelem) telemetry.setMsTransmissionInterval(50); // idk if this works in normal OpModes.
     }
 
     @Override
@@ -56,8 +60,12 @@ public class Robot extends OpMode {
                 drivetrainToggle.toggleButton(ControlScheme.DRIVE_SLOW_MODE.get())
         );
 
+        // this should be good logic
         if (shooterToggle.detectPress(ControlScheme.SHOOTER_CYCLE.get())) {
             this.shooter.cycle(telemetry);
+        }
+        if (nearShooterToggle.detectPress(ControlScheme.NEAR_SHOOTER_CYCLE.get())){
+            this.shooter.nearCycle(telemetry);
         }
 
         if (ControlScheme.SHOOTER_REVERSE.get()) {
@@ -74,6 +82,10 @@ public class Robot extends OpMode {
 
         this.shooter.feed(ControlScheme.FEED.get());
 
+        if (!noTelem) {
+            telemetry.addData("shooter",shooter.geTelem());
+            telemetry.update();
+        }
 //        this.hoodServo.loop(
 //                ControlScheme.HOOD_POS_ONE.get(),
 //                ControlScheme.HOOD_POS_TWO.get(),

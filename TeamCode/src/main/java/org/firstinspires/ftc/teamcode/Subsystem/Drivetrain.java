@@ -121,15 +121,15 @@ public class Drivetrain {
         }
 
         if (this.getDrivetrainMode() == RobotStates.Drivetrain.HALF_SPEED) {
+            this.motorFL.setPower(this.wheelSpeeds[0]/2);
+            this.motorFR.setPower(this.wheelSpeeds[1]/2);
+            this.motorBL.setPower(this.wheelSpeeds[2]/2);
+            this.motorBR.setPower(this.wheelSpeeds[3]/2);
+        } else {
             this.motorFL.setPower(this.wheelSpeeds[0]);
             this.motorFR.setPower(this.wheelSpeeds[1]);
             this.motorBL.setPower(this.wheelSpeeds[2]);
             this.motorBR.setPower(this.wheelSpeeds[3]);
-        } else {
-            this.motorFL.setPower(this.wheelSpeeds[0] * 2);
-            this.motorFR.setPower(this.wheelSpeeds[1] * 2);
-            this.motorBL.setPower(this.wheelSpeeds[2] * 2);
-            this.motorBR.setPower(this.wheelSpeeds[3] * 2);
         }
     }
 

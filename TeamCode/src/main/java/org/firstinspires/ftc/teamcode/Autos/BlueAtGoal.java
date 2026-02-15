@@ -60,7 +60,7 @@ public class BlueAtGoal extends DynAutoOpMode {
                 // wait
                 safeSleep(2000);
                 // feed the shooter
-                shooter.feed(1);
+                shooter.feed(0.7f);
                 intake.run(1,0);
                 // wait
                 safeSleep(3000);

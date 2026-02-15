@@ -60,10 +60,10 @@ public class RedAtGoal extends DynAutoOpMode {
                 // wait
                 safeSleep(2000);
                 // feed the shooter
-                shooter.feed(1);
+                shooter.feed(0.8f);
                 intake.run(1,0);
                 // wait
-                safeSleep(3000);
+                safeSleep(3500);
                 // stop feeding and running the shooter
                 shooter.run(RobotStates.ShooterStates.NEUTRAL);
                 shooter.feed(0);

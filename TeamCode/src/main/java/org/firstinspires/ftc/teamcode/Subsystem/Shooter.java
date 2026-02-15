@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 
 public class Shooter {
-    private double targetRPM = 1850; // modify these values for further shooter RPM tuning
+    private double targetRPM = 1800; // modify these values for further shooter RPM tuning
     private double lowRPM = 1310;
 
     private DcMotorEx motorShooter;

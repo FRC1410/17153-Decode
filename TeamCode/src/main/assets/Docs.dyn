@@ -9,10 +9,6 @@
 // auto function declarators
 
 '''
-NOTES
-    Functions and definitions with commas need to have a space after each comma, like so:
-        List lis [2, 4, w, 4, s, 6, 7]
-
 VARIABLE DEFINITION/CREATION CREATION:
     FieldCoord:
         Syntax:
@@ -144,7 +140,19 @@ MATH OPERATIONS:
             invTAN val        // behaves the same as SQR
         Usage:
             val is the inputed value
-            var is where the ouput goes.
+            var is where the ouput goes
+    toRad:
+        Syntax:
+            toRad val to var
+            toRad val
+        Usage:
+            val is the input, and if there is no given output that value will be overwritten
+    toDeg:
+        Syntax:
+            toDeg val to var
+            toDeg val
+        Usage:
+            val is the input, and if there is no given output that value will be overwritten
 BASIC MOVEMENT COMMANDS:
     turnTo:
         syntax:
@@ -217,12 +225,12 @@ TELEMETRY:
         Usage:
             sends the current telemetry buffer to the driver station and clears it for the next cycle.
 JAVA MOTHOD INTEGRATION:
-    jFunc:
+    cmd:
         syntax:
-            jFunc funcID
-            jFunc funcID valIN
-            jFunc funcID to valOUT
-            jFunc funcID valIN to valOUT
+            cmd funcID
+            cmd funcID valIN
+            cmd funcID to valOUT
+            cmd funcID valIN to valOUT
         Usage:
             the functions that are given to DYN, must only have inputs and outputs as DynVars, either as DynVar or as DynVar[].
             this can be used to get input from an op (for testing), get the angle of a servo, state of a subsystem, the current position etc.

@@ -6,8 +6,8 @@ def_path Main start
     String AT_GOAL "AT_GOAL"
     String AT_SQUARE "AT_SQUARE"
     // define variables
-    String Alience "BLUE" // RED or BLUE
-    String Start_Pos "AT_GOAL" //either AT_GOAL or AT_FAR
+    String Alience "RED" // RED or BLUE
+    String Start_Pos "AT_SQUARE" //either AT_GOAL, AT_FAR or AT_SQUARE
     Num targetAutoArtifacts 6 // either 3, 6, 9, or 12
     // telemetry
     AddData Alience
@@ -17,19 +17,12 @@ def_path Main start
     // define the essential auto points
     if (Alience == RED) start
         // define angles
-        Num EndAngle 90
-        Num FireAngle 37
-        Num StartAngle 90
-        Num PickupAngle 0
-        Num GoalStartAngle 37
-        Num ClassifierAngle 180
-        // calculate angles
-        toRad EndAngle to EndAngle
-        toRad FireAngle to FireAngle
-        toRad StartAngle to StartAngle
-        toRad PickupAngle to PickupAngle
-        toRad GoalStartAngle to GoalStartAngle
-        toRad ClassifierAngle to ClassifierAngle
+        Num EndAngle 1.570796327        // 90deg good!
+        Num FireAngle 0.8203047484      // 47deg good!
+        Num StartAngle 1.570796327      // 90 deg good!
+        Num PickupAngle 0               // 0 deg good!
+        Num GoalStartAngle 0.6283185307 // 36 deg good!
+        Num ClassifierAngle 3.141592654 // 180 deg good!
         // define points
         // pickup points
         FieldPos Pickup0 (96,84,PickupAngle)
@@ -39,56 +32,45 @@ def_path Main start
         FieldPos Pickup2 (96,35,PickupAngle)
         FieldPos Pickup2End (135,35,PickupAngle)
         // fire point
-        FieldPos FirePos (118,127,FireAngle)
+        FieldPos FirePos (72,72,FireAngle) // good!
         // extra points
         FieldPos classifierPoint (128,70,ClassifierAngle)
-        FieldCoord pickup1toShoot (104.5,55)
-        FieldCoord pickup2toShoot (115,34)
         if (Start_Pos == AT_GOAL) start
             // start/end points
-            FieldPos StartPos (118,126,GoalStartAngle)
-            FieldPos EndPos (120,100,EndAngle)
+            FieldPos StartPos (120.7,127,GoalStartAngle) // good
+            FieldPos EndPos (120,100,EndAngle) // good
         end
         if (Start_Pos == AT_FAR) start
             // start/end points
-            FieldPos StartPos (88,8,StartAngle)
-            FieldPos EndPos (112,8,EndAngle)
+            FieldPos StartPos (88,8,StartAngle) // good
+            FieldPos EndPos (112,8,EndAngle) //good
         end
         if (Start_Pos == AT_SQUARE) start
             // start/end points
-            FieldPos StartPos (129,8,StartAngle)
-            FieldPos EndPos (112,8,EndAngle)
+            FieldPos StartPos (129,8,StartAngle) // good
+            FieldPos EndPos (112,8,EndAngle) //good
         end
     end
     if (Alience == BLUE) start
         // define angles
-        Num EndAngle 90
-        Num FireAngle 144
-        Num StartAngle 90
-        Num PickupAngle 180
-        Num GoalStartAngle 143
-        Num ClassifierAngle 0
-        // calculate angles
-        toRad EndAngle to EndAngle
-        toRad FireAngle to FireAngle
-        toRad StartAngle to StartAngle
-        toRad PickupAngle to PickupAngle
-        toRad GoalStartAngle to GoalStartAngle
-        toRad ClassifierAngle to ClassifierAngle
+        Num EndAngle 1.570796327      //90deg
+        Num FireAngle 2.35619449      //135deg
+        Num StartAngle 1.570796327    //90deg
+        Num PickupAngle 3.141592654   //180deg
+        Num GoalStartAngle 2.49582083 //143deg
+        Num ClassifierAngle 0         //0deg
         // define points
         // pickup points
         FieldPos Pickup0 (48,84,PickupAngle)
-        FieldPos Pickup0End (15,84,PickupAngle)
+        FieldPos Pickup0End (19,84,PickupAngle)
         FieldPos Pickup1 (48,59,PickupAngle)
-        FieldPos Pickup1End (9,59,PickupAngle)
+        FieldPos Pickup1End (13,59,PickupAngle)
         FieldPos Pickup2 (48,36,PickupAngle)
-        FieldPos Pickup2End (9,36,PickupAngle)
+        FieldPos Pickup2End (13,36,PickupAngle)
         // fire point
-        FieldPos FirePos (24,124,FireAngle)
+        FieldPos FirePos (55,87,FireAngle)
         // extra points
         FieldPos classifierPoint (16.5,71.5,ClassifierAngle)
-        FieldCoord pickup1toShoot (39.5,55)
-        FieldCoord pickup2toShoot (29,34)
         if (Start_Pos == AT_GOAL) start
             // start/end points
             FieldPos StartPos (23,126,GoalStartAngle)
@@ -107,8 +89,10 @@ def_path Main start
     end
     // run the auto sequence
     PathStartPosition StartPos
+    goTo StartPos
     if (targetAutoArtifacts >= 3) start
         // fire
+        goTo FirePos //optimal place to fire artifacts from.
         AddData "shooter spooling and firing"
         Update
         cmd FireShooter
@@ -118,13 +102,13 @@ def_path Main start
         AddData "collecting Pickup zone 0:"
         AddData Pickup0
         Update
-        goTo Pickup0
         cmd IntakeOn
+        goTo Pickup0
         goTo Pickup0End
         cmd IntakeOff
         // fire
         AddData "Going to firePos:"
-        AddData FirePos
+        goTo FirePos
         Update
         goTo FirePos
         cmd FireShooter
@@ -136,7 +120,7 @@ def_path Main start
         goTo Pickup1End
         cmd IntakeOff
         // fire
-        followBezier (pickup1toShoot, FirePos)
+        goTo FirePos
         cmd FireShooter
     end
     if (targetAutoArtifacts >= 12) start
@@ -146,7 +130,7 @@ def_path Main start
         goTo Pickup2End
         cmd IntakeOff
         // final fire
-        followBezier (pickup2toShoot, FirePos)
+        goTo FirePos
         cmd FireShooter
     end
     // go to final position

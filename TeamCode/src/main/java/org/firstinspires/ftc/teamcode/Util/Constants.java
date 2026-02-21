@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.Util;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class Constants {
+    // vision constants
+    public static final double CAM_OFFSET_X = 0;
+    public static final double CAM_OFFSET_Y = 0;
+    public static final double[] ZERO_ANGLE_VECTOR = {-1,0};
 
     public static final double GEAR_RATIO = 1 / 18.88;
     public static final double WHEEL_RADIUS = 1.5; // In inches

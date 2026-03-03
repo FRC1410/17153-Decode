@@ -20,7 +20,7 @@ import java.util.List;
 
 // comment from EonCuber28: thanks Calstar9000 for getting the inital config done here, ill take it from here.
 public class AprilTags {
-    private AprilTagData tagFieldData = new AprilTagData();
+    private final AprilTagData tagFieldData = new AprilTagData();
     public VisionPortal vision_portal;
     public AprilTagProcessor april_tag;
 
@@ -35,9 +35,8 @@ public class AprilTags {
                     .setDrawCubeProjection(true)
                     .setDrawTagOutline(true)
                     .setDrawTagID(true)
-                    .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                    .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS) // in radians to work better with java trig stuff
                     .build();
-
             // This is the connection to the physical camera, including the id
             this.vision_portal = new VisionPortal.Builder()
                     .setCamera(hardwareMapCool.get(WebcamName.class, "Webcam 1"))
@@ -78,24 +77,29 @@ public class AprilTags {
 
         return new double[]{range, bearing, id};
     }
-    public double[] getRobotPosFromTag(double[] tagDat, double[] relTagPos, double tagYaw){
-        double[] estPos = new double[3];
-        // so its deacently simple to get the field position from the tag data
-        estPos[0] = tagDat[0]+relTagPos[0];
-        estPos[1] = tagDat[1]+relTagPos[1];
-        // but to get the angle fit for your pathing system (for us its pedro), you gotta know the "zero" angle vector
-        // then using some simple vector math, you can get the robot angle. all of the major parts are pre-calculated, so there is not much to see here.
-        estPos[2] = tagYaw+tagDat[2];
+    public double[] getRobotPosFromTag(double[] tagFieldPos, double[] relTagPos, double tagYaw){
+        double tagHeading = tagFieldPos[2];
+
+        // rotate the apriltag relative position into the field position, this part makes the offset
+        double fieldDX = relTagPos[0]*Math.cos(tagHeading) - relTagPos[1]*Math.sin(tagHeading);
+        double fieldDY = relTagPos[0]*Math.sin(tagHeading) + relTagPos[1]*Math.cos(tagHeading);
+
+        double[] estPos = {
+                tagFieldPos[0]+fieldDX, // this part applies the offset
+                tagFieldPos[1]+fieldDY,
+                tagYaw+tagHeading};
+
         return estPos;
     }
 
     private double[] shiftPosFromCamOffset(double[] ogPos){
+        if (CAM_OFFSET_Y == 0 && CAM_OFFSET_X == 0) return ogPos; // idk just felt like it
         // this is the complicated part where we start our toes a little bit more into vector math (scary ik)
         // the first step is to calculate the robot facing vector, we just gotta rotate the zero vector by the robot angle
         double[] facingVect = {
                 ZERO_ANGLE_VECTOR[0]*Math.cos(ogPos[2])-ZERO_ANGLE_VECTOR[1]*Math.sin(ogPos[2]),
                 ZERO_ANGLE_VECTOR[0]*Math.sin(ogPos[2])+ZERO_ANGLE_VECTOR[1]*Math.cos(ogPos[2])};
-        double length = Math.sqrt(facingVect[0]*facingVect[0]+facingVect[1]*facingVect[1]); // simple pythagoras
+        double length = Math.sqrt(facingVect[0]*facingVect[0]+facingVect[1]*facingVect[1]); // simple pythagoras (not so scary)
         // we calculate F hat and P hat, as our robot local space matrix constructors, we just gonna normalise the vector just in case.
         double[] F_hat = {
                 facingVect[0]/length,
@@ -107,31 +111,49 @@ public class AprilTags {
         double[] worldOffset = {
                 CAM_OFFSET_X*F_hat[0]+CAM_OFFSET_Y*P_hat[0],
                 CAM_OFFSET_X*F_hat[1]+CAM_OFFSET_Y*P_hat[1]};
-        // and apply the offset
-        ogPos[0] -= worldOffset[0];
-        ogPos[1] -= worldOffset[1];
-        return ogPos;
+        // and apply the offset to a copy of input (better for adaptability)
+        double[] out = ogPos.clone();
+        out[0] += worldOffset[0];
+        out[1] += worldOffset[1];
+        return out;
     }
 
     public double[] getRobotPos(){
         List<AprilTagDetection> detections = this.april_tag.getDetections();
         if (detections.isEmpty()) return null;
-        double[] estPos = new double[3];
+
+        double sumX = 0, sumY = 0;
+        double sumSin = 0, sumCos =0;
+        int validCount = 0;
+
         for (AprilTagDetection tagData : detections){
-            // calculate pos
-            double[] estPosFromTag = getRobotPosFromTag(
-                    tagFieldData.getID2Tag(tagData.id),
-                    new double[]{tagData.ftcPose.x, tagData.ftcPose.y},
-                    tagData.ftcPose.yaw);
-            // add to average
-            estPos[0] += estPosFromTag[0];
-            estPos[1] += estPosFromTag[1];
-            estPos[2] += estPosFromTag[2];
+            if (tagData != null && tagData.ftcPose != null) {
+                // get tagFieldPos
+                double[] tagFieldPos = tagFieldData.getID2Tag(tagData.id);
+                if (tagFieldPos == null) continue; // counter other null pointer shenanigans.
+                // calculate pos
+                double[] estPosFromTag = getRobotPosFromTag(
+                        tagFieldPos,
+                        new double[]{tagData.ftcPose.x, tagData.ftcPose.y},
+                        tagData.ftcPose.yaw);
+                // add to average
+                sumX += estPosFromTag[0];
+                sumY += estPosFromTag[1];
+
+                sumSin += Math.sin(estPosFromTag[2]); // this calculates the angles that dont loose effectivness around averaging edge cases (especialy with radians)
+                sumCos += Math.cos(estPosFromTag[2]); // and easaly allows us to get accurate averages of the angles from the different positions
+                validCount++;
+            }
         }
+
+        if (validCount == 0) return null;
+
         // calculate average
-        estPos[0] = estPos[0]/detections.size();
-        estPos[1] = estPos[1]/detections.size();
-        estPos[2] = estPos[2]/detections.size();
+        double[] estPos = {
+                sumX/validCount,
+                sumY/validCount,
+                Math.atan2(sumSin/validCount,sumCos/validCount) // funny circular mean math to counteract common radian angle based edge cases.
+        };
         return shiftPosFromCamOffset(estPos);
     }
 }

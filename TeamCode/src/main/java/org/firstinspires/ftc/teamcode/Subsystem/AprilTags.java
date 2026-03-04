@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_X;
 import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_Y;
-import static org.firstinspires.ftc.teamcode.Util.Constants.ZERO_ANGLE_VECTOR;
+import static org.firstinspires.ftc.teamcode.Util.Constants.TERMINAL_ANGLE_VECTOR;
 
 import android.util.Size;
 
@@ -97,8 +97,8 @@ public class AprilTags {
         // this is the complicated part where we start our toes a little bit more into vector math (scary ik)
         // the first step is to calculate the robot facing vector, we just gotta rotate the zero vector by the robot angle
         double[] facingVect = {
-                ZERO_ANGLE_VECTOR[0]*Math.cos(ogPos[2])-ZERO_ANGLE_VECTOR[1]*Math.sin(ogPos[2]),
-                ZERO_ANGLE_VECTOR[0]*Math.sin(ogPos[2])+ZERO_ANGLE_VECTOR[1]*Math.cos(ogPos[2])};
+                TERMINAL_ANGLE_VECTOR[0]*Math.cos(ogPos[2])- TERMINAL_ANGLE_VECTOR[1]*Math.sin(ogPos[2]),
+                TERMINAL_ANGLE_VECTOR[0]*Math.sin(ogPos[2])+ TERMINAL_ANGLE_VECTOR[1]*Math.cos(ogPos[2])};
         double length = Math.sqrt(facingVect[0]*facingVect[0]+facingVect[1]*facingVect[1]); // simple pythagoras (not so scary)
         // we calculate F hat and P hat, as our robot local space matrix constructors, we just gonna normalise the vector just in case.
         double[] F_hat = {
@@ -123,7 +123,7 @@ public class AprilTags {
         if (detections.isEmpty()) return null;
 
         double sumX = 0, sumY = 0;
-        double sumSin = 0, sumCos =0;
+        double sumSin = 0, sumCos = 0;
         int validCount = 0;
 
         for (AprilTagDetection tagData : detections){

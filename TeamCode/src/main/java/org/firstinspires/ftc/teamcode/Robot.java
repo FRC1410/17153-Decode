@@ -11,18 +11,23 @@ public class Robot extends OpMode {
     
     public void init() {
         this.aprilTags = new AprilTags(hardwareMap);
+        telemetry.setMsTransmissionInterval(50); // literal max due to main loop being capped at 20hz
     }
 
     @Override
     public void loop() {
         double[] tagData = aprilTags.getRobotPos();
+        aprilTags.update();
 
-        telemetry.addData("X", tagData[0]);
-        telemetry.addData("Y", tagData[1]);
-        telemetry.addData("H (deg)", Math.toDegrees(tagData[2]));
-        telemetry.addData("Camera State", this.aprilTags.vision_portal.getCameraState());
-        telemetry.addData("Detection Count", this.aprilTags.april_tag.getDetections().size());
         telemetry.addData("FPS", this.aprilTags.vision_portal.getFps());
+        telemetry.addData("BotX", tagData[0]);
+        telemetry.addData("BotY", tagData[1]);
+        telemetry.addData("BotH (deg)", Math.toDegrees(tagData[2]));
+        telemetry.addData("Detection Count", this.aprilTags.getDetections().size());
+        telemetry.addData("Detections","");
+        for(int i = 0; i < aprilTags.getDetections().size(); i++){
+            telemetry.addData("Detection #"+i, aprilTags.getDetections().get(i).id);
+        }
         telemetry.update();
     }
 }

@@ -4,8 +4,9 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class Constants {
     // vision constants
-    public static final double CAM_OFFSET_X = 0;
-    public static final double CAM_OFFSET_Y = 0;
+    public static final double TAG_WIDTH = 6.25;
+    public static final double CAM_OFFSET_X = 1.5;
+    public static final double CAM_OFFSET_Y = 8;
     public static final double[] TERMINAL_ANGLE_VECTOR = {1,0}; // this is for vision, and the main way we make sure that our vision code and pedro talk nicely together, NO TOUCHY.
     // all it does is tell the apriltag system what pedro thinks the angle 0 is.
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_X;
 import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_Y;
+import static org.firstinspires.ftc.teamcode.Util.Constants.TAG_WIDTH;
 import static org.firstinspires.ftc.teamcode.Util.Constants.TERMINAL_ANGLE_VECTOR;
 
 import android.util.Size;
@@ -14,8 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Util.AprilTagData;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // comment from EonCuber28: thanks Calstar9000 for getting the inital config done here, ill take it from here.
@@ -23,13 +26,20 @@ public class AprilTags {
     private final AprilTagData tagFieldData = new AprilTagData();
     public VisionPortal vision_portal;
     public AprilTagProcessor april_tag;
+    private ArrayList<AprilTagDetection> detections;
 
     public AprilTags(HardwareMap hardwareMapCool) {
         // NOTE: The values/configs here are very finicky, don't change them unless absolutely necessary
-        // comment form EonCuber28: ok 👍 :)
+        // comment form EonCuber28: ok 👍 :) (as of Mar 25 2026, i have changed some things due to a guide i found)
         try {
+            // this defines all of the wanted keys for us
+            AprilTagLibrary.Builder tagLib = new AprilTagLibrary.Builder();
+            for (int tagID : tagFieldData.getKeys()){
+                tagLib.addTag(tagID, "TagID"+tagID, TAG_WIDTH, DistanceUnit.INCH);
+            }
             // This is the camera data, and where we get said data.
             this.april_tag = new AprilTagProcessor.Builder()
+                    .setTagLibrary(tagLib.build())
                     .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                     .setDrawAxes(true)
                     .setDrawCubeProjection(true)
@@ -38,13 +48,13 @@ public class AprilTags {
                     .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS) // in radians to work better with java trig stuff
                     .build();
             // This is the connection to the physical camera, including the id
-            this.vision_portal = new VisionPortal.Builder()
-                    .setCamera(hardwareMapCool.get(WebcamName.class, "Webcam 1"))
-                    .addProcessor(this.april_tag)
-                    .setCameraResolution(new Size(1280, 800))
-                    .enableLiveView(true)
-                    .setAutoStopLiveView(false)
-                    .build();
+            VisionPortal.Builder vision_portal_builder = new VisionPortal.Builder();
+            vision_portal_builder.setCamera(hardwareMapCool.get(WebcamName.class, "Webcam 1"));
+            vision_portal_builder.setCameraResolution(new Size(640, 480));
+            vision_portal_builder.addProcessor(april_tag);
+
+            vision_portal = vision_portal_builder.build();
+            update();
         } catch (Exception e) {
             throw new RuntimeException("Camera init failed: " + e.getMessage());
         }
@@ -55,8 +65,6 @@ public class AprilTags {
      * @return Range, Bearing, Tag ID in a double[]
      */
     public double[] getTagData() {
-        List<AprilTagDetection> detections = this.april_tag.getDetections();
-
         // Return detection count as first value for debugging
         if (detections.isEmpty()) {
             return new double[]{-999, 0, 0}; // -999 = no detections at all
@@ -93,7 +101,7 @@ public class AprilTags {
     }
 
     private double[] shiftPosFromCamOffset(double[] ogPos){
-        if (CAM_OFFSET_Y == 0 && CAM_OFFSET_X == 0) return ogPos; // idk just felt like it
+        if (CAM_OFFSET_Y == 0 && CAM_OFFSET_X == 0) return ogPos.clone(); // idk just felt like it
         // this is the complicated part where we start our toes a little bit more into vector math (scary ik)
         // the first step is to calculate the robot facing vector, we just gotta rotate the zero vector by the robot angle
         double[] facingVect = {
@@ -119,8 +127,7 @@ public class AprilTags {
     }
 
     public double[] getRobotPos(){
-        List<AprilTagDetection> detections = this.april_tag.getDetections();
-        if (detections.isEmpty()) return null;
+        if (detections.isEmpty()) return new double[]{-1,-1,-1};
 
         double sumX = 0, sumY = 0;
         double sumSin = 0, sumCos = 0;
@@ -146,7 +153,7 @@ public class AprilTags {
             }
         }
 
-        if (validCount == 0) return null;
+        if (validCount == 0) return new double[]{-1,-1,-1};
 
         // calculate average
         double[] estPos = {
@@ -155,5 +162,13 @@ public class AprilTags {
                 Math.atan2(sumSin/validCount,sumCos/validCount) // funny circular mean math to counteract common radian angle based edge cases.
         };
         return shiftPosFromCamOffset(estPos);
+    }
+
+    public void update(){
+        this.detections = april_tag.getDetections();
+    }
+
+    public ArrayList<AprilTagDetection> getDetections(){
+        return this.detections;
     }
 }

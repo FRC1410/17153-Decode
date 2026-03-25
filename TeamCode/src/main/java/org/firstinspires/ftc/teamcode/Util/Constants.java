@@ -3,6 +3,12 @@ package org.firstinspires.ftc.teamcode.Util;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class Constants {
+    // vision constants
+    public static final double TAG_WIDTH = 6.25;
+    public static final double CAM_OFFSET_X = 1.5;
+    public static final double CAM_OFFSET_Y = 8;
+    public static final double[] TERMINAL_ANGLE_VECTOR = {1,0}; // this is for vision, and the main way we make sure that our vision code and pedro talk nicely together, NO TOUCHY.
+    // all it does is tell the apriltag system what pedro thinks the angle 0 is.
 
     public static final double GEAR_RATIO = 1 / 18.88;
     public static final double WHEEL_RADIUS = 1.5; // In inches

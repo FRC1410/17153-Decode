@@ -13,7 +13,7 @@ public class AprilTagData {
         ID2Pos.put(23,new AprilTagFieldPos(72,144, Math.toRadians(270))); // PPG apriltag
         ID2Pos.put(22,new AprilTagFieldPos(72,144, Math.toRadians(270))); // PGP apriltag
         ID2Pos.put(21,new AprilTagFieldPos(72,144, Math.toRadians(270))); // GPP apriltag
-        ID2Pos.put(18,new AprilTagFieldPos(0,0,0)); // test apriltag
+        //ID2Pos.put(18,new AprilTagFieldPos(0,0,0)); // test apriltag
     }
     public double[] getID2Tag(int ID){
         AprilTagFieldPos data = ID2Pos.get(ID);

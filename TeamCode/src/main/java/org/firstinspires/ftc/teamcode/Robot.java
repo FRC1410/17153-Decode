@@ -65,13 +65,13 @@ public class Robot extends OpMode {
         } else {
             this.shooter.stopBackward();
         }
-
+/*
         this.intake.run(
                 ControlScheme.INTAKE_IN.get(),
                 ControlScheme.INTAKE_OUT.get()
         );
 
-
+*/
         this.shooter.feed(ControlScheme.FEED.get());
 
 //        this.hoodServo.loop(

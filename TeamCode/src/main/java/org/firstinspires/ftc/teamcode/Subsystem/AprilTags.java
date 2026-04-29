@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Util.Constants.TERMINAL_ANGLE_VECTO
 
 import android.util.Size;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -162,6 +163,10 @@ public class AprilTags {
                 Math.atan2(sumSin/validCount,sumCos/validCount) // funny circular mean math to counteract common radian angle based edge cases.
         };
         return shiftPosFromCamOffset(estPos);
+    }
+    public Pose getPedroPose(){
+        double[] roboPos = getRobotPos();
+        return new Pose(roboPos[0], roboPos[1], roboPos[2]);
     }
 
     public void update(){

@@ -16,8 +16,6 @@ public class Intake {
     DcMotorEx intake;
     //Transfer the Artifacts into storage.
     DcMotorEx transfer;
-    // Feed the Artifacts in storage into the shooter to get ready to score.
-    DcMotorEx feeder;
 
     public void init(HardwareMap hardwareMap) {
         this.intake = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_ID);
@@ -39,33 +37,20 @@ public class Intake {
         this.transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.transfer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        this.feeder = hardwareMap.get(DcMotorEx.class, FEEDER_MOTOR_ID);
-        this.feeder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.feeder.setDirection(DcMotorEx.Direction.FORWARD);
-        this.feeder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.feeder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
     }
 
-    public void run(double intake, double outtake, double feederin, double feederout){
+    public void run(double intake, double outtake){ // why do we have double values?
         // The max gear speed we can currently run on this is 6000rpm per motor.
         this.intake.setVelocity((outtake * 3000) - (intake * 3000));
         this.transfer.setVelocity((outtake * 3000) - (intake * 3000));
-        this.feeder.setVelocity((feederin * 3000) - (feederout * 3000));
     }
 
     public void intakeTelem(Telemetry telemetry){
         double intakep = this.intake.getPower();
         double transferp = this.transfer.getPower();
-        double feederp = this.feeder.getPower();
         telemetry.addData("Intake Power: ", intakep);
         telemetry.addLine();
         telemetry.addData("Transfer Power: ", transferp);
-        telemetry.addLine();
-        telemetry.addData("Feeder Power: ", feederp);
         telemetry.update();
     }
 }

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -29,6 +28,7 @@ public class Drivetrain {
     private double[] wheelSpeeds = new double[4];
     private double maxVelocity = 4500;
     private RobotStates.Drivetrain currentDrivetrainMode = RobotStates.Drivetrain.FULL_SPEED;
+    private double[] goVect = new double[2];
 
     public void init(HardwareMap hardwareMap) {
         this.motorFL = hardwareMap.get(DcMotorEx.class, FRONT_LEFT_MOTOR_ID);
@@ -83,13 +83,13 @@ public class Drivetrain {
             double strafeSpeed,
             double forwardSpeed,
             double turnSpeed,
-            boolean isHalfSpeed)
-    {
+            boolean isHalfSpeed) {
 
-        Vector2d input = new Vector2d(strafeSpeed, forwardSpeed);
+        goVect[0] = strafeSpeed;
+        goVect[1] = forwardSpeed;
 
-        strafeSpeed = Range.clip(input.x, -1, 1);
-        forwardSpeed = Range.clip(input.y, -1, 1);
+        strafeSpeed = Range.clip(goVect[0], -1, 1);
+        forwardSpeed = Range.clip(goVect[1], -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
         this.wheelSpeeds[0] = forwardSpeed - strafeSpeed - turnSpeed;
@@ -105,7 +105,8 @@ public class Drivetrain {
                     (this.wheelSpeeds[i] + Math.signum(this.wheelSpeeds[i]) * 0.085) * voltageCorrection;
         }
 
-        for(double wheelSpeeds : wheelSpeeds) maxVelocity = Math.max(maxVelocity, Math.abs(wheelSpeeds));
+        for (double wheelSpeeds : wheelSpeeds)
+            maxVelocity = Math.max(maxVelocity, Math.abs(wheelSpeeds));
 
         if (maxVelocity > 4500) {
             this.wheelSpeeds[0] /= maxVelocity;
@@ -154,7 +155,9 @@ public class Drivetrain {
         this.motorBR.setVelocity(encoderVelocity);
     }
 
-    public RobotStates.Drivetrain getDrivetrainMode() { return this.currentDrivetrainMode; }
+    public RobotStates.Drivetrain getDrivetrainMode() {
+        return this.currentDrivetrainMode;
+    }
 
     public void setDrivetrainMode(RobotStates.Drivetrain desiredMode) {
         this.currentDrivetrainMode = desiredMode;

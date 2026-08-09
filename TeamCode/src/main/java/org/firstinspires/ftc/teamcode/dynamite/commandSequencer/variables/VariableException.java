@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables;
 
-import org.SquidSquad.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
 
 public class VariableException extends CommandException {
     public VariableException(String method, String involvedVars, String message) {

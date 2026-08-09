@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
+import org.firstinspires.ftc.teamcode.dynamite.Tokenizer.Token;
+import org.firstinspires.ftc.teamcode.dynamite.Tokenizer.Tokenizer;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandConstructor;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandRunner;
+
 import java.util.Scanner;
 
-import org.SquidSquad.commandSequencer.CommandConstructor;
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.CommandRunner;
-import org.SquidSquad.Tokenizer.Token;
-import org.SquidSquad.Tokenizer.Tokenizer;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.

@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.complex;
 
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
 
 import java.util.Map;
 import java.util.Set;

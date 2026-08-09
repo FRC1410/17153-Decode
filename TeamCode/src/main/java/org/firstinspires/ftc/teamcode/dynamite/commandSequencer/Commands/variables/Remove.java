@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.variables;
 
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
-import org.SquidSquad.commandSequencer.variables.primitives.DynBoolean;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
-import org.SquidSquad.commandSequencer.variables.primitives.DynString;
-import org.SquidSquad.Tokenizer.Token;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynBoolean;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynString;
+import org.firstinspires.ftc.teamcode.dynamite.Tokenizer.Token;
 
 public class Remove extends Command{
     private final String target;

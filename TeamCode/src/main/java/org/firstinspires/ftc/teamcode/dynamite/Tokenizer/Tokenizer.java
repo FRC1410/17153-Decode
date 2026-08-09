@@ -45,8 +45,8 @@ public class Tokenizer {
             }
 
             String raw = lineBuffer.toString();
-            String cleaned = raw.strip().replaceAll("\\s+", " ");
-            if (!cleaned.isBlank()) {
+            String cleaned = raw.trim().replaceAll("\\s+", " ");
+            if (!cleaned.isEmpty()) {
                 int cleanLineIndex = out.size();
                 lineMap.put(cleanLineIndex, originalIndex);
 
@@ -116,7 +116,7 @@ public class Tokenizer {
                 if (c == '"') {
                     if (!inString) {
                         // flush any pending chunk before the string
-                        if (!chunkBuffer.isEmpty()) {
+                        if (chunkBuffer.length() > 0) {
                             lineChunks.add(chunkBuffer.toString());
                             chunkOffsets.add(chunkStart);
                             chunkBuffer = new StringBuilder();
@@ -140,7 +140,7 @@ public class Tokenizer {
                     continue;
                 }
                 if (c == ' ') {
-                    if (!chunkBuffer.isEmpty()) {
+                    if (chunkBuffer.length() > 0) {
                         lineChunks.add(chunkBuffer.toString());
                         chunkOffsets.add(chunkStart);
                         chunkBuffer = new StringBuilder();
@@ -152,7 +152,7 @@ public class Tokenizer {
                 chunkBuffer.append(c);
                 i++;
             }
-            if (!chunkBuffer.isEmpty()) {
+            if (chunkBuffer.length() > 0) {
                 lineChunks.add(chunkBuffer.toString());
                 chunkOffsets.add(chunkStart);
             }

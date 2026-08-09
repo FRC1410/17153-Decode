@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow;
 
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.VariableManager;
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
-import org.SquidSquad.commandSequencer.variables.primitives.DynBoolean;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
-import org.SquidSquad.commandSequencer.variables.primitives.DynString;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.VariableManager;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynBoolean;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynString;
 
 public class Condition {
     private final int line;
@@ -651,7 +651,11 @@ public class Condition {
             default -> out.append("UNKNOWN");
         }
         out.append(" ");
-        switch (type){
+        // `case null` requires Java 21; this module compiles at 17, so the null
+        // check is hoisted out (a switch on a null enum would otherwise NPE).
+        if (type == null) {
+            out.append("NULL");
+        } else switch (type){
             case Or -> out.append("OR");
             case And -> out.append("AND");
             case Not -> out.append("NOT");
@@ -662,16 +666,16 @@ public class Condition {
             case NotEquals -> out.append("NOT-EQUALS");
             case LessThanEq -> out.append("LESS-EQUALS-THAN");
             case MoreThanEq -> out.append("MORE-EQUALS-THAN");
-            case null -> out.append("NULL");
             default -> out.append("NONE");
         }
         out.append(" ");
-        switch (Part2Type){
+        if (Part2Type == null) {
+            out.append("NULL");
+        } else switch (Part2Type){
             case condition -> out.append(Part2.toString());
             case bool -> out.append((boolean)Part2);
             case var -> out.append("Var:").append((String)Part2);
             case num -> out.append((double)Part2);
-            case null -> out.append("NULL");
             default -> out.append("UNKNOWN");
         }
         out.append(")");

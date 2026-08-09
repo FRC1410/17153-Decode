@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.controlFlow.Condition;
-import org.SquidSquad.commandSequencer.Commands.function.DynPath;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.Condition;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.function.DynPath;
 
 import java.util.Map;
 

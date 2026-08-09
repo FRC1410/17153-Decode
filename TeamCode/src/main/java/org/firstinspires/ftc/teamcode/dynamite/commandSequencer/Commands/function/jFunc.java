@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.function;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
-import org.SquidSquad.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
 
 import java.util.function.Function;
 

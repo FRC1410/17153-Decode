@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.complex;
 
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableException;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
 
 public class DynFieldCord extends Variable {
     public DynFieldCord(Variable[] coord) {

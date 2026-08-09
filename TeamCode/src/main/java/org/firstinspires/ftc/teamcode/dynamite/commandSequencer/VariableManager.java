@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer;
 
-import org.SquidSquad.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

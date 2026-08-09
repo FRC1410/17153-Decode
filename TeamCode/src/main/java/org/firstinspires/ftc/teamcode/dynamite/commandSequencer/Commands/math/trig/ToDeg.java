@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.trig;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
-import org.SquidSquad.commandSequencer.Commands.math.MathInCon;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.MathInCon;
 
 public class ToDeg extends Command {
     private final MathInCon inCon;

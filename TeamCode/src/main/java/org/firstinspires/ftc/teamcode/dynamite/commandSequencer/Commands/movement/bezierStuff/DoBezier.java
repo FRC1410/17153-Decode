@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.bezierStuff;
 
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class DoBezier extends Command {
     }
 
     private static String[] constructPoses(String[] midPoses, String endPos){
-        ArrayList<String> poses = new ArrayList<>(List.of(midPoses));
+        ArrayList<String> poses = new ArrayList<>(Arrays.asList(midPoses));
         poses.add(endPos);
         return poses.toArray(new String[0]);
     }

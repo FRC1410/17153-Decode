@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
-import org.SquidSquad.FTCInterface.FTCInterface;
+import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.FTCInterface;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

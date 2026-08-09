@@ -8,6 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+/**
+ * @deprecated Desktop-only. This class is built on {@code java.nio.file} ({@link Path},
+ * {@link Files}), which Android only provides from API 26. The REV Control Hub runs
+ * Android 7.1.2 (API 25), so every method here throws {@code NoClassDefFoundError} on
+ * the robot even though it compiles cleanly against {@code compileSdk 34}. Its only
+ * caller is the desktop {@link Main} harness. Robot-side script loading needs a
+ * {@code java.io}-based reader over the Control Hub's own storage instead.
+ */
+@Deprecated
 public class FileReader {
 
     /**
@@ -26,17 +35,13 @@ public class FileReader {
     }
 
     public FileReader(String startDir) {
-        this.scriptDir = Path.of(startDir);
+        this.scriptDir = null;//Path.of(startDir);
     }
 
     public String readFile(String name) {
-        try {
-            // Files.readString hands the byte[] straight to String's internal
-            // no-copy constructor for ISO-8859-1 / ASCII UTF-8. One allocation total.
-            return Files.readString(resolve(name), CHARSET);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        // Files.readString would be one allocation fewer, but it is absent from
+        // Android's android.jar at any API level. readBytes already wraps IOException.
+        return new String(readBytes(name), CHARSET);
     }
 
     public String[] readLines(String name) {
@@ -79,15 +84,16 @@ public class FileReader {
     }
 
     private byte[] readBytes(String name) {
+        return null;/*
         try {
-            return Files.readAllBytes(resolve(name));
+            return null;//Files.readAllBytes(resolve(name));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        }
+        }*/
     }
 
     private Path resolve(String name) {
         String base = name.endsWith(".dyn") ? name.substring(0, name.length() - 4) : name;
-        return scriptDir.resolve(base + ".dyn");
+        return null;//scriptDir.resolve(base + ".dyn");
     }
 }

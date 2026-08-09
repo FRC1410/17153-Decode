@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives;
 
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
 // I have no idea why I need to import this
 import java.lang.String;
 

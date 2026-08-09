@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
-import org.SquidSquad.commandSequencer.CommandException;
-import org.SquidSquad.commandSequencer.variables.complex.DynFieldCord;
-import org.SquidSquad.commandSequencer.variables.complex.DynFieldPos;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.complex.DynFieldCord;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.complex.DynFieldPos;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
 
 public class GeneralMovement {
     public static enum moveType {TurnTo,GoTo,Bezier,Spline,SplineLine,SplineSpline}

@@ -1,42 +1,42 @@
 // Call me Linus Torvalds the way I be hatin' on these indentations.
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.util.Sleep;
-import org.SquidSquad.commandSequencer.Commands.controlFlow.Condition;
-import org.SquidSquad.commandSequencer.Commands.controlFlow.For;
-import org.SquidSquad.commandSequencer.Commands.controlFlow.If;
-import org.SquidSquad.commandSequencer.Commands.controlFlow.While;
-import org.SquidSquad.commandSequencer.Commands.function.DynPath;
-import org.SquidSquad.commandSequencer.Commands.function.RunPath;
-import org.SquidSquad.commandSequencer.Commands.math.arithmetic.*;
-import org.SquidSquad.commandSequencer.Commands.math.trig.*;
-import org.SquidSquad.commandSequencer.Commands.movement.bezierStuff.DoBezier;
-import org.SquidSquad.commandSequencer.Commands.movement.GoTo;
-import org.SquidSquad.commandSequencer.Commands.movement.splineStuff.DoSpline;
-import org.SquidSquad.commandSequencer.Commands.movement.splineStuff.DoSplineLinear;
-import org.SquidSquad.commandSequencer.Commands.movement.splineStuff.DoSplineSpline;
-import org.SquidSquad.commandSequencer.Commands.movement.TurnTo;
-import org.SquidSquad.commandSequencer.Commands.random.RngBoolean;
-import org.SquidSquad.commandSequencer.Commands.random.RngDouble;
-import org.SquidSquad.commandSequencer.Commands.random.RngFloat;
-import org.SquidSquad.commandSequencer.Commands.random.RngInteger;
-import org.SquidSquad.commandSequencer.Commands.telemetry.AddData;
-import org.SquidSquad.commandSequencer.Commands.telemetry.Clear;
-import org.SquidSquad.commandSequencer.Commands.telemetry.Update;
-import org.SquidSquad.commandSequencer.Commands.variables.*;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
-import org.SquidSquad.commandSequencer.variables.primitives.DynBoolean;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
-import org.SquidSquad.commandSequencer.variables.primitives.DynString;
-import org.SquidSquad.Tokenizer.Token;
-import org.SquidSquad.Tokenizer.TokenTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.util.Sleep;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.Condition;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.For;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.If;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.While;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.function.DynPath;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.function.RunPath;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.arithmetic.*;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.trig.*;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.bezierStuff.DoBezier;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.GoTo;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.splineStuff.DoSpline;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.splineStuff.DoSplineLinear;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.splineStuff.DoSplineSpline;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.movement.TurnTo;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.random.RngBoolean;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.random.RngDouble;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.random.RngFloat;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.random.RngInteger;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.telemetry.AddData;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.telemetry.Clear;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.telemetry.Update;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.variables.*;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynBoolean;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynString;
+import org.firstinspires.ftc.teamcode.dynamite.Tokenizer.Token;
+import org.firstinspires.ftc.teamcode.dynamite.Tokenizer.TokenTypes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.SquidSquad.Tokenizer.TokenTypes.*;
+import static org.firstinspires.ftc.teamcode.dynamite.Tokenizer.TokenTypes.*;
 
 // TODO: convert all executed exceptions in here into normal "Exceptions" or at least extensions of it.
 // TODO: separate the method calls in delegateToken to separate classes
@@ -149,12 +149,14 @@ public class CommandConstructor {
     }
     private void processEnd(){
         i++;
+        // ArrayList.getLast()/removeLast() are Java 21 SequencedCollection methods and
+        // are absent from android.jar; indexed access is the portable equivalent.
         if (depthTracker.size() == 1) {
-            finalCommands.add(depthTracker.removeLast());
+            finalCommands.add(depthTracker.remove(depthTracker.size() - 1));
         } else if (!depthTracker.isEmpty()){
-            Command currentDepth = depthTracker.getLast();
-            depthTracker.removeLast();
-            depthTracker.getLast().addCommand(currentDepth);
+            Command currentDepth = depthTracker.get(depthTracker.size() - 1);
+            depthTracker.remove(depthTracker.size() - 1);
+            depthTracker.get(depthTracker.size() - 1).addCommand(currentDepth);
         }
     }
     private void processMathOp(){
@@ -3689,7 +3691,7 @@ public class CommandConstructor {
 
     private void addCommand(Command c){
         if (!depthTracker.isEmpty()) {
-            depthTracker.getLast().addCommand(c);
+            depthTracker.get(depthTracker.size() - 1).addCommand(c);
         } else {
             throwError("Cannot have commands outside of functions!");
         }

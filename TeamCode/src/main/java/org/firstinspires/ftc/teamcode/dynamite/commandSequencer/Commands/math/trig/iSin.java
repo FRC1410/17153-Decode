@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.trig;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
-import org.SquidSquad.commandSequencer.Commands.math.MathInCon;
-import org.SquidSquad.commandSequencer.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.MathInCon;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives.DynNumber;
 
 public class iSin extends Command {
     private final MathInCon inCon;

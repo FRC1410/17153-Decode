@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.primitives;
 
-import org.SquidSquad.commandSequencer.Commands.controlFlow.Condition;
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.controlFlow.Condition;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
 
 public class DynBoolean extends Variable {
     private Condition con = null;

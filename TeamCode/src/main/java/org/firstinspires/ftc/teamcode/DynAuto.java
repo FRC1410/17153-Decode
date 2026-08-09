@@ -8,11 +8,10 @@ import org.firstinspires.ftc.teamcode.Subsystem.IntakeAuto;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.dynamite.DynAutoOpMode;
-import org.firstinspires.ftc.teamcode.dynamite.DynCommands.Etc.CustomCommand;
-import org.firstinspires.ftc.teamcode.dynamite.DynVar.DynVar;
 
 @Autonomous(name="Dyn Auto")
 public class DynAuto extends DynAutoOpMode{
+    /*
     public Shooter shooter = new Shooter();
     public IntakeAuto intake = new IntakeAuto();
 
@@ -39,25 +38,6 @@ public class DynAuto extends DynAutoOpMode{
     @Override
     protected String getScriptName(){
         return "AutoTest.dyn";
-        /*
-        if (Alience == "BLUE"){
-            if (Pos == "At_Goal"){
-                return  "B_AG.dyn";
-            } else if (Pos == "At_Far"){
-                return "B_AF.dyn";
-            } else {
-                return "B_AS.dyn";
-            }
-        } else {
-            if (Pos == "At_Goal"){
-                return "R_AG.dyn";
-            } else if (Pos == "At_Far"){
-                return "R_AF.dyn";
-            } else {
-                return "R_AS.dyn";
-            }
-        }
-         */
     }
 
     @Override
@@ -140,4 +120,5 @@ public class DynAuto extends DynAutoOpMode{
             }
         });
     }
+    */
 }

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.function;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
 
 import java.util.ArrayList;
 

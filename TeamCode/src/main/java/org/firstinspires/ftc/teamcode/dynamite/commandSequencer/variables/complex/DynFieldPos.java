@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.complex;
 
-import org.SquidSquad.commandSequencer.variables.Variable;
-import org.SquidSquad.commandSequencer.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.variables.VariableTypes;
 
 public class DynFieldPos extends Variable {
     public DynFieldPos(Variable[] pose){

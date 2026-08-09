@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
-import org.SquidSquad.DynInterpreter;
+import org.firstinspires.ftc.teamcode.dynamite.DynInterpreter;
 
 public interface FTCInterface {
     void init();

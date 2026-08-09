@@ -18,6 +18,15 @@ apply from: '../build.dependencies.gradle'
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
+    // Overrides the Java 8 level set in build.common.gradle. The dynamite (DYN)
+    // package uses arrow switches, multi-label cases and pattern instanceof,
+    // which need 14/16 respectively. Set here rather than in build.common.gradle
+    // so SDK updates don't clobber it.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }

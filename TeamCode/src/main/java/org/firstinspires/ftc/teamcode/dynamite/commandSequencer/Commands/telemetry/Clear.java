@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.telemetry;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
 
 public class Clear extends Command {
     public Clear(int line){

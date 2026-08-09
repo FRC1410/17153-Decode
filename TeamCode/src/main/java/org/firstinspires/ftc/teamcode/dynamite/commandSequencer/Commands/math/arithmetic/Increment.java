@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.math.arithmetic;
 
-import org.SquidSquad.commandSequencer.Commands.Command;
-import org.SquidSquad.commandSequencer.Commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.commandSequencer.Commands.CommandType;
 
 public class Increment extends Command {
     public Increment(int line, String var){

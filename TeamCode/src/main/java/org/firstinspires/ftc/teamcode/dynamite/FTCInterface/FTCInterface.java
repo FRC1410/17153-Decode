@@ -1,17 +1,24 @@
 package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
-import org.firstinspires.ftc.teamcode.dynamite.DynInterpreter;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
+
+// is what the main DYN interpreter calls to make the robot do stuff
 public interface FTCInterface {
-    void init();
-    void loop();
-    void stop();
+    void setStartPos(double[] pos);
+    void runGeneralMove(GeneralMovement move);
+    void updateFollower();
+    void stopFollowerUpdater();
+    void startFollowerUpdater();
 
-    void runGeneralMovement(GeneralMovement move);
+    Variable runJFunc(int line, boolean wantOutput, String ID);
+    Variable runJFunc(int line, boolean wantOutput, String ID, Variable in);
 
-    DynInterpreter getInterpreter();
+    void addData(String data);
+    void update();
 
-    // uses the in-built 'assets' folder in the base android SDK (or whatever file loading mechanisim the end-user ends up using)
-    // '/' is the base of said assets folder.
-    String loadFile(String path);
+    HardwareMap getHardwareMap();
+
+    void DYNSleep(long milliseconds);
 }

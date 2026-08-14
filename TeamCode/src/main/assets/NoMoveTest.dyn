@@ -1,0 +1,15 @@
+def_path Main start
+    while true start
+        Clear
+        jFunc getLX to X
+        jFunc getLY to Y
+        AddData "Left stick:"
+        AddData "X:"
+        AddData X
+        AddData "Y:"
+        AddData Y
+        Update
+        Sleep 500
+    end
+end
+autoPath Main

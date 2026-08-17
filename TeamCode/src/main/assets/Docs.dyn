@@ -203,6 +203,18 @@ MATH OPERATIONS:
         Usage:
             val is the inputed value
             var is where the ouput goes.
+    toDeg:
+        Syntax:
+            toDeg val
+            toDeg val to var
+        Usage:
+            Converts the given value from radians to degrees
+    toRad:
+        Syntax:
+            toRad val
+            toRad val to var
+        Usage:
+            Converts the given value from degrees to radians
 LOGICAL OPERATORS (logicOps):
     Not:
         Syntax:
@@ -250,8 +262,6 @@ MOVEMENT COMMANDS:
         args:
             targetHeading:
                 this is the heading angle that we want to end with after the
-            deg/s:
-                this argument defines how fast to turn th robot in degrees per second
     GoTo:
         syntax:
             goTo (X,Y)

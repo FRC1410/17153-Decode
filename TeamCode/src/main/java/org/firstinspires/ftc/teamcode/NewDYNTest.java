@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
-import org.firstinspires.ftc.teamcode.dynamite.DynAutoOpMode;
+import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp(name="DYNTest")
-public class NewDYNTest extends DynAutoOpMode {
+public class NewDYNTest extends DynOpMode {
     private Follower pedroFollowsYou;
     private AprilTags aprilTags;
 
@@ -19,12 +19,10 @@ public class NewDYNTest extends DynAutoOpMode {
     public boolean loadFromUSB() {
         return true;
     }
-
     @Override
     public String getScriptPath() {
         return "NoMoveTest.dyn";
     }
-
     public Follower buildFollower(){
         pedroFollowsYou = Constants.createFollower(hardwareMap);
         return pedroFollowsYou;

@@ -88,19 +88,19 @@ public class Command {
     }
     // pathPlanner linker stuff
     protected void moveTo(double[] target){
-        ftcInterface.runGeneralMove(new GeneralMovement(line,target));
+        ftcInterface.runGeneralMove(line,new GeneralMovement(line,target));
     }
     protected void turnTo(double target){
-        ftcInterface.runGeneralMove(new GeneralMovement(line,target));
+        ftcInterface.runGeneralMove(line,new GeneralMovement(line,target));
     }
     protected void doSpline(double[] target, SplineType type){
-        ftcInterface.runGeneralMove(new GeneralMovement(line,target,type));
+        ftcInterface.runGeneralMove(line,new GeneralMovement(line,target,type));
     }
     protected void doBezier(double[][] target){
-        ftcInterface.runGeneralMove(new GeneralMovement(line,target));
+        ftcInterface.runGeneralMove(line,new GeneralMovement(line,target));
     }
     protected void setStartPose(double[] start){
-        ftcInterface.setStartPos(start);
+        ftcInterface.setStartPos(line,start);
     }
     protected void DYNSleep(long milliseconds){
         ftcInterface.DYNSleep(milliseconds);

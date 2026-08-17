@@ -14,10 +14,12 @@ public class GeneralMovement {
     public GeneralMovement(int line, double[] target){
         this.line = line;
         type = moveType.GoTo;
+        this.target = target;
     }
     public GeneralMovement(int line, double target){
         this.line = line;
         type = moveType.TurnTo;
+        this.heading = target;
     }
     public GeneralMovement(int line, double[] target, SplineType type){
         this.line = line;
@@ -26,9 +28,11 @@ public class GeneralMovement {
             case Linear -> this.type = moveType.SplineLine;
             default -> this.type = moveType.Spline; // for Normal and just to get the "final" requirement met
         }
+        this.target = target;
     }
     public GeneralMovement(int line, double[][] target){
         this.line = line;
         type = moveType.Bezier;
+        bezTarget = target;
     }
 }

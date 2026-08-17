@@ -1,48 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Subsystem.Intake;
-import org.firstinspires.ftc.teamcode.Subsystem.IntakeAuto;
-import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
-import org.firstinspires.ftc.teamcode.Util.RobotStates;
-import org.firstinspires.ftc.teamcode.dynamite.DynAutoOpMode;
+import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
 
 @Autonomous(name="Dyn Auto")
 @Disabled
-public class DynAuto extends DynAutoOpMode{
+public class DynAuto extends DynOpMode {
     @Override
     public boolean loadFromUSB() {
         return false;
     }
-
     @Override
     public String getScriptPath() {
         return "";
     }
-
     @Override
     public Follower buildFollower() {
         return null;
     }
+    @Override
+    public void onInit() {}
+    @Override
+    public void onLoop() {}
 
     @Override
-    protected void onInit() {
-
-    }
-
-    @Override
-    protected void onLoop() {
-
-    }
-
-    @Override
-    protected void updateFollower() {
-
-    }
+    public void updateFollower() {}
+}
     /*
     public Shooter shooter = new Shooter();
     public IntakeAuto intake = new IntakeAuto();
@@ -153,4 +139,4 @@ public class DynAuto extends DynAutoOpMode{
         });
     }
     */
-}
+

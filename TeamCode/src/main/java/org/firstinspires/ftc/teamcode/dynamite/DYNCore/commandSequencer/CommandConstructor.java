@@ -469,7 +469,19 @@ public class CommandConstructor {
                 }
             }
             case toRad -> {
-                if (nextIsType(Name)){
+                if (nextIsType(Name,To,Name)) {
+                    i++;
+                    String inVar = (String)givenTokens[i].getValue();
+                    String outVar = (String)givenTokens[i+2].getValue();
+                    addCommand(new ToRad(getLine(), inVar,outVar));
+                    i+=3;
+                } else if (nextIsType(Number,To,Name)){
+                    i++;
+                    double inVar = (double)givenTokens[i].getValue();
+                    String outVar = (String)givenTokens[i+2].getValue();
+                    addCommand(new ToRad(getLine(), inVar,outVar));
+                    i+=3;
+                } else if (nextIsType(Name)){
                     i++;
                     Token name = givenTokens[i];
                     addCommand(new ToRad(name.getLine(), (String)name.getValue()));
@@ -480,7 +492,19 @@ public class CommandConstructor {
                 }
             }
             case toDeg -> {
-                if (nextIsType(Name)){
+                if (nextIsType(Name,To,Name)) {
+                    i++;
+                    String inVar = (String)givenTokens[i].getValue();
+                    String outVar = (String)givenTokens[i+2].getValue();
+                    addCommand(new ToDeg(getLine(), inVar,outVar));
+                    i+=3;
+                } else if (nextIsType(Number,To,Name)){
+                    i++;
+                    double inVar = (double)givenTokens[i].getValue();
+                    String outVar = (String)givenTokens[i+2].getValue();
+                    addCommand(new ToDeg(getLine(), inVar,outVar));
+                    i+=3;
+                } else if (nextIsType(Name)){
                     i++;
                     Token name = givenTokens[i];
                     addCommand(new ToDeg(name.getLine(), (String)name.getValue()));

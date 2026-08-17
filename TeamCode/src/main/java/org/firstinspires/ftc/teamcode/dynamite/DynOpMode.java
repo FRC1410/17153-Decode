@@ -5,6 +5,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.Command;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.VariableTypes;
@@ -22,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class DynAutoOpMode extends OpMode {
+public abstract class DynOpMode extends OpMode {
     // Main stuff
 
     // DYN settings
@@ -34,6 +35,15 @@ public abstract class DynAutoOpMode extends OpMode {
     private double followerUpdateRate = 50.0;
     public final void setFollowerUpdateRate(double frequency){
         followerUpdateRate = frequency;
+    }
+
+    private int DYNThreadPriority = Thread.NORM_PRIORITY-2;
+    private int UpdateFollowerPriority = Thread.NORM_PRIORITY+1;
+    protected final void setDYNThreadPriority(int priority){
+        DYNThreadPriority = priority;
+    }
+    protected final void setUpdateFollowerThreadPriority(int priority){
+        UpdateFollowerPriority = priority;
     }
 
     // DYN language scripts
@@ -55,8 +65,6 @@ public abstract class DynAutoOpMode extends OpMode {
         Command.resetRunState();
         // faults.reset() / workersShutDown are handled in internalPreInit(), which runs
         // before this method and cannot be skipped by a subclass override
-        // setTelemetrySpeed
-        telemetry.setMsTransmissionInterval(100);
         // init PP and PPInterface
         ppInterface = new PPInterface(buildFollower(),hardwareMap,telemetry);
         // init the DYNInterpreter
@@ -84,6 +92,15 @@ public abstract class DynAutoOpMode extends OpMode {
         }, "DYN");
         DYNThread.setDaemon(true);
         DYNThread.setUncaughtExceptionHandler((th, t) -> faults.report(FaultReporter.DYN, t));
+        // init follower update thread
+        followerUpdateThread = new TimedLoopThread(
+                this::updateFollower,
+                followerUpdateRate,
+                cause -> {
+                    if (cause != null) faults.report(FaultReporter.FOLLOWER, cause);
+                    else faults.noteExit(Thread.currentThread(), "update loop stopped");
+                });
+        // run user code
         onInit();
     }
     @Override
@@ -93,18 +110,16 @@ public abstract class DynAutoOpMode extends OpMode {
     }
     @Override
     public final void start(){
+        // setTelemetrySpeed
+        telemetry.setMsTransmissionInterval(100);
+        // set thread priorities
+        DYNThread.setPriority(DYNThreadPriority);
+        followerUpdateThread.setPriority(UpdateFollowerPriority);
         // link JFuncs
         ppInterface.linkJFuncs(functionJFuncs,consumerJFuncs,supplierJFuncs,runnableJFuncs);
         // start running DYN code
         DYNThread.start();
         // start the pather update loop
-        followerUpdateThread = new TimedLoopThread(
-                this::updateFollower,
-                followerUpdateRate,
-                cause -> {
-                    if (cause != null) faults.report(FaultReporter.FOLLOWER, cause);
-                    else faults.noteExit(Thread.currentThread(), "update loop stopped");
-                });
         followerUpdateThread.start();
         // link up followerUpdateThread to the interface
         ppInterface.linkPatherUpdateThread(followerUpdateThread,this::updateFollower);
@@ -133,12 +148,12 @@ public abstract class DynAutoOpMode extends OpMode {
         onStop();
     }
 
-    protected abstract void onInit();
-    protected void onInitLoop(){};
-    protected void onStart(){};
-    protected abstract void onLoop();
-    protected abstract void updateFollower();
-    protected void onStop(){}
+    public abstract void onInit();
+    public void onInitLoop(){};
+    public void onStart(){};
+    public abstract void onLoop();
+    public abstract void updateFollower();
+    public void onStop(){}
     // used for:
     // follower position updating
     // vison management
@@ -329,9 +344,18 @@ public abstract class DynAutoOpMode extends OpMode {
     // telemetry management
     // telemAddData/telemUpdate may be called from the DYN thread (JFuncs run there), so the
     // buffer needs the same lock discipline as Command's.
+
+    // this blocks subclasses from directly using 'telemetry' thus causing issues with the DYN telemetry system.
+    private final Telemetry telemetry = super.telemetry;
+    // wrapper user accessible telemetry object
+    @SuppressWarnings("unused")
+    protected DYNTelemetry newTelemetry = new DYNTelemetry(this::addData, this::update);
     private final Object userTelemLock = new Object();
     private volatile boolean thisWantToUpdate = false;
     private final ArrayList<String[]> thisTelemBuffer = new ArrayList<>();
+    private void addData(String[] message){
+        addData(message[0],message[1]);
+    }
     protected final void addData(String caption, String message){
         synchronized (userTelemLock){
             thisTelemBuffer.add(new String[]{caption,message});
@@ -343,8 +367,8 @@ public abstract class DynAutoOpMode extends OpMode {
     protected final void update(){
         thisWantToUpdate = true;
     }
-    String[] activeDYNTelemetry = new String[0];
-    String[][] activeUserTelemetry = new String[0][];
+    private String[] activeDYNTelemetry = new String[0];
+    private String[][] activeUserTelemetry = new String[0][];
     private void processTelemetry() {
         // DYN telemetry: one atomic check-and-take replaces the old
         // check / read / reset sequence, which could drop an Update that landed between

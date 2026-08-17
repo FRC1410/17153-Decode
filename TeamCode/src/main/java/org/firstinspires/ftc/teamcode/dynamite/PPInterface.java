@@ -1,34 +1,43 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
+import android.text.style.UpdateLayout;
+
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.CommandException;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.Command;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.FTCInterface;
 import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.GeneralMovement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class PPInterface implements FTCInterface {
+class PPInterface implements FTCInterface {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Follower pather;
     private boolean hasStartPosBeenSet;
 
-    public PPInterface(Follower pather, HardwareMap hardwareMap, Telemetry telemetry) {
+    public PPInterface(Follower pather, HardwareMap hardwareMap, Telemetry telemetry){
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.pather = pather;
     }
 
     @Override
-    public void setStartPos(double[] pos) {
+    public void setStartPos(int line, double[] pos) {
         if (!hasStartPosBeenSet) {
             hasStartPosBeenSet = true;
             if (pos.length == 2) {
@@ -37,25 +46,106 @@ public class PPInterface implements FTCInterface {
                 pather.setStartingPose(new Pose(pos[0], pos[1], pos[2]));
             }
         } else {
-            // TODO: add catch logic to convert this stuff into comprehensible DYN errors
-            throw new RuntimeException("Cannot set start pos when its already been set!");
+            throw new CommandException(line,"SetStartPose","Cannot set start pos when its already been set!");
         }
     }
 
     @Override
-    public void runGeneralMove(GeneralMovement move) {
+    public void runGeneralMove(int line, GeneralMovement move) {
         if (hasStartPosBeenSet) {
             switch (move.type) {
-                // TODO: these three
-                case Bezier -> {}
-                case TurnTo -> {}
-                case GoTo -> {}
+                case Bezier -> {
+                    // assemble points
+                    Pose[] midPoints = new Pose[move.bezTarget.length-1];
+                    Pose endPose;
+                    if (move.bezTarget[move.bezTarget.length].length == 3){
+                        endPose = new Pose(
+                                move.bezTarget[move.bezTarget.length][0],
+                                move.bezTarget[move.bezTarget.length][1],
+                                move.bezTarget[move.bezTarget.length][2]);
+                    } else {
+                        endPose = new Pose(
+                                move.bezTarget[move.bezTarget.length][0],
+                                move.bezTarget[move.bezTarget.length][1]);
+                    }
+                    for (int i = 0; i < move.bezTarget.length-1; i++){
+                        double[] givenPose = move.bezTarget[i];
+                        if (givenPose.length == 3){
+                            midPoints[i] = new Pose(
+                                    givenPose[0],
+                                    givenPose[1],
+                                    givenPose[2]);
+                        } else {
+                            midPoints[i] = new Pose(
+                                    givenPose[0],
+                                    givenPose[1]);
+                        }
+                    }
+                    // build into a PathChain
+                    List<Pose> poseList = new ArrayList<>();
+                    poseList.addAll(Arrays.asList(midPoints));
+                    poseList.add(endPose);
+                    BezierCurve bezier = new BezierCurve(poseList);
+                    // make this as close to PP interaction as possible
+                    preMoveProcess();
+                    // use PP
+                    Pose currentPose = pather.getPose();
+                    PathChain plannedpath = pather.pathBuilder().addPath(bezier).setLinearHeadingInterpolation(currentPose.getHeading(), endPose.getHeading()).build();
+                    pather.followPath(plannedpath);
+                }
+                case TurnTo -> {
+                    preMoveProcess();
+                    double angleDelta = pather.getPose().getHeading()-move.heading;
+                    pather.turn(angleDelta);
+                }
+                case GoTo -> {
+                    Pose endPose;
+                    if (move.target.length == 3){
+                        endPose = new Pose(
+                                move.target[0],
+                                move.target[1],
+                                move.target[2]);
+                    } else {
+                        endPose = new Pose(
+                                move.target[0],
+                                move.target[1]);
+                    }
+                    preMoveProcess();
+                    Pose start = pather.getPose();
+                    BezierLine linePath = new BezierLine(start,endPose);
+                    PathChain calculatedPath = pather.pathBuilder().addPath(linePath).setLinearHeadingInterpolation(start.getHeading(), endPose.getHeading()).build();
+                    pather.followPath(calculatedPath);
+                }
                 default -> throw new RuntimeException("Pedro Pathing does not support this kind of movement!");
             }
+            // wait for the move to end
+            postMoveProcess();
         } else {
-            // TODO: here too
-            throw new RuntimeException("Cannot move robot until start pose has been set!");
+            throw new CommandException(line,"Move","Cannot move robot until start pose has been set!");
         }
+    }
+
+    private void preMoveProcess(){
+        patherUpdateThread.stop();
+    }
+    private void postMoveProcess(){
+        // we wait until PP is done moving
+        long periodNanos = (long) (1_000_000_000.0 / patherUpdateThread.getUpdateRate());
+        while (pather.isBusy()){
+            // limit to update limit
+            long startTime = System.nanoTime();
+            patherUpdateThread.itterUpdate();
+            long elapsed = System.nanoTime()-startTime;
+            long remaining = periodNanos - elapsed;
+            try {
+                long millis = remaining / 1_000_000;
+                int nanos = (int) (remaining % 1_000_000);
+                Thread.sleep(millis, nanos);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+        patherUpdateThread.start();
     }
 
     @Override

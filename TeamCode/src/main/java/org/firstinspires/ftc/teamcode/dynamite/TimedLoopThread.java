@@ -3,11 +3,18 @@ package org.firstinspires.ftc.teamcode.dynamite;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 // Made by Claude Sonnet 5
-public class TimedLoopThread {
+class TimedLoopThread {
+    private int threadPriotiry = Thread.NORM_PRIORITY;
+
+    public double getUpdateRate() {
+        return updateRate;
+    }
+
     public interface ExitListener {
         void onLoopExit(Throwable cause);
     }
 
+    private final double updateRate;
     private final Runnable task;
     private final long periodNanos;
     private final ExitListener exitListener;   // nullable
@@ -24,6 +31,7 @@ public class TimedLoopThread {
         this.task = task;
         this.periodNanos = (long) (1_000_000_000.0 / frequencyHz);
         this.exitListener = exitListener;
+        this.updateRate = frequencyHz;
     }
 
     private void runLoop() {
@@ -100,6 +108,7 @@ public class TimedLoopThread {
                 }
             }
         });
+        thread.setPriority(threadPriotiry);
         thread.start();
     }
 
@@ -144,5 +153,14 @@ public class TimedLoopThread {
     /** Exposed so the OpMode side can audit thread liveness. May be null before start(). */
     public Thread getThread() {
         return thread;
+    }
+
+    public void setPriority(int priority) {
+        threadPriotiry = priority;
+    }
+
+    public void itterUpdate(){
+        if (running.get()) stop();
+        task.run();
     }
 }

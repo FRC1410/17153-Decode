@@ -34,7 +34,9 @@ public class DynNumber extends Variable { // imma start calling the variable cla
 
     @Override
     public String getTelemetryData(){
-        return String.valueOf(value);
+        double d = (double)value;
+        boolean isWhole = d == Math.floor(d) && !Double.isInfinite(d);
+        return isWhole ? String.valueOf((long) d) : String.valueOf(d);
     }
 
     private void catchIncompatible(String method, Variable in1, Variable in2){

@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * Delivery to the Driver Station is the last step, not the only one.
  */
-public final class FaultReporter {
+final class FaultReporter {
 
     public static final String TAG = "DYN";
 

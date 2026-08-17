@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variable
 
 // is what the main DYN interpreter calls to make the robot do stuff
 public interface FTCInterface {
-    void setStartPos(double[] pos);
-    void runGeneralMove(GeneralMovement move);
+    void setStartPos(int line, double[] pos);
+    void runGeneralMove(int line, GeneralMovement move);
     void updateFollower();
     void stopFollowerUpdater();
     void startFollowerUpdater();

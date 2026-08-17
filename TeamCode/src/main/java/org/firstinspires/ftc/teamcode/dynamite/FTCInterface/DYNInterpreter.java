@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.Token;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.Tokenizer;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.CommandConstructor;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.CommandException;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.CommandRunner;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandConstructor.CommandConstructor;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.CommandRunner;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
 
 // Takes the already constructed FTCInterface
 // manages the execution of DYN commands
@@ -45,7 +45,7 @@ public class DYNInterpreter {
         tokens = tk.processScript(scriptContents);
     }
     private void constructCommands(){
-        cc = new CommandConstructor(scriptContents);
+        cc = new CommandConstructor();
         cc.processTokens(tokens);
         cr = new CommandRunner(cc);
         cr.linkUpCommand();

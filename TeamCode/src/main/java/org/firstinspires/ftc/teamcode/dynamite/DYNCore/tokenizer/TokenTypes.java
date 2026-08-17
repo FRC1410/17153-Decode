@@ -40,5 +40,6 @@ public enum TokenTypes {
     RngInteger,RngBoolean,
     // extra
     Start,End,PathStartPos,
-    Cmd,To,MainPathFunc,Sleep
+    Cmd,To,MainPathFunc,Sleep,
+    Quit,HardQuit
 }

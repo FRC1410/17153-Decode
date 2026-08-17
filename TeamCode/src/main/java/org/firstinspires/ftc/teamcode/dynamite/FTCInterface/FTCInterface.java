@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 
 // is what the main DYN interpreter calls to make the robot do stuff
 public interface FTCInterface {

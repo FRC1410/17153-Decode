@@ -446,6 +446,12 @@ public class Tokenizer {
                 else if (internalChunk.equals("Sleep") && isWordBoundary(chunk, counter, chunkSize)){
                     out.add(new Token(TokenTypes.Sleep, lineIndex, charIndex));
                     internalChunk = "";
+                }else if (internalChunk.equals("Quit") && isWordBoundary(chunk, counter, chunkSize)){
+                    out.add(new Token(TokenTypes.Quit, lineIndex, charIndex));
+                    internalChunk = "";
+                }else if (internalChunk.equals("HardQuit") && isWordBoundary(chunk, counter, chunkSize)){
+                    out.add(new Token(TokenTypes.HardQuit, lineIndex, charIndex));
+                    internalChunk = "";
                 } else {
                     if (counter == chunkSize) {
                         flushInternalChunk(internalChunk, out, lineIndex, charIndex);

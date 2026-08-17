@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.dynamite;
 
-import android.text.style.UpdateLayout;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -10,9 +8,9 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.CommandException;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.Command;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.CommandException;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.FTCInterface;
 import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.GeneralMovement;
 

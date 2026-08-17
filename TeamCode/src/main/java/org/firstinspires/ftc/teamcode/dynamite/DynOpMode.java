@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.Command;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.Variable;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.VariableTypes;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.complex.DynFieldPos;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.primitives.DynBoolean;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.primitives.DynNumber;
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.variables.primitives.DynString;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.VariableTypes;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.complex.DynFieldPos;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.primitives.DynBoolean;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.primitives.DynNumber;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.primitives.DynString;
 import org.firstinspires.ftc.teamcode.dynamite.FTCInterface.DYNInterpreter;
 
 import java.util.ArrayList;

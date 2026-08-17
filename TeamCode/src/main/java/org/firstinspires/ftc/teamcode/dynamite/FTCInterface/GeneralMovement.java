@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.FTCInterface;
 
-import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandSequencer.Commands.movement.splineStuff.SplineType;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.movement.splineStuff.SplineType;
 
 public class GeneralMovement {
     public enum moveType {TurnTo,GoTo,Bezier,Spline,SplineLine,SplineSpline}

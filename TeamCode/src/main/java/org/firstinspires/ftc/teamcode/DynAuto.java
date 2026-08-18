@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
@@ -44,15 +43,12 @@ public class DynAuto extends DynOpMode {
         intake.init(hardwareMap);
     }
 
-    private int mainCounter = 0;
-    private int visibleCounter = 0;
+    private volatile double visionFPS = 0; // volatile ensures that all changes form one thread happen for all threads
     @Override
     public void onLoop(){
-        mainCounter++;
-        if (mainCounter%20 == 0) visibleCounter++;
         intake.intakeTelem(newTelemetry);
         shooter.addTelemetry(newTelemetry);
-        newTelemetry.addData("Counter",visibleCounter);
+        newTelemetry.addData("FPS",visionFPS);
         newTelemetry.update();
     }
 
@@ -60,7 +56,10 @@ public class DynAuto extends DynOpMode {
     public void updateFollower(){
         pedroPather.update();
         aprilTags.update();
-        if (!aprilTags.getDetections().isEmpty()) {
+        visionFPS = aprilTags.vision_portal.getFps();
+        // because this runs at a much higher rate than vision (50hz vs ~15hz)
+        // we should only correct the Pedro position whenever vision updates
+        if (aprilTags.hasNewPos()) {
             Pose tagPose = aprilTags.getPedroPose();
             pedroPather.setPose(tagPose);
         }

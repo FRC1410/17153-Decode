@@ -33,13 +33,16 @@ public abstract class DynOpMode extends OpMode {
     public abstract boolean loadFromUSB();
     public abstract String getScriptPath();
     public abstract Follower buildFollower();
+    public boolean doesDYNUseRadians(){
+        return false;
+    }
     private double followerUpdateRate = 50.0;
     public final void setFollowerUpdateRate(double frequency){
         followerUpdateRate = frequency;
     }
 
-    private int DYNThreadPriority = Thread.MIN_PRIORITY+1;
-    private int UpdateFollowerPriority = Thread.NORM_PRIORITY;
+    private int DYNThreadPriority = Thread.MIN_PRIORITY;
+    private int UpdateFollowerPriority = Thread.currentThread().getPriority()+1;
     protected final void setDYNThreadPriority(int priority){
         DYNThreadPriority = priority;
     }
@@ -52,9 +55,11 @@ public abstract class DynOpMode extends OpMode {
     private PPInterface ppInterface;
     private TimedLoopThread followerUpdateThread;
     private Thread DYNThread;
+    private boolean DYNUseRad;
 
     @Override
     public final void init(){
+        DYNUseRad = doesDYNUseRadians();
         // load user-set settings
         loadFromUSB = loadFromUSB();
         scriptPath = getScriptPath();
@@ -67,9 +72,9 @@ public abstract class DynOpMode extends OpMode {
         // faults.reset() / workersShutDown are handled in internalPreInit(), which runs
         // before this method and cannot be skipped by a subclass override
         // init PP and PPInterface
-        ppInterface = new PPInterface(buildFollower(),hardwareMap,telemetry);
+        ppInterface = new PPInterface(buildFollower(),hardwareMap,telemetry,DYNUseRad);
         // init the DYNInterpreter
-        interpreter = new DYNInterpreter(ppInterface);
+        interpreter = new DYNInterpreter(ppInterface,DYNUseRad);
         if (loadFromUSB) interpreter.loadFromUSB();
         interpreter.setScriptPath(scriptPath);
         interpreter.init();
@@ -136,6 +141,26 @@ public abstract class DynOpMode extends OpMode {
         // checkup on running threads
         checkWorkerThreads();
     }
+
+    @Override
+    public final void stop(){
+        // ensure DYN and follower update threads stop cleanly
+        shutdownWorkers();
+        // If the OpMode was stopped before the next loop tick could rethrow, anything
+        // still queued gets logged loudly here instead of vanishing. Subclasses that
+        // override stop() should call super.stop(); if one forgets, the fault is still
+        // in logcat and stderr - report() writes those before it ever queues.
+        faults.flushUndelivered();
+        // run user code
+        onStop();
+    }
+
+    public abstract void onInit();
+    public void onInitLoop(){};
+    public void onStart(){};
+    public abstract void onLoop();
+    public abstract void updateFollower();
+    public void onStop(){}
 
     private void processJFuncCalls() {
         // this ensures that only one thread is touching this handshake process at a time.
@@ -206,30 +231,6 @@ public abstract class DynOpMode extends OpMode {
             }
         }
     }
-
-    @Override
-    public final void stop(){
-        // ensure DYN and follower update threads stop cleanly
-        shutdownWorkers();
-        // If the OpMode was stopped before the next loop tick could rethrow, anything
-        // still queued gets logged loudly here instead of vanishing. Subclasses that
-        // override stop() should call super.stop(); if one forgets, the fault is still
-        // in logcat and stderr - report() writes those before it ever queues.
-        faults.flushUndelivered();
-        // run user code
-        onStop();
-    }
-
-    public abstract void onInit();
-    public void onInitLoop(){};
-    public void onStart(){};
-    public abstract void onLoop();
-    public abstract void updateFollower();
-    public void onStop(){}
-    // used for:
-    // follower position updating
-    // vison management
-    // used to ensure that no race conditions happen between pather updates and path action execution
 
     // these methods are responsible for handling any errors the follower update thread or the DYN thread throw
     // and also the general management of said threads
@@ -464,6 +465,13 @@ public abstract class DynOpMode extends OpMode {
 
         if (!dynPending && !userPending) return;
 
+        if (activeDYNTelemetry.length != 0){
+            if (DYNUseRad) {
+                telemetry.addData("DYNMode", "Radians");
+            } else {
+                telemetry.addData("DYNMode", "Degrees");
+            }
+        }
         for (String message : activeDYNTelemetry){
             telemetry.addData("DYN",message);
         }

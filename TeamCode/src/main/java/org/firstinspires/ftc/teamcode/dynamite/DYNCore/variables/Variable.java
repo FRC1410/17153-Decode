@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables;
 
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.complex.DynFieldCord;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.complex.DynFieldPos;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.complex.DynJson;
@@ -15,6 +16,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Variable {
+    // radian processing
+    protected static boolean processInRad = false;
+    public static void processInRad(boolean state){
+        Variable.processInRad = state;
+    }
     // gotta do this dumb thing to make it work
     private static BiConsumer<Variable,Variable> setVar;
     private static Consumer<Variable> registerVar;

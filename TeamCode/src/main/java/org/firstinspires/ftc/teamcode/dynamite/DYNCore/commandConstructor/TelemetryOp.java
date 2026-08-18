@@ -26,10 +26,8 @@ class TelemetryOp extends ConstructorUtils{
                     addCommand(new AddData(value.getLine(), value.getValue()));
                     i++;
                 } else {
-                    if (!(nextIsType(Name)||nextIsType(Number)||nextIsType(Boolean)||nextIsType(String))){
-                        i++;
-                        throwError("Expected name/number/boolean/stirng | Got: "+givenTokens[i].type());
-                    }
+                    i++;
+                    throwError("Expected name/number/boolean/stirng | Got: "+givenTokens[i].type());
                 }
             }
             case Update -> {

@@ -123,61 +123,91 @@ public class DynNumber extends Variable { // imma start calling the variable cla
     @Override
     public void Sin(Variable in){
         catchIncompatible("Sin", in);
-        value = Math.sin((double)in.getValue());
+        if (processInRad){
+            value = Math.sin((double) in.getValue());
+        } else {
+            value = Math.sin(Math.toRadians((double)in.getValue()));
+        }
     }
     @Override
     public void Sin(){
-        value = Math.sin((double)value);
+        if (processInRad) {
+            value = Math.sin((double) value);
+        } else {
+            value = Math.sin(Math.toRadians((double)value));
+        }
     }
 
     @Override
     public void iSin(Variable in){
         catchIncompatible("iSin", in);
-        value = Math.asin((double)in.getValue());
+        value = Math.asin((double) in.getValue());
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
     @Override
     public void iSin(){
-        value = Math.asin((double)value);
+        value = Math.asin((double) value);
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
 
     @Override
     public void Cos(Variable in){
         catchIncompatible("Cos", in);
-        value = Math.cos((double)in.getValue());
+        if (processInRad){
+            value = Math.cos((double) in.getValue());
+        } else {
+            value = Math.cos(Math.toRadians((double)in.getValue()));
+        }
     }
     @Override
     public void Cos(){
-        value = Math.cos((double)value);
+        if (processInRad) {
+            value = Math.cos((double) value);
+        } else {
+            value = Math.cos(Math.toRadians((double)value));
+        }
     }
 
     @Override
     public void iCos(Variable in){
         catchIncompatible("iCos", in);
-        value = Math.acos((double)in.getValue());
+        value = Math.acos((double) in.getValue());
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
     @Override
     public void iCos(){
-        value = Math.acos((double)value);
+        value = Math.acos((double) value);
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
 
     @Override
     public void Tan(Variable in){
         catchIncompatible("Tan", in);
-        value = Math.tan((double)in.getValue());
+        if (processInRad){
+            value = Math.tan((double) in.getValue());
+        } else {
+            value = Math.tan(Math.toRadians((double)in.getValue()));
+        }
     }
     @Override
     public void Tan(){
-        value = Math.tan((double)value);
+        if (processInRad) {
+            value = Math.tan((double) value);
+        } else {
+            value = Math.tan(Math.toRadians((double)value));
+        }
     }
 
     @Override
     public void iTan(Variable in){
         catchIncompatible("iTan", in);
-        value = Math.atan((double)in.getValue());
+        value = Math.atan((double) in.getValue());
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
     @Override
     public void iTan(){
-        value = Math.atan((double)value);
+        value = Math.atan((double) value);
+        if (!processInRad) value = Math.toDegrees((double)value);
     }
 
     @Override

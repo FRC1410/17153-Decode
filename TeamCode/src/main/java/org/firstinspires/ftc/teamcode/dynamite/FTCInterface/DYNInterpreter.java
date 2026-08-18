@@ -11,9 +11,11 @@ import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
 // Takes the already constructed FTCInterface
 // manages the execution of DYN commands
 public class DYNInterpreter {
+    private final boolean processInRad;
     private final FTCInterface ftcInterface;
-    public DYNInterpreter(FTCInterface ftcInterface){
+    public DYNInterpreter(FTCInterface ftcInterface,boolean doesDYNUseRadians){
         this.ftcInterface = ftcInterface;
+        processInRad = doesDYNUseRadians;
     }
     private boolean loadFromUSB = false;
     public void loadFromUSB(){
@@ -32,6 +34,7 @@ public class DYNInterpreter {
     public void init(){
         fr = new DYNFileReader(loadFromUSB,ftcInterface.getHardwareMap());
         Command.linkInterface(ftcInterface);
+        Variable.processInRad(processInRad);
         loadScript();
         tokenize();
         constructCommands();

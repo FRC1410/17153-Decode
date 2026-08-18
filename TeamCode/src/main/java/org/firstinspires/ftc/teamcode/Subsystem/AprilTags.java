@@ -177,4 +177,22 @@ public class AprilTags {
     public ArrayList<AprilTagDetection> getDetections(){
         return this.detections;
     }
+
+    Pose lastPose = null;
+    public boolean hasNewPos(){
+        Pose newPose = getPedroPose();
+        if (lastPose == null){
+            lastPose = newPose;
+            return true;
+        }
+        // because PP pose objects don't have in-built equals, we manually check each value
+        if (newPose.getX() != lastPose.getX() ||
+            newPose.getY() != lastPose.getY() ||
+            newPose.getHeading() != lastPose.getHeading()){
+            lastPose = newPose;
+            return true;
+        }
+        lastPose = newPose;
+        return false;
+    }
 }

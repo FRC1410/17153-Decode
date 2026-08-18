@@ -27,8 +27,10 @@ class PPInterface implements FTCInterface {
     private final Telemetry telemetry;
     private final Follower pather;
     private boolean hasStartPosBeenSet;
+    private final boolean processInRad;
 
-    public PPInterface(Follower pather, HardwareMap hardwareMap, Telemetry telemetry){
+    public PPInterface(Follower pather, HardwareMap hardwareMap, Telemetry telemetry, boolean processInRad){
+        this.processInRad = processInRad;
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.pather = pather;
@@ -80,9 +82,18 @@ class PPInterface implements FTCInterface {
                         }
                     }
                     // build into a PathChain
-                    List<Pose> poseList = new ArrayList<>();
+                    ArrayList<Pose> poseList = new ArrayList<>();
                     poseList.addAll(Arrays.asList(midPoints));
                     poseList.add(endPose);
+                    // do deg->rad processing
+                    if (!processInRad) {
+                        for (int i = 0; i < poseList.size(); i++) {
+                            // convert to rad, because that's what PP uses
+                            Pose oldPose = poseList.get(i);
+                            double poseAngle = Math.toRadians(oldPose.getHeading());
+                            poseList.set(i, new Pose(oldPose.getX(), oldPose.getY(), poseAngle));
+                        }
+                    }
                     BezierCurve bezier = new BezierCurve(poseList);
                     // make this as close to PP interaction as possible
                     preMoveProcess();
@@ -94,6 +105,7 @@ class PPInterface implements FTCInterface {
                 case TurnTo -> {
                     preMoveProcess();
                     double angleDelta = pather.getPose().getHeading()-move.heading;
+                    if (!processInRad) angleDelta = Math.toRadians(angleDelta);
                     pather.turn(angleDelta);
                 }
                 case GoTo -> {
@@ -108,6 +120,7 @@ class PPInterface implements FTCInterface {
                                 move.target[0],
                                 move.target[1]);
                     }
+                    if (!processInRad) endPose = new Pose(endPose.getX(),endPose.getY(),Math.toRadians(endPose.getHeading()));
                     preMoveProcess();
                     Pose start = pather.getPose();
                     BezierLine linePath = new BezierLine(start,endPose);
@@ -188,6 +201,7 @@ class PPInterface implements FTCInterface {
             inVar = in;
             outVar = null;
             // request processing
+            processed = false;
             requested = true;
             // wait for lock release
             while (!processed) {

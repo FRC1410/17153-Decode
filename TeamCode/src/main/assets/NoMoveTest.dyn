@@ -1,15 +1,1031 @@
+// note: this test suite was created by Claude Sonnet 5 with the strict rule of: do not conform the language to the test, conform the test to the docs.
 def_path Main start
-    while true start
-        Clear
-        jFunc getLX to X
-        jFunc getLY to Y
-        AddData "Left stick:"
-        AddData "X:"
-        AddData X
-        AddData "Y:"
-        AddData Y
-        Update
-        Sleep 500
+    // run tests
+    AddData "starting tests"
+    Update
+    AddData "calculating math function test"
+    Update
+    RUN MathTest
+
+    AddData "gathering loop test data"
+    Update
+    RUN LoopTest
+
+    AddData "ensuring variable set existence and versatility"
+    Update
+    RUN VarTypeTest
+
+    AddData "ensuring proper rng data distribution"
+    Update
+    RUN RngTest
+    // verify results
+    //Clear
+    AddData "verifying test results"
+    Update
+    RUN verifyResults
+end
+def_path MathTest start // chatgpt got me the test values (if you couldn't tell)
+    Num SumTest0 2.0
+    Num SumTest1 30.0
+    Num SumTest
+
+    ADD SumTest0 SumTest1 to SumTest
+    ADD SumTest0 SumTest1
+    ADD SumTest1 3.0
+
+    Num MinTest0 6.0
+    Num MinTest1 7.0
+    Num MinTest
+
+    SUB MinTest0 MinTest1 to MinTest
+    SUB MinTest0 MinTest1
+    SUB MinTest1 3.0
+
+    Num MuxTest0 6.0
+    Num MuxTest1 9.0
+    Num MuxTest
+
+    MUX MuxTest0 MuxTest1 to MuxTest
+    MUX MuxTest0 MuxTest1
+    MUX MuxTest1 3.0
+
+    Num DivTest0 9.0
+    Num DivTest1 8.0
+    Num DivTest
+
+    DIV DivTest0 DivTest1 to DivTest
+    DIV DivTest0 DivTest1
+    DIV DivTest1 3.0
+
+    Num PowTest0 12.0
+    Num PowTest1 2.0
+    Num PowTest
+
+    POW PowTest0 PowTest1 to PowTest
+    POW PowTest0 PowTest1
+    POW PowTest1 3.0
+
+    Num SqrTest0 25.0
+    Num SqrTest1 49.0
+    Num SqrTest
+
+    SQR SqrTest0 to SqrTest
+    SQR 3.0 to SqrTest0
+    SQR SqrTest1
+
+    // --- SIN (radians, includes periodic + general) ---
+    Num SinTest0 360.0
+    Num SinTest1 90.0
+    Num SinTest
+
+    SIN SinTest0 to SinTest
+    SIN 180.0 to SinTest0
+    SIN SinTest1
+
+    // --- invSIN (domain [-1,1]) ---
+    Num IsnTest0 0.5
+    Num IsnTest1 -0.999999999999
+    Num IsnTest
+
+    invSIN IsnTest0 to IsnTest
+    invSIN 0.0 to IsnTest0
+    invSIN IsnTest1
+
+    // --- COS ---
+    Num CosTest0 7.073552961937128
+    Num CosTest1 180.0
+    Num CosTest
+
+    COS CosTest0 to CosTest
+    COS 90.0 to CosTest0
+    COS CosTest1
+
+    // --- invCOS (domain [-1,1]) ---
+    Num IcsTest0 0.5
+    Num IcsTest1 -1.0
+    Num IcsTest
+
+    invCOS IcsTest0 to IcsTest
+    invCOS 0.0 to IcsTest0
+    invCOS IcsTest1
+
+    // --- TAN (includes discontinuity proximity) ---
+    Num TanTest0 89.99994270422049
+    Num TanTest1 45.0
+    Num TanTest
+
+    TAN TanTest0 to TanTest
+    TAN 0.0 to TanTest0
+    TAN TanTest1
+
+    // --- invTAN (all real inputs valid) ---
+    Num ItnTest0 1000000000.0
+    Num ItnTest1 -1.0
+    Num ItnTest
+
+    invTAN ItnTest0 to ItnTest
+    invTAN 0.0 to ItnTest0
+    invTAN ItnTest1
+end
+
+def_path LoopTest start
+    // test for loop
+    // NOTE: "for X to var start" iterates var from 0 to X exclusive (i = 0..X-1), so
+    // "for 10 to forIndex" runs exactly 10 times.
+    Num forSum 0
+    Num forIndex
+    for 10 to forIndex start
+        Inc forSum
+    end
+
+    // nested for loop test
+    Num nestedTotal 0
+    Num outerIdx
+    Num innerIdx
+    for 3 to outerIdx start
+        for 3 to innerIdx start
+            Inc nestedTotal
+        end
+    end
+
+    // test while loop
+    Num whileCounter 0
+    while (whileCounter <= 10) start
+        Inc whileCounter
+    end
+
+    // while loop, boolean-literal form
+    Num whileLitCounter 0
+    while (whileLitCounter <= 5) start
+        Inc whileLitCounter
     end
 end
+
+def_path VarTypeTest start
+    // test bool
+    Bool T
+    Bool F (Not T)
+    Num counter
+    if (T) start
+        Inc counter
+    end
+    if (Not F) start
+        Inc counter
+    end
+    if (T) start
+    end
+
+    // test string
+    String s0 "dyn"
+    String s1 "dyn"
+    String s2 "lang"
+    Bool stringsEqual (s0 == s1)
+    Bool stringsNotEqual (s0 == s2)
+
+    // test list
+    List lis [1, 2, 3]
+    APPEND 99 to lis
+    Num toInsert 42
+    INSERT toInsert 0 to lis
+    Num setVal 7
+    SET 1 setVal to lis
+    Num removedVal
+    REMOVE 0 lis to removedVal
+    Num gotVal
+    GET lis 2 to gotVal
+
+    // test json
+    Json j {1:"a", 2:"b", 3:"c"}
+    Num jKeyA 1
+    Num jKeyB 2
+    String jValA
+    String jValB
+    GET j jKeyA to jValA
+    GET j jKeyB to jValB
+end
+
+def_path RngTest start
+    Num trials 1000
+
+    Num rngIntMinOk 0
+    Num rngIntMaxOk 0
+    Num intMin 1.0
+    Num intMax 100.0
+    Num intTrialIdx
+    Num intResult
+    for trials to intTrialIdx start
+        RngInt intMin intMax to intResult
+        if (intResult >= intMin) start
+            Inc rngIntMinOk
+        end
+        if (intResult <= intMax) start
+            Inc rngIntMaxOk
+        end
+    end
+
+    Num rngDblMinOk 0
+    Num rngDblMaxOk 0
+    Num dblMin 1.0
+    Num dblMax 10.0
+    Num dblTrialIdx
+    Num dblResult
+    for trials to dblTrialIdx start
+        RngDbl dblMin dblMax to dblResult
+        if (dblResult >= dblMin) start
+            Inc rngDblMinOk
+        end
+        if (dblResult <= dblMax) start
+            Inc rngDblMaxOk
+        end
+    end
+
+    Num rngFltMinOk 0
+    Num rngFltMaxOk 0
+    Num fltTrialIdx
+    Num fltResult
+    for trials to fltTrialIdx start
+        RngFlt fltResult
+        if (fltResult >= -1.0) start
+            Inc rngFltMinOk
+        end
+        if (fltResult <= 1.0) start
+            Inc rngFltMaxOk
+        end
+    end
+
+    Num boolTrialIdx
+    Bool boolResult
+    for trials to boolTrialIdx start
+        RngBool boolResult
+    end
+end
+
+def_path verifyResults start
+    Num mathChecksPassed 0
+    Num mathChecksTotal 0
+    Num checkOk 0
+
+    // ### ADD ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SumTest0 == 32.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SumTest0 -- got:"
+        AddData SumTest0
+        AddData "expected:"
+        AddData 32.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SumTest1 == 33.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SumTest1 -- got:"
+        AddData SumTest1
+        AddData "expected:"
+        AddData 33.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SumTest == 32.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SumTest -- got:"
+        AddData SumTest
+        AddData "expected:"
+        AddData 32.0
+    end
+
+    // ### SUB ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MinTest0 == -1.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MinTest0 -- got:"
+        AddData MinTest0
+        AddData "expected:"
+        AddData -1.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MinTest1 == 4.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MinTest1 -- got:"
+        AddData MinTest1
+        AddData "expected:"
+        AddData 4.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MinTest == -1.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MinTest -- got:"
+        AddData MinTest
+        AddData "expected:"
+        AddData -1.0
+    end
+
+    // ### MUX ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MuxTest0 == 54.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MuxTest0 -- got:"
+        AddData MuxTest0
+        AddData "expected:"
+        AddData 54.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MuxTest1 == 27.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MuxTest1 -- got:"
+        AddData MuxTest1
+        AddData "expected:"
+        AddData 27.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (MuxTest == 54.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL MuxTest -- got:"
+        AddData MuxTest
+        AddData "expected:"
+        AddData 54.0
+    end
+
+    // ### DIV ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (DivTest0 == 1.125) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL DivTest0 -- got:"
+        AddData DivTest0
+        AddData "expected:"
+        AddData 1.125
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (DivTest1 == 2.6666666666666665) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL DivTest1 -- got:"
+        AddData DivTest1
+        AddData "expected:"
+        AddData 2.6666666666666665
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (DivTest == 1.125) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL DivTest -- got:"
+        AddData DivTest
+        AddData "expected:"
+        AddData 1.125
+    end
+
+    // ### POW ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (PowTest0 == 144.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL PowTest0 -- got:"
+        AddData PowTest0
+        AddData "expected:"
+        AddData 144.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (PowTest1 == 8.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL PowTest1 -- got:"
+        AddData PowTest1
+        AddData "expected:"
+        AddData 8.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (PowTest == 144.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL PowTest -- got:"
+        AddData PowTest
+        AddData "expected:"
+        AddData 144.0
+    end
+
+    // ### SQR ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SqrTest0 == 1.7320508075688772) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SqrTest0 -- got:"
+        AddData SqrTest0
+        AddData "expected:"
+        AddData 1.7320508075688772
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SqrTest1 == 7.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SqrTest1 -- got:"
+        AddData SqrTest1
+        AddData "expected:"
+        AddData 7.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SqrTest == 5.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SqrTest -- got:"
+        AddData SqrTest
+        AddData "expected:"
+        AddData 5.0
+    end
+
+    // ### SIN / invSIN ###
+    // SinTest0 and SinTest land at ~1e-16 magnitude, which can't be written as an
+    // exact DYN literal (the tokenizer splits on the "-" in scientific notation like
+    // "E-16"), so these are checked as a near-zero range instead of exact equality.
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SinTest0 >= -0.000001) start
+        if (SinTest0 <= 0.000001) start
+            Inc mathChecksPassed
+            Inc checkOk
+        end
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SinTest0 -- got:"
+        AddData SinTest0
+        AddData "expected: ~0.0 (within +/- 0.000001)"
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SinTest1 == 1.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SinTest1 -- got:"
+        AddData SinTest1
+        AddData "expected:"
+        AddData 1.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (SinTest >= -0.000001) start
+        if (SinTest <= 0.000001) start
+            Inc mathChecksPassed
+            Inc checkOk
+        end
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL SinTest -- got:"
+        AddData SinTest
+        AddData "expected: ~0.0 (within +/- 0.000001)"
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IsnTest0 == 0.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IsnTest0 -- got:"
+        AddData IsnTest0
+        AddData "expected:"
+        AddData 0.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IsnTest1 == -89.99991897242779) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IsnTest1 -- got:"
+        AddData IsnTest1
+        AddData "expected:"
+        AddData -89.99991897242779
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IsnTest >= 29.999999) start
+        if (IsnTest <= 30.000001) start
+            Inc mathChecksPassed
+            Inc checkOk
+        end
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IsnTest -- got:"
+        AddData IsnTest
+        AddData "expected: ~30.0 (within +/- 0.000001)"
+    end
+
+    // ### COS / invCOS ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (CosTest0 >= -0.000001) start
+        if (CosTest0 <= 0.000001) start
+            Inc mathChecksPassed
+            Inc checkOk
+        end
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL CosTest0 -- got:"
+        AddData CosTest0
+        AddData "expected: ~0.0 (within +/- 0.000001)"
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (CosTest1 == -1.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL CosTest1 -- got:"
+        AddData CosTest1
+        AddData "expected:"
+        AddData -1.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (CosTest == 0.9923888851137124) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL CosTest -- got:"
+        AddData CosTest
+        AddData "expected:"
+        AddData 0.9923888851137124
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IcsTest0 == 90.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IcsTest0 -- got:"
+        AddData IcsTest0
+        AddData "expected:"
+        AddData 90.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IcsTest1 == 180.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IcsTest1 -- got:"
+        AddData IcsTest1
+        AddData "expected:"
+        AddData 180.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (IcsTest >= 59.999999) start
+        if (IcsTest <= 60.000001) start
+            Inc mathChecksPassed
+            Inc checkOk
+        end
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL IcsTest -- got:"
+        AddData IcsTest
+        AddData "expected: ~60.0 (within +/- 0.000001)"
+    end
+
+    // ### TAN / invTAN ###
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (TanTest0 == 0.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL TanTest0 -- got:"
+        AddData TanTest0
+        AddData "expected:"
+        AddData 0.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (TanTest1 == 0.9999999999999999) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL TanTest1 -- got:"
+        AddData TanTest1
+        AddData "expected:"
+        AddData 0.9999999999999999
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (TanTest == 1000000.000020701) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL TanTest -- got:"
+        AddData TanTest
+        AddData "expected:"
+        AddData 1000000.000020701
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (ItnTest0 == 0.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL ItnTest0 -- got:"
+        AddData ItnTest0
+        AddData "expected:"
+        AddData 0.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (ItnTest1 == -45.0) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL ItnTest1 -- got:"
+        AddData ItnTest1
+        AddData "expected:"
+        AddData -45.0
+    end
+
+    Num checkOk 0
+    Inc mathChecksTotal
+    if (ItnTest == 89.99999994270424) start
+        Inc mathChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL ItnTest -- got:"
+        AddData ItnTest
+        AddData "expected:"
+        AddData 89.99999994270424
+    end
+
+    // ### LOOP ###
+    Num loopChecksPassed 0
+    Num loopChecksTotal 0
+
+    // for 10 to X is now 0..9 (exclusive of the end) == 10 iterations
+    Num checkOk 0
+    Inc loopChecksTotal
+    if (forSum == 10.0) start
+        Inc loopChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL forSum -- got:"
+        AddData forSum
+        AddData "expected:"
+        AddData 10.0
+    end
+
+    // nested for 3 to X (3 iterations) inside for 3 to Y (3 iterations) == 9
+    Num checkOk 0
+    Inc loopChecksTotal
+    if (nestedTotal == 9.0) start
+        Inc loopChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL nestedTotal -- got:"
+        AddData nestedTotal
+        AddData "expected:"
+        AddData 9.0
+    end
+
+    // while (counter <= 10) increments until counter is 11 before the check fails
+    Num checkOk 0
+    Inc loopChecksTotal
+    if (whileCounter == 11.0) start
+        Inc loopChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL whileCounter -- got:"
+        AddData whileCounter
+        AddData "expected:"
+        AddData 11.0
+    end
+
+    Num checkOk 0
+    Inc loopChecksTotal
+    if (whileLitCounter == 6.0) start
+        Inc loopChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL whileLitCounter -- got:"
+        AddData whileLitCounter
+        AddData "expected:"
+        AddData 6.0
+    end
+
+    // ### VAR TYPE ###
+    Num typeChecksPassed 0
+    Num typeChecksTotal 0
+
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (counter == 2.0) start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL counter -- got:"
+        AddData counter
+        AddData "expected:"
+        AddData 2.0
+    end
+
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (stringsEqual) start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL stringsEqual -- got:"
+        AddData stringsEqual
+        AddData "expected:"
+        AddData true
+    end
+
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (Not stringsNotEqual) start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL stringsNotEqual -- got:"
+        AddData stringsNotEqual
+        AddData "expected:"
+        AddData false
+    end
+
+    // list: [1,2,3] -> append 99 -> [1,2,3,99] -> insert 42 at 0 -> [42,1,2,3,99]
+    // -> set index 1 to 7 -> [42,7,2,3,99] -> remove index 0 (=42) -> [7,2,3,99]
+    // -> get index 2 (=3)
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (removedVal == 42.0) start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL removedVal -- got:"
+        AddData removedVal
+        AddData "expected:"
+        AddData 42.0
+    end
+
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (gotVal == 3.0) start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL gotVal -- got:"
+        AddData gotVal
+        AddData "expected:"
+        AddData 3.0
+    end
+
+    // json: {1:"a", 2:"b", 3:"c"} -> get key 1 (="a"), get key 2 (="b")
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (jValA == "a") start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL jValA -- got:"
+        AddData jValA
+        AddData "expected:"
+        AddData "a"
+    end
+
+    Num checkOk 0
+    Inc typeChecksTotal
+    if (jValB == "b") start
+        Inc typeChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL jValB -- got:"
+        AddData jValB
+        AddData "expected:"
+        AddData "b"
+    end
+
+    // ### RNG ###
+    Num rngChecksPassed 0
+    Num rngChecksTotal 0
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngIntMinOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngIntMinOk -- got:"
+        AddData rngIntMinOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngIntMaxOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngIntMaxOk -- got:"
+        AddData rngIntMaxOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngDblMinOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngDblMinOk -- got:"
+        AddData rngDblMinOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngDblMaxOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngDblMaxOk -- got:"
+        AddData rngDblMaxOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngFltMinOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngFltMinOk -- got:"
+        AddData rngFltMinOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    Num checkOk 0
+    Inc rngChecksTotal
+    if (rngFltMaxOk == trials) start
+        Inc rngChecksPassed
+        Inc checkOk
+    end
+    if (checkOk == 0.0) start
+        AddData "FAIL rngFltMaxOk -- got:"
+        AddData rngFltMaxOk
+        AddData "expected (trials):"
+        AddData trials
+    end
+
+    // ### overall roll-up ###
+    Num overallPassed 0
+    Num overallTotal 0
+    ADD overallPassed mathChecksPassed
+    ADD overallTotal mathChecksTotal
+    ADD overallPassed loopChecksPassed
+    ADD overallTotal loopChecksTotal
+    ADD overallPassed typeChecksPassed
+    ADD overallTotal typeChecksTotal
+    ADD overallPassed rngChecksPassed
+    ADD overallTotal rngChecksTotal
+
+    Num allPassFlag 0
+    if (overallPassed == overallTotal) start
+        Inc allPassFlag
+    end
+
+    AddData "-- results --"
+    AddData "math passed/total:"
+    AddData mathChecksPassed
+    AddData mathChecksTotal
+    AddData "loop passed/total:"
+    AddData loopChecksPassed
+    AddData loopChecksTotal
+    AddData "vartype passed/total:"
+    AddData typeChecksPassed
+    AddData typeChecksTotal
+    AddData "rng passed/total:"
+    AddData rngChecksPassed
+    AddData rngChecksTotal
+    AddData "overall passed/total:"
+    AddData overallPassed
+    AddData overallTotal
+    AddData "all pass (1 = yes):"
+    AddData allPassFlag
+    Update
+end
+
 autoPath Main

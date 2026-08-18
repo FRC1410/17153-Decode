@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp(name="DYNTest")
+@Disabled
 public class NewDYNTest extends DynOpMode {
     private Follower pedroFollowsYou;
     private AprilTags aprilTags;

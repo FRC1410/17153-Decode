@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.CommandException;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.VariableTypes;
@@ -37,8 +38,8 @@ public abstract class DynOpMode extends OpMode {
         followerUpdateRate = frequency;
     }
 
-    private int DYNThreadPriority = Thread.NORM_PRIORITY-2;
-    private int UpdateFollowerPriority = Thread.NORM_PRIORITY+1;
+    private int DYNThreadPriority = Thread.MIN_PRIORITY+1;
+    private int UpdateFollowerPriority = Thread.NORM_PRIORITY;
     protected final void setDYNThreadPriority(int priority){
         DYNThreadPriority = priority;
     }
@@ -115,8 +116,6 @@ public abstract class DynOpMode extends OpMode {
         // set thread priorities
         DYNThread.setPriority(DYNThreadPriority);
         followerUpdateThread.setPriority(UpdateFollowerPriority);
-        // link JFuncs
-        ppInterface.linkJFuncs(functionJFuncs,consumerJFuncs,supplierJFuncs,runnableJFuncs);
         // start running DYN code
         DYNThread.start();
         // start the pather update loop
@@ -128,6 +127,8 @@ public abstract class DynOpMode extends OpMode {
     }
     @Override
     public final void loop(){
+        // run any requested jFuncs
+        processJFuncCalls();
         processTelemetry();
         checkWorkerThreads();
         // run user code
@@ -135,6 +136,77 @@ public abstract class DynOpMode extends OpMode {
         // checkup on running threads
         checkWorkerThreads();
     }
+
+    private void processJFuncCalls() {
+        // this ensures that only one thread is touching this handshake process at a time.
+        synchronized (ppInterface.lock){
+            if (ppInterface.requested){
+                ppInterface.requested = false;
+                if (ppInterface.wantOutput){
+                    if (ppInterface.inVar == null){
+                        // search suppliers
+                        if (supplierJFuncs.containsKey(ppInterface.funcID)){
+                            ppInterface.outVar = supplierJFuncs.get(ppInterface.funcID).get();
+                            if (ppInterface.outVar == null) throw new CommandException(ppInterface.ranLine,"jFunc","Called function returned null!");
+                            // normalize state
+                            ppInterface.funcID = null;
+                            ppInterface.inVar = null;
+                            // notify DYN thread
+                            ppInterface.processed = true;
+                            ppInterface.lock.notify();
+                        } else {
+                            throw new CommandException(ppInterface.ranLine,"Move robot","Unknown jFunc ID: "+ppInterface.funcID);
+                        }
+                    } else {
+                        // search functions
+                        if (functionJFuncs.containsKey(ppInterface.funcID)){
+                            ppInterface.outVar = functionJFuncs.get(ppInterface.funcID).apply(ppInterface.inVar);
+                            // normalize state
+                            ppInterface.funcID = null;
+                            ppInterface.inVar = null;
+                            // notify DYN thread
+                            ppInterface.processed = true;
+                            ppInterface.lock.notify();
+                        } else {
+                            throw new CommandException(ppInterface.ranLine,"Move robot","Unknown jFunc ID: "+ppInterface.funcID);
+                        }
+                    }
+                }
+                else {
+                    if (ppInterface.inVar == null) {
+                        // search runnables
+                        if (runnableJFuncs.containsKey(ppInterface.funcID)){
+                            runnableJFuncs.get(ppInterface.funcID).run();
+                            // normalize state
+                            ppInterface.funcID = null;
+                            ppInterface.inVar = null;
+                            ppInterface.outVar = null;
+                            // notify DYN thread
+                            ppInterface.processed = true;
+                            ppInterface.lock.notify();
+                        } else {
+                            throw new CommandException(ppInterface.ranLine,"Move robot","Unknown jFunc ID: "+ppInterface.funcID);
+                        }
+                    } else {
+                        // search consumers
+                        if (consumerJFuncs.containsKey(ppInterface.funcID)){
+                            consumerJFuncs.get(ppInterface.funcID).accept(ppInterface.inVar);
+                            // normalize state
+                            ppInterface.funcID = null;
+                            ppInterface.inVar = null;
+                            ppInterface.outVar = null;
+                            // notify DYN thread
+                            ppInterface.processed = true;
+                            ppInterface.lock.notify();
+                        } else {
+                            throw new CommandException(ppInterface.ranLine,"Move robot","Unknown jFunc ID: "+ppInterface.funcID);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public final void stop(){
         // ensure DYN and follower update threads stop cleanly

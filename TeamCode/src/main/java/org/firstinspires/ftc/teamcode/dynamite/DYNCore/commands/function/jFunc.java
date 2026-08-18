@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.function;
 
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.CommandException;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.Command;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.commands.CommandType;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.primitives.DynNumber;
 
 public class jFunc extends Command {
@@ -48,13 +50,17 @@ public class jFunc extends Command {
                 if (!varExists(outID)){
                     registerVar(new DynNumber(0,outID));
                 }
-                getVar(outID).setVariable(runJFunc(true, inFuncID));
+                Variable gottenVar = runJFunc(true,inFuncID);
+                if (gottenVar == null) throw new CommandException(line,"jFunc","RAN JFUNC RETURNED NULL");
+                getVar(outID).setVariable(gottenVar);
             }
             case IO -> {
                 if (!varExists(outID)){
                     registerVar(new DynNumber(0,outID));
                 }
-                getVar(outID).setVariable(runJFunc(true, inFuncID, getVar(inID)));
+                Variable gottenVar = runJFunc(true,inFuncID,getVar(inID));
+                if (gottenVar == null) throw new CommandException(line,"jFunc","RAN JFUNC RETURNED NULL");
+                getVar(outID).setVariable(gottenVar);
             }
         }
     }

@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_X;
 import static org.firstinspires.ftc.teamcode.Util.Constants.CAM_OFFSET_Y;
 import static org.firstinspires.ftc.teamcode.Util.Constants.TAG_WIDTH;
 import static org.firstinspires.ftc.teamcode.Util.Constants.TERMINAL_ANGLE_VECTOR;
+import static org.firstinspires.ftc.teamcode.Util.IDs.WEBCAM_ID;
 
 import android.util.Size;
 
@@ -50,7 +51,7 @@ public class AprilTags {
                     .build();
             // This is the connection to the physical camera, including the id
             VisionPortal.Builder vision_portal_builder = new VisionPortal.Builder();
-            vision_portal_builder.setCamera(hardwareMapCool.get(WebcamName.class, "Webcam 1"));
+            vision_portal_builder.setCamera(hardwareMapCool.get(WebcamName.class,WEBCAM_ID));
             vision_portal_builder.setCameraResolution(new Size(640, 480));
             vision_portal_builder.addProcessor(april_tag);
 

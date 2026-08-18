@@ -146,55 +146,59 @@ class PPInterface implements FTCInterface {
         patherUpdateThread.start();
     }
 
+    public volatile boolean requested = false;
+    public volatile boolean processed = false;
+    public final Object lock = new Object(); // bc ofc Android Studio says it should be final, not volatile
+    public volatile String funcID = null;
+    public volatile int ranLine;
+    public volatile boolean wantOutput = false;
+    public volatile Variable inVar = null;
+    public volatile Variable outVar = null;
     @Override
     public Variable runJFunc(int line, boolean wantOutput, String ID) {
-        if (wantOutput){
-            if (supplierJFuncs.containsKey(ID)){
-                return supplierJFuncs.get(ID).get();
-            } else {
-                throw new RuntimeException("No available function with ID: " + ID);
+        // ensure that only one thread is actually using the related variables
+        synchronized (lock){
+            // set stuff
+            funcID = ID;
+            ranLine = line;
+            this.wantOutput = wantOutput;
+            inVar = null;
+            outVar = null;
+            // request processing
+            processed = false;
+            requested = true;
+            // wait for lock release (aka: the function was run by the main thread)
+            while (!processed) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } else {
-            if (runnableJFuncs.containsKey(ID)){
-                runnableJFuncs.get(ID).run();
-                return null;
-            } else {
-                throw new RuntimeException("No available function with ID: " + ID);
-            }
+            return outVar;
         }
     }
     @Override
     public Variable runJFunc(int line, boolean wantOutput, String ID, Variable in) {
-        if (wantOutput){
-            if (functionJFuncs.containsKey(ID)){
-                return functionJFuncs.get(ID).apply(in);
-            } else {
-                throw new RuntimeException("No available function with ID: " + ID);
+        synchronized (lock){
+            // set stuff
+            funcID = ID;
+            ranLine = line;
+            this.wantOutput = wantOutput;
+            inVar = in;
+            outVar = null;
+            // request processing
+            requested = true;
+            // wait for lock release
+            while (!processed) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } else {
-            if (consumerJFuncs.containsKey(ID)){
-                consumerJFuncs.get(ID).accept(in);
-                return null;
-            } else {
-                throw new RuntimeException("No available function with ID: " + ID);
-            }
+            return outVar;
         }
-    }
-
-    private Map<String, Function<Variable, Variable>> functionJFuncs;
-    private Map<String, Consumer<Variable>> consumerJFuncs;
-    private Map<String, Supplier<Variable>> supplierJFuncs;
-    private Map<String, Runnable> runnableJFuncs;
-
-    public void linkJFuncs(
-            Map<String, Function<Variable, Variable>> functions,
-            Map<String, Consumer<Variable>> consumers,
-            Map<String, Supplier<Variable>> suppliers,
-            Map<String, Runnable> runnables) {
-        functionJFuncs = functions;
-        consumerJFuncs = consumers;
-        supplierJFuncs = suppliers;
-        runnableJFuncs = runnables;
     }
 
     @Override

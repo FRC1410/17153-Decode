@@ -1,142 +1,98 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
+import org.firstinspires.ftc.teamcode.Subsystem.Intake;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name="Dyn Auto")
-@Disabled
 public class DynAuto extends DynOpMode {
     @Override
     public boolean loadFromUSB() {
-        return false;
+        return false; // I currently do not have a USB drive to use for in-workshop testing
     }
     @Override
     public String getScriptPath() {
-        return "";
+        return "Main.dyn";
     }
+
+    Follower pedroPather;
     @Override
     public Follower buildFollower() {
-        return null;
+        pedroPather = Constants.createFollower(hardwareMap);
+        return pedroPather;
     }
-    @Override
-    public void onInit() {}
-    @Override
-    public void onLoop() {}
 
+    AprilTags aprilTags;
+    Shooter shooter;
+    Intake intake;
     @Override
-    public void updateFollower() {}
-}
-    /*
-    public Shooter shooter = new Shooter();
-    public IntakeAuto intake = new IntakeAuto();
-
-    @Override
-    protected void onInit(){
-        telemetry.setMsTransmissionInterval(50);
+    public void onInit(){
+        registerFunctions();
+        aprilTags = new AprilTags(hardwareMap);
+        // init subsystems
+        shooter = new Shooter();
         shooter.init(hardwareMap);
+        intake = new Intake();
         intake.init(hardwareMap);
     }
 
-
-    // Use a fixed asset copy to avoid stale/packaging issues
-    String[] jFuncIDs = new String[]{
-            "FireShooter",
-            "IntakeOn",
-            "IntakeOff",
-            "Sleep3s",
-            "Sleep2s",
-            "Sleep1s",
-            "Sleep",
-            "getIntakeRPM"
-    };
-
+    private int mainCounter = 0;
+    private int visibleCounter = 0;
     @Override
-    protected String getScriptName(){
-        return "AutoTest.dyn";
+    public void onLoop(){
+        mainCounter++;
+        if (mainCounter%20 == 0) visibleCounter++;
+        intake.intakeTelem(newTelemetry);
+        shooter.addTelemetry(newTelemetry);
+        newTelemetry.addData("Counter",visibleCounter);
+        newTelemetry.update();
     }
 
     @Override
-    protected Pose getStartPose(){
-        // Match the StartPos from the default path (BLUE_AT_GOAL)
-        // Heading 143° converted to radians
-        return new Pose(23, 126, Math.toRadians(143));
+    public void updateFollower(){
+        pedroPather.update();
+        aprilTags.update();
+        if (!aprilTags.getDetections().isEmpty()) {
+            Pose tagPose = aprilTags.getPedroPose();
+            pedroPather.setPose(tagPose);
+        }
     }
 
-    @Override
-    protected String[] getCustomFunctionIds(){
-        return jFuncIDs;
+    private void registerFunctions(){
+        registerJFunc("cycleShoot",this::cycleShooter);
+        registerJFunc("feedShoot",this::feedShooter);
+        registerJFunc("getShooterState",this::getShooterState);
+
+        registerJFunc("intakeOn",this::intakeOn);
+        registerJFunc("intakeOff",this::intakeOff);
+        registerJFunc("intakeOut",this::intakeOut);
     }
 
-    @Override
-    protected void registerCustomCommands(){
-        super.registerCustomCommands();
-
-        dynAuto.registerCustomCommand("FireShooter", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String name, DynVar input){
-                // rev the shooter
-                shooter.run(RobotStates.ShooterStates.FORWARD);
-                // wait
-                safeSleep(1000);
-                // feed the shooter
-                shooter.feed(1);
-                intake.run(1,0);
-                // wait
-                safeSleep(3000);
-                // stop feeding and running the shooter
-                shooter.run(RobotStates.ShooterStates.NEUTRAL);
-                shooter.feed(0);
-                intake.run(0,0);
-                return null;
-            }
-        });
-        dynAuto.registerCustomCommand("IntakeOn", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                // turn the intake on
-                intake.run(1,0);
-                return null;
-            }
-        });
-        dynAuto.registerCustomCommand("IntakeOff", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                // turn the intake off
-                intake.run(0,0);
-                return null;
-            }
-        });
-        dynAuto.registerCustomCommand("Sleep", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                long wait = (long)((double)input.toJava());
-                safeSleep(wait);
-                return null;
-            }
-        });
-        dynAuto.registerCustomCommand("getIntakeRPM",new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                try {
-                    return new DynVar("Number","",intake.getRPM());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        dynAuto.registerCustomCommand("stopMotors", new CustomCommand.CustomCommandHandler() {
-            @Override
-            public DynVar execute(String functionName, DynVar input) {
-                intake.run(0,0);
-                shooter.run(RobotStates.ShooterStates.NEUTRAL);
-                shooter.feed(0);
-                safeSleep(1/20);
-                return null;
-            }
-        });
+    private Variable getShooterState(){
+        return makeStringVar(shooter.shooterStatus.toString());
     }
-    */
-
+    private void cycleShooter(){
+        shooter.cycle(newTelemetry);
+        newTelemetry.addData("Shooter","cycled!");
+    }
+    private void feedShooter(){
+        shooter.feed(1);
+    }
+    private void intakeOn(){
+        intake.run(1,0);
+    }
+    private void intakeOff(){
+        intake.run(0,0);
+    }
+    private void intakeOut(){
+        intake.run(0,1);
+    }
+}

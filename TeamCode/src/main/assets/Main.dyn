@@ -1,0 +1,14 @@
+def_path Main start
+    AddData "Shooter state before"
+    jFunc getShooterState to shootState
+    AddData shootState
+    AddData "running shooter cycle."
+    jFunc cycleShoot
+    AddData "jFunc ran"
+    AddData "Shooter state after"
+    jFunc getShooterState to shootState
+    AddData shootState
+    Update
+end
+
+autoPath Main

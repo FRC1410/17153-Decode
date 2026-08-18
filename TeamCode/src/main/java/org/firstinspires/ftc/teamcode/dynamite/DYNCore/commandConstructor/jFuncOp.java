@@ -32,8 +32,9 @@ class jFuncOp extends ConstructorUtils{
                 addCommand(new jFunc(getLine(), funcID, out, false));
                 i++;
             } else {
+                // no ins or outs
+                addCommand(new jFunc(getLine(),funcID));
                 i++;
-                throwError("Expected name | Get: " + givenTokens[i].type());
             }
         } else {
             i++;

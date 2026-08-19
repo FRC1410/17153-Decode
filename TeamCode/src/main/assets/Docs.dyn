@@ -264,10 +264,10 @@ MOVEMENT COMMANDS:
                 this is the heading angle that we want to end with after the
     GoTo:
         syntax:
-            goTo (X,Y)
-            goTo (X,Y,H)
-            goTo pos
-            goTo Coord
+            GoTo (X,Y)
+            GoTo (X,Y,H)
+            GoTo pos
+            GoTo Coord
     followBezier:
         Thanks to PP having a simple bezier system, this is simple
         syntax:

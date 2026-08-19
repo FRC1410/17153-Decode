@@ -388,7 +388,7 @@ public class Tokenizer {
                 else if (internalChunk.equals("turnTo") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.TurnTo, lineIndex, charIndex));
                     internalChunk = "";
-                } else if (internalChunk.equals("goTo") && isWordBoundary(chunk, counter, chunkSize)) {
+                } else if (internalChunk.equals("GoTo") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.GoTo, lineIndex, charIndex));
                     internalChunk = "";
                 } else if (internalChunk.equals("followBezier") && isWordBoundary(chunk, counter, chunkSize)) {

@@ -53,7 +53,7 @@ public class AddVar extends Command {
                     if (varName != null) newVar = new DynNumber((long)value, varName);
                     else newVar = new DynNumber((long) value);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a number!");
                 }
             }
             case String -> {
@@ -65,7 +65,7 @@ public class AddVar extends Command {
                     if (varName != null) newVar = new DynString(val,varName);
                     else newVar = new DynString(val);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a string!");
                 }
             }
             case Boolean -> {
@@ -76,7 +76,7 @@ public class AddVar extends Command {
                     if (varName != null) newVar = new DynBoolean((Condition)value,varName);
                     else newVar = new DynBoolean((Condition)value);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a boolean!");
                 }
             }
             case List -> {
@@ -101,7 +101,7 @@ public class AddVar extends Command {
                     if (varName != null) newVar = new DynList(realValue,varName);
                     else newVar = new DynList(realValue);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a List!");
                 }
             }
             case Json -> {
@@ -163,18 +163,133 @@ public class AddVar extends Command {
                     if (varName != null) newVar = new DynFieldCord((double[]) value, varName);
                     else newVar = new DynFieldCord((double[]) value);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a field coord!");
                 }
             }
             case FieldPos -> {
-                if (value instanceof Variable[]) {
-                    if (varName != null) newVar = new DynFieldPos((Variable[]) value, varName);
-                    else newVar = new DynFieldPos((Variable[]) value);
+                if (value instanceof Object[]) {
+                    if (((Object[])value)[0] instanceof Double){
+                        if (((Object[])value)[1] instanceof Double){
+                            if (((Object[])value)[2] instanceof Double){
+                                // double, double, double
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new double[]{
+                                                (double)((Object[])value)[0],
+                                                (double)((Object[])value)[1],
+                                                (double)((Object[])value)[2]},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new double[]{
+                                                (double)((Object[])value)[0],
+                                                (double)((Object[])value)[1],
+                                                (double)((Object[])value)[2]});
+                            } else {
+                                // double, double, string
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])});
+                            }
+                        } else {
+                            if (((Object[])value)[2] instanceof Double){
+                                // double, string, double
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])});
+                            } else {
+                                // double, string, string
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                new DynNumber((double)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])});
+                            }
+                        }
+                    } else {
+                        if (((Object[])value)[1] instanceof Double){
+                            if (((Object[])value)[2] instanceof Double){
+                                // string, double, double
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])});
+                            } else {
+                                // string, double, string
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                new DynNumber((double)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])});
+                            }
+                        } else {
+                            if (((Object[])value)[2] instanceof Double){
+                                // string, string, double
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                new DynNumber((double)((Object[])value)[2])});
+                            } else {
+                                // string, string, string
+                                if (varName != null) newVar = new DynFieldPos(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])},
+                                        varName);
+                                else newVar = new DynFieldCord(
+                                        new Variable[]{
+                                                getVar((String)((Object[])value)[0]),
+                                                getVar((String)((Object[])value)[1]),
+                                                getVar((String)((Object[])value)[2])});
+                            }
+                        }
+                    }
                 } else if (value instanceof double[]){
                     if (varName != null) newVar = new DynFieldPos((double[]) value, varName);
                     else newVar = new DynFieldCord((double[]) value);
                 } else {
-                    throw new CommandException(line, "AddVar", "Given value is not a json!"); // I think that its literally impossible for this to fire
+                    throw new CommandException(line, "AddVar", "Given value is not a field pos!");
                 }
             }
             default -> throw new CommandException(line, "AddVar", "Unknown variable type: "+variableType);

@@ -148,12 +148,14 @@ class PPInterface implements FTCInterface {
             patherUpdateThread.itterUpdate();
             long elapsed = System.nanoTime()-startTime;
             long remaining = periodNanos - elapsed;
-            try {
-                long millis = remaining / 1_000_000;
-                int nanos = (int) (remaining % 1_000_000);
-                Thread.sleep(millis, nanos);
-            } catch (InterruptedException e) {
-                System.out.println(e);
+            long millis = remaining / 1_000_000;
+            int nanos = (int) (remaining % 1_000_000);
+            if (millis > 0) {
+                try {
+                    Thread.sleep(millis, nanos);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
             }
         }
         patherUpdateThread.start();

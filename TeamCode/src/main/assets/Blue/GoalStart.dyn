@@ -1,0 +1,84 @@
+def_path Main start
+    String Msg
+    RUN setPoints
+    PathStartPosition startPos
+    String Msg "Firing"
+    RUN sendMsgToTelem
+    GoTo firePos
+    RUN cycleCollected
+    String Msg "collecting set #1"
+    RUN sendMsgToTelem
+    RUN collectSet1
+    String Msg "Firing"
+    RUN sendMsgToTelem
+    GoTo firePos
+    RUN cycleCollected
+    String Msg "Collecting set #2"
+    RUN sendMsgToTelem
+    RUN collectSet2
+    String Msg "Firing"
+    RUN sendMsgToTelem
+    GoTo firePos
+    RUN cycleCollected
+    String Msg "Collecting set #3"
+    RUN sendMsgToTelem
+    RUN collectSet3
+    String Msg "Firing"
+    RUN sendMsgToTelem
+    GoTo firePos
+    RUN cycleCollected
+    String Msg "Going to end Pos"
+    RUN sendMsgToTelem
+    GoTo endPos
+end
+def_path setPoints start
+    FieldPos startPos       (24.5,126, 143)
+    FieldPos firePos        (51.5,82.5,133)
+    FieldPos artifact1Start (40,  82.5,180)
+    FieldPos artifact1End   (14.5,82.5,180)
+    FieldPos artifact2Start (40,  59,  180)
+    FieldPos artifact2End   (8.5, 58.5,180)
+    FieldPos artifact3Start (40,  35,  180)
+    FieldPos artifact3End   (8.5, 35,  180)
+    FieldPos endPos         (14,  9,   90)
+end
+
+def_path collectSet1 start
+    GoTo artifact1Start
+    jFunc intakeOn
+    Sleep 200
+    GoTo artifact1End
+    jFunc intakeOff
+end
+def_path collectSet2 start
+    GoTo artifact2Start
+    jFunc intakeOn
+    Sleep 200
+    GoTo artifact2End
+    jFunc intakeOff
+end
+def_path collectSet3 start
+    GoTo artifact3Start
+    jFunc intakeOn
+    Sleep 200
+    GoTo artifact3End
+    jFunc intakeOff
+end
+
+def_path cycleCollected start
+    jFunc cycleShoot
+    Sleep 500
+    jFunc intakeOn
+    jFunc feedShoot
+    Sleep 1500
+    jFunc intakeOff
+    jFunc stopFeedShooter
+    jFunc cycleShoot
+end
+
+def_path sendMsgToTelem start
+    AddData Msg
+    Update
+end
+
+autoPath Main

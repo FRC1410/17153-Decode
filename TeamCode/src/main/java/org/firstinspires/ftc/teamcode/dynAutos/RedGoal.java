@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.dynAutos;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
@@ -12,16 +11,15 @@ import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Dyn Auto")
-@Disabled
-public class DynAuto extends DynOpMode {
+@Autonomous(name="\uD83D\uDFE5RedGoal", group="Red")
+public class RedGoal extends DynOpMode {
     @Override
     public boolean loadFromUSB() {
-        return false; // I currently do not have a USB drive to use for in-workshop testing
+        return false;
     }
     @Override
     public String getScriptPath() {
-        return "Main.dyn";
+        return "Red/GoalStart.dyn";
     }
 
     Follower pedroPather;
@@ -45,7 +43,7 @@ public class DynAuto extends DynOpMode {
         intake.init(hardwareMap);
     }
 
-    private volatile double visionFPS = 0; // volatile ensures that all changes form one thread happen for all threads
+    private volatile double visionFPS = 0;
     @Override
     public void onLoop(){
         intake.intakeTelem(newTelemetry);
@@ -70,6 +68,7 @@ public class DynAuto extends DynOpMode {
     private void registerFunctions(){
         registerJFunc("cycleShoot",this::cycleShooter);
         registerJFunc("feedShoot",this::feedShooter);
+        registerJFunc("stopFeedShooter",this::stopShooterFeed);
         registerJFunc("getShooterState",this::getShooterState);
 
         registerJFunc("intakeOn",this::intakeOn);
@@ -86,6 +85,9 @@ public class DynAuto extends DynOpMode {
     }
     private void feedShooter(){
         shooter.feed(1);
+    }
+    private void stopShooterFeed(){
+        shooter.feed(0);
     }
     private void intakeOn(){
         intake.run(1,0);

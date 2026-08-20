@@ -255,8 +255,16 @@ public class DoBezier extends Command {
         } else {
             for (String id : getInVarIDs()) {
                 Variable point = getVar(id);
-                if (point.getType() == VariableTypes.FieldCord || point.getType() == VariableTypes.FieldPos) {
-                    double[] pos = (double[]) point.getValue();
+                if (point.getType() == VariableTypes.FieldCord){
+                    double[] pos = {
+                            (double)((Variable[])point.getValue())[0].getValue(),
+                            (double)((Variable[])point.getValue())[1].getValue()};
+                    points.add(pos);
+                } else if (point.getType() == VariableTypes.FieldPos) {
+                    double[] pos = {
+                            (double)((Variable[])point.getValue())[0].getValue(),
+                            (double)((Variable[])point.getValue())[1].getValue(),
+                            (double)((Variable[])point.getValue())[2].getValue()};
                     points.add(pos);
                 } else {
                     throw new CommandException(line, "doBezier", "Given path point: " + point.getName() + " is not FieldCord/FieldPos");

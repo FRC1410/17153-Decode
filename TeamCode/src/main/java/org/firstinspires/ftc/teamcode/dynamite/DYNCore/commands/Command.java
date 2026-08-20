@@ -96,6 +96,9 @@ public class Command {
     protected void doSpline(double[] target, SplineType type){
         ftcInterface.runGeneralMove(line,new GeneralMovement(line,target,type));
     }
+    protected void doSpline(double[] target, double endTan, SplineType type){
+        ftcInterface.runGeneralMove(line,new GeneralMovement(line,target,endTan,type));
+    }
     protected void doBezier(double[][] target){
         ftcInterface.runGeneralMove(line,new GeneralMovement(line,target));
     }

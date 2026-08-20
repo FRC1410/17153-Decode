@@ -58,15 +58,15 @@ class PPInterface implements FTCInterface {
                     // assemble points
                     Pose[] midPoints = new Pose[move.bezTarget.length-1];
                     Pose endPose;
-                    if (move.bezTarget[move.bezTarget.length].length == 3){
+                    if (move.bezTarget[move.bezTarget.length-1].length == 3){
                         endPose = new Pose(
-                                move.bezTarget[move.bezTarget.length][0],
-                                move.bezTarget[move.bezTarget.length][1],
-                                move.bezTarget[move.bezTarget.length][2]);
+                                move.bezTarget[move.bezTarget.length-1][0],
+                                move.bezTarget[move.bezTarget.length-1][1],
+                                move.bezTarget[move.bezTarget.length-1][2]);
                     } else {
                         endPose = new Pose(
-                                move.bezTarget[move.bezTarget.length][0],
-                                move.bezTarget[move.bezTarget.length][1]);
+                                move.bezTarget[move.bezTarget.length-1][0],
+                                move.bezTarget[move.bezTarget.length-1][1]);
                     }
                     for (int i = 0; i < move.bezTarget.length-1; i++){
                         double[] givenPose = move.bezTarget[i];
@@ -81,8 +81,13 @@ class PPInterface implements FTCInterface {
                                     givenPose[1]);
                         }
                     }
+                    // make this as close to PP interaction as possible
+                    preMoveProcess();
+                    // use PP
+                    Pose currentPose = pather.getPose();
                     // build into a PathChain
                     ArrayList<Pose> poseList = new ArrayList<>();
+                    poseList.add(currentPose);
                     poseList.addAll(Arrays.asList(midPoints));
                     poseList.add(endPose);
                     // do deg->rad processing
@@ -95,10 +100,6 @@ class PPInterface implements FTCInterface {
                         }
                     }
                     BezierCurve bezier = new BezierCurve(poseList);
-                    // make this as close to PP interaction as possible
-                    preMoveProcess();
-                    // use PP
-                    Pose currentPose = pather.getPose();
                     PathChain plannedpath = pather.pathBuilder().addPath(bezier).setLinearHeadingInterpolation(currentPose.getHeading(), endPose.getHeading()).build();
                     pather.followPath(plannedpath);
                 }
@@ -154,7 +155,7 @@ class PPInterface implements FTCInterface {
                 try {
                     Thread.sleep(millis, nanos);
                 } catch (InterruptedException e) {
-                    System.out.println(e);
+                    break;
                 }
             }
         }

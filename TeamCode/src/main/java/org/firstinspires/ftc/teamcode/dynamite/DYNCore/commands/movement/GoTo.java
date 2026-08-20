@@ -168,7 +168,7 @@ public class GoTo extends Command {
             } else {
                 Variable varY = getVar(Y);
                 if (varY.getType() == VariableTypes.Number){
-                    end[0] = (double)varY.getValue();
+                    end[1] = (double)varY.getValue();
                 } else {
                     throw new CommandException(line,"GoTo","Expected number variable, got:"+varY.getType());
                 }
@@ -207,8 +207,8 @@ public class GoTo extends Command {
                 case 2 -> {
                     if (getVar(InVarIDs[0]).getType() == VariableTypes.Number && getVar(InVarIDs[1]).getType() == VariableTypes.Number){
                         end = new double[]{
-                                (double)(((Variable[])getVar(InVarIDs[0]).getValue())[0].getValue()),
-                                (double)(((Variable[])getVar(InVarIDs[0]).getValue())[1].getValue())};
+                                (double)getVar(InVarIDs[0]).getValue(),
+                                (double)getVar(InVarIDs[1]).getValue()};
                         moveSE(end);
                     } else {
                         String type1 = getVar(InVarIDs[0]).getType().toString();

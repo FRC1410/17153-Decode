@@ -2,6 +2,7 @@ def_path Main start
     String Msg
     RUN setPoints
     PathStartPosition startPos
+    //followBezier startPos to firePos
     String Msg "Firing"
     RUN sendMsgToTelem
     GoTo firePos

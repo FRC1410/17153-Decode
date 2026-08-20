@@ -178,7 +178,7 @@ public class AddVar extends Command {
                                                 (double)((Object[])value)[1],
                                                 (double)((Object[])value)[2]},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new double[]{
                                                 (double)((Object[])value)[0],
                                                 (double)((Object[])value)[1],
@@ -191,7 +191,7 @@ public class AddVar extends Command {
                                                 new DynNumber((double)((Object[])value)[1]),
                                                 getVar((String)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 new DynNumber((double)((Object[])value)[0]),
                                                 new DynNumber((double)((Object[])value)[1]),
@@ -206,7 +206,7 @@ public class AddVar extends Command {
                                                 getVar((String)((Object[])value)[1]),
                                                 new DynNumber((double)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 new DynNumber((double)((Object[])value)[0]),
                                                 getVar((String)((Object[])value)[1]),
@@ -219,7 +219,7 @@ public class AddVar extends Command {
                                                 getVar((String)((Object[])value)[1]),
                                                 getVar((String)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 new DynNumber((double)((Object[])value)[0]),
                                                 getVar((String)((Object[])value)[1]),
@@ -236,7 +236,7 @@ public class AddVar extends Command {
                                                 new DynNumber((double)((Object[])value)[1]),
                                                 new DynNumber((double)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 getVar((String)((Object[])value)[0]),
                                                 new DynNumber((double)((Object[])value)[1]),
@@ -249,7 +249,7 @@ public class AddVar extends Command {
                                                 new DynNumber((double)((Object[])value)[1]),
                                                 getVar((String)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 getVar((String)((Object[])value)[0]),
                                                 new DynNumber((double)((Object[])value)[1]),
@@ -264,7 +264,7 @@ public class AddVar extends Command {
                                                 getVar((String)((Object[])value)[1]),
                                                 new DynNumber((double)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 getVar((String)((Object[])value)[0]),
                                                 getVar((String)((Object[])value)[1]),
@@ -277,7 +277,7 @@ public class AddVar extends Command {
                                                 getVar((String)((Object[])value)[1]),
                                                 getVar((String)((Object[])value)[2])},
                                         varName);
-                                else newVar = new DynFieldCord(
+                                else newVar = new DynFieldPos(
                                         new Variable[]{
                                                 getVar((String)((Object[])value)[0]),
                                                 getVar((String)((Object[])value)[1]),

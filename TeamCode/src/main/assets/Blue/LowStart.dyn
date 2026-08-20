@@ -2,33 +2,32 @@ def_path Main start
     String Msg
     RUN setPoints
     PathStartPosition startPos
-    String Msg "Firing"
-    RUN sendMsgToTelem
+    AddData "Firing"
+    Update
     GoTo firePos
     RUN cycleCollected
-    String Msg "collecting set #1"
-    RUN sendMsgToTelem
+    AddData "collecting set #1"
+    Update
     RUN collectSet1
-    String Msg "Firing"
-    RUN sendMsgToTelem
+    AddData "Firing"
+    Update
     GoTo firePos
     RUN cycleCollected
-    String Msg "Collecting set #2"
-    RUN sendMsgToTelem
+    AddData "Collecting set #2"
+    Update
     RUN collectSet2
-    String Msg "Firing"
-    RUN sendMsgToTelem
+    AddData "Firing"
     GoTo firePos
     RUN cycleCollected
-    String Msg "Collecting set #3"
-    RUN sendMsgToTelem
+    AddData "Collecting set #3"
+    Update
     RUN collectSet3
-    String Msg "Firing"
-    RUN sendMsgToTelem
+    AddData "Firing"
+    Update
     GoTo firePos
     RUN cycleCollected
-    String Msg "Going to end Pos"
-    RUN sendMsgToTelem
+    AddData "Going to end Pos"
+    Update
     GoTo endPos
 end
 
@@ -75,11 +74,6 @@ def_path cycleCollected start
     jFunc intakeOff
     jFunc stopFeedShooter
     jFunc cycleShoot
-end
-
-def_path sendMsgToTelem start
-    AddData Msg
-    Update
 end
 
 autoPath Main

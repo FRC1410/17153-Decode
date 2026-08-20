@@ -258,7 +258,7 @@ LOGICAL OPERATORS (logicOps):
 MOVEMENT COMMANDS:
     TurnTo:
         syntax:
-            turnTo targetHeading
+            TurnTo targetHeading
         args:
             targetHeading:
                 this is the heading angle that we want to end with after the
@@ -271,15 +271,15 @@ MOVEMENT COMMANDS:
     followBezier:
         Thanks to PP having a simple bezier system, this is simple
         syntax:
-            followBezier ((midX,midY), ... ,(endX,endY))
-            followBezier (midX,midY,midH) to (endX,endY,midH)
-            followBezier (midX,midY,midH) to (endX,endY)
-            followBezier (midX,midY) to (endX,endY,endH)
-            followBezier (midX,midY) to (endX,endY)
-            followBezier (midPose/Cord... ,endPos)
-            followBezier midPoseList to endPos         // expects the list to contain only poses and coordinates
-            followBezier posePointList                 // __/\
-            followBezier midPose to endPos             // provides simple bezier
+            FollowBezier ((midX,midY), ... ,(endX,endY))
+            FollowBezier (midX,midY,midH) to (endX,endY,midH)
+            FollowBezier (midX,midY,midH) to (endX,endY)
+            FollowBezier (midX,midY) to (endX,endY,endH)
+            FollowBezier (midX,midY) to (endX,endY)
+            FollowBezier (midPose/Cord... ,endPos)
+            FollowBezier midPoseList to endPos         // expects the list to contain only poses and coordinates
+            FollowBezier posePointList                 // __/\
+            FollowBezier midPose to endPos             // provides simple bezier
         args:
             midPos/Cord:
                 these args define all of the weight points in the bezier curve from start to finish.
@@ -288,17 +288,17 @@ MOVEMENT COMMANDS:
     followSpline:
         Due to RR having a bajillion separate spline functions, I decided that we will just provide 1:1 functions.
         # |RR function| - - - - - - - - - - - - - - - -#- - -#-|DYN function| - - - - - - - - - - -#
-        | splineTo(vector2d,endTangent)                | ==> | followSpline coord endTangent       |
-        |                                              | ==> | followSpline coord                  |
+        | splineTo(vector2d,endTangent)                | ==> | FollowSpline coord endTangent       |
+        |                                              | ==> | FollowSpline coord                  |
         | - - - - - - - - - - - - - - - - - - - - - - -#- - -#- - - - - - - - - - - - - - - - - - -|
-        | splineToConstantHeading(vector2d,endTangent) | ==> | followSplineLinear coord endTangent |
-        |                                              | ==> | followSplineLinear coord            |
+        | splineToConstantHeading(vector2d,endTangent) | ==> | FollowSplineLinear coord endTangent |
+        |                                              | ==> | FollowSplineLinear coord            |
         | - - - - - - - - - - - - - - - - - - - - - - -#- - -#- - - - - - - - - - - - - - - - - - -|
-        | splineToLinearHeading(pose2d,endTangent)     | ==> | followSplineLinear pos endTangent   |
-        |                                              | ==> | followSplineLinear pos              |
+        | splineToLinearHeading(pose2d,endTangent)     | ==> | FollowSplineLinear pos endTangent   |
+        |                                              | ==> | FollowSplineLinear pos              |
         | - - - - - - - - - - - - - - - - - - - - - - -#- - -#- - - - - - - - - - - - - - - - - - -|
-        | splineToSplineHeading(pose2d,endTangent)     | ==> | followSplineSpline pos endTangent   |
-        |                                              | ==> | followSplineSpline pos              |
+        | splineToSplineHeading(pose2d,endTangent)     | ==> | FollowSplineSpline pos endTangent   |
+        |                                              | ==> | FollowSplineSpline pos              |
         # - - - - - - - - - - - - - - - - - - - - - - -#- - -#- - - - - - - - - - - - - - - - - - -#
         NOTE: If endTangent is not given, it will be calculated with the following expression:
             endTangent = atan2(dest.y - current.y, dest.x - current.x)

@@ -1,0 +1,18 @@
+def_path Main start
+    RUN setPoses
+    PathStartPosition startPos
+    GoTo controlPoint
+    TurnTo angle
+    TurnTo 0
+    GoTo startPos
+    followBezier controlPoint to endPos
+end
+def_path setPoses start
+    Num scale 20
+    Num angle 90
+    FieldPos startPos     (0,0,0)
+    FieldPos controlPoint (scale,0,0)
+    FieldPos endPoint     (scale,scale,angle)
+end
+
+autoPath

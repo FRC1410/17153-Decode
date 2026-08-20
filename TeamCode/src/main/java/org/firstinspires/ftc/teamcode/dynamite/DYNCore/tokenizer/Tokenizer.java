@@ -385,22 +385,22 @@ public class Tokenizer {
                     internalChunk = "";
                 }
                 // movement commands
-                else if (internalChunk.equals("turnTo") && isWordBoundary(chunk, counter, chunkSize)) {
+                else if (internalChunk.equals("TurnTo") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.TurnTo, lineIndex, charIndex));
                     internalChunk = "";
                 } else if (internalChunk.equals("GoTo") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.GoTo, lineIndex, charIndex));
                     internalChunk = "";
-                } else if (internalChunk.equals("followBezier") && isWordBoundary(chunk, counter, chunkSize)) {
+                } else if (internalChunk.equals("FollowBezier") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.doBez, lineIndex, charIndex));
                     internalChunk = "";
-                } else if (internalChunk.equals("followSpline") && isWordBoundary(chunk, counter, chunkSize)) {
+                } else if (internalChunk.equals("FollowSpline") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.followSpline, lineIndex, charIndex));
                     internalChunk = "";
-                } else if (internalChunk.equals("followSplineLinear") && isWordBoundary(chunk, counter, chunkSize)) {
+                } else if (internalChunk.equals("FollowSplineLinear") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.followSplineLinear, lineIndex, charIndex));
                     internalChunk = "";
-                } else if (internalChunk.equals("followSplineSpline") && isWordBoundary(chunk, counter, chunkSize)) {
+                } else if (internalChunk.equals("FollowSplineSpline") && isWordBoundary(chunk, counter, chunkSize)) {
                     out.add(new Token(TokenTypes.followSplineSpline, lineIndex, charIndex));
                     internalChunk = "";
                 }

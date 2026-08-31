@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs;
 
-import androidx.loader.content.Loader;
-
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -16,7 +14,7 @@ import org.firstinspires.ftc.teamcode.dynamite.TimedLoopThread;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DYNKindaInterface {
+public class DYNFunctionalInterface {
     // this receives the given script (the class), and the interface class,
     // and handles all operations related to running DYN
     // DYN telemetry will be added like before, but UPDATING the telemetry will be handled by the user.
@@ -30,13 +28,13 @@ public class DYNKindaInterface {
     private final boolean USBload;
     private final boolean useRadians;
 
-    public DYNKindaInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script){
+    public DYNFunctionalInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script){
         this(followerUpdater, utils, telemetry, HWmap, script, true);
     }
-    public DYNKindaInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script, boolean USBload){
+    public DYNFunctionalInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script, boolean USBload){
         this(followerUpdater, utils, telemetry, HWmap, script, USBload, false);
     }
-    public DYNKindaInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script, boolean USBload, boolean useRadians){
+    public DYNFunctionalInterface(Runnable followerUpdater, InterfaceUtils utils, Telemetry telemetry, HardwareMap HWmap, String script, boolean USBload, boolean useRadians){
         this.followerUpdater = followerUpdater;
         this.utils = utils;
         this.telemetry = telemetry;

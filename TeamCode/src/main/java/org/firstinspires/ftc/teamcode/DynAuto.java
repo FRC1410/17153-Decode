@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
-import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
-import org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs.DYNKindaInterface;
+import org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs.DYNFunctionalInterface;
 import org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs.InterfaceUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -24,11 +22,11 @@ public class DynAuto extends OpMode {
     Intake intake;
 
     InterfaceUtils DYNUtil;
-    DYNKindaInterface DYNInterface;
+    DYNFunctionalInterface DYNInterface;
     public void init(){
         // DYN stuff
         DYNUtil = new InterfaceUtils();
-        DYNInterface = new DYNKindaInterface(this::updateFollower,DYNUtil,telemetry,hardwareMap,"Main.dyn",true,false);
+        DYNInterface = new DYNFunctionalInterface(this::updateFollower,DYNUtil,telemetry,hardwareMap,"Main.dyn",true,false);
         DYNInterface.init();
         DYNInterface.registerOpModeStop(this::requestOpModeStop); // allows DYN to fully stop the OpMode
         // main stuff

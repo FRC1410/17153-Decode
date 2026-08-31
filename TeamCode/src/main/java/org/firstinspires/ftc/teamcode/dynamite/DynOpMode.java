@@ -126,7 +126,7 @@ public abstract class DynOpMode extends OpMode {
         // start the pather update loop
         followerUpdateThread.start();
         // link up followerUpdateThread to the interface
-        ppInterface.linkPatherUpdateThread(followerUpdateThread,this::updateFollower);
+        ppInterface.linkPatherUpdateThread(followerUpdateThread);
         // run user code
         onStart();
     }

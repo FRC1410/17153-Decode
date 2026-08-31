@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-class PPInterface implements FTCInterface {
+public class PPInterface implements FTCInterface {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Follower pather;
@@ -236,22 +236,8 @@ class PPInterface implements FTCInterface {
     }
 
     TimedLoopThread patherUpdateThread;
-    Runnable updateFollower;
-    public void linkPatherUpdateThread(TimedLoopThread followerUpdateThread, Runnable updateFollower) {
+    public void linkPatherUpdateThread(TimedLoopThread followerUpdateThread) {
         patherUpdateThread = followerUpdateThread;
-        this.updateFollower = updateFollower;
-    }
-    @Override
-    public void updateFollower() {
-        updateFollower.run();
-    }
-    @Override
-    public void stopFollowerUpdater() {
-        patherUpdateThread.stop();
-    }
-    @Override
-    public void startFollowerUpdater() {
-        patherUpdateThread.start();
     }
 
     private Thread DYNThread;

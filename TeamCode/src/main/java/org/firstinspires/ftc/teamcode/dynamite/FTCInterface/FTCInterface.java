@@ -8,9 +8,6 @@ import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 public interface FTCInterface {
     void setStartPos(int line, double[] pos);
     void runGeneralMove(int line, GeneralMovement move);
-    void updateFollower();
-    void stopFollowerUpdater();
-    void startFollowerUpdater();
 
     Variable runJFunc(int line, boolean wantOutput, String ID);
     Variable runJFunc(int line, boolean wantOutput, String ID, Variable in);

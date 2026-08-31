@@ -4,38 +4,34 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystem.AprilTags;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.dynamite.DYNCore.variables.Variable;
 import org.firstinspires.ftc.teamcode.dynamite.DynOpMode;
+import org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs.DYNKindaInterface;
+import org.firstinspires.ftc.teamcode.dynamite.InterfaceStuffs.InterfaceUtils;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Dyn Auto")
-@Disabled
-public class DynAuto extends DynOpMode {
-    @Override
-    public boolean loadFromUSB() {
-        return false; // I currently do not have a USB drive to use for in-workshop testing
-    }
-    @Override
-    public String getScriptPath() {
-        return "Main.dyn";
-    }
+@Autonomous(name="DynTestbed")
+public class DynAuto extends OpMode {
 
-    Follower pedroPather;
-    @Override
-    public Follower buildFollower() {
-        pedroPather = Constants.createFollower(hardwareMap);
-        return pedroPather;
-    }
-
+    Follower pedroPather = Constants.createFollower(hardwareMap);
     AprilTags aprilTags;
     Shooter shooter;
     Intake intake;
-    @Override
-    public void onInit(){
+
+    InterfaceUtils DYNUtil;
+    DYNKindaInterface DYNInterface;
+    public void init(){
+        // DYN stuff
+        DYNUtil = new InterfaceUtils();
+        DYNInterface = new DYNKindaInterface(this::updateFollower,DYNUtil,telemetry,hardwareMap,"Main.dyn",true,false);
+        DYNInterface.init();
+        DYNInterface.registerOpModeStop(this::requestOpModeStop); // allows DYN to fully stop the OpMode
+        // main stuff
         registerFunctions();
         aprilTags = new AprilTags(hardwareMap);
         // init subsystems
@@ -45,16 +41,26 @@ public class DynAuto extends DynOpMode {
         intake.init(hardwareMap);
     }
 
-    private volatile double visionFPS = 0; // volatile ensures that all changes form one thread happen for all threads
-    @Override
-    public void onLoop(){
-        intake.intakeTelem(newTelemetry);
-        shooter.addTelemetry(newTelemetry);
-        newTelemetry.addData("FPS",visionFPS);
-        newTelemetry.update();
+    public void init_loop(){
+        DYNInterface.initLoop();
+    }
+    public void start(){
+        DYNInterface.start();
     }
 
-    @Override
+    private volatile double visionFPS = 0; // volatile ensures that all changes form one thread happen for all threads
+    public void loop(){
+        DYNInterface.loop();
+        intake.intakeTelem(telemetry);
+        shooter.addTelemetry(telemetry);
+        telemetry.addData("FPS",visionFPS);
+        telemetry.update();
+    }
+
+    public void stop(){
+        DYNInterface.stop();
+    }
+
     public void updateFollower(){
         pedroPather.update();
         aprilTags.update();
@@ -68,21 +74,21 @@ public class DynAuto extends DynOpMode {
     }
 
     private void registerFunctions(){
-        registerJFunc("cycleShoot",this::cycleShooter);
-        registerJFunc("feedShoot",this::feedShooter);
-        registerJFunc("getShooterState",this::getShooterState);
+        DYNUtil.registerJFunc("cycleShoot",this::cycleShooter);
+        DYNUtil.registerJFunc("feedShoot",this::feedShooter);
+        DYNUtil.registerJFunc("getShooterState",this::getShooterState);
 
-        registerJFunc("intakeOn",this::intakeOn);
-        registerJFunc("intakeOff",this::intakeOff);
-        registerJFunc("intakeOut",this::intakeOut);
+        DYNUtil.registerJFunc("intakeOn",this::intakeOn);
+        DYNUtil.registerJFunc("intakeOff",this::intakeOff);
+        DYNUtil.registerJFunc("intakeOut",this::intakeOut);
     }
 
     private Variable getShooterState(){
-        return makeStringVar(shooter.shooterStatus.toString());
+        return DYNUtil.makeStringVar(shooter.shooterStatus.toString());
     }
     private void cycleShooter(){
-        shooter.cycle(newTelemetry);
-        newTelemetry.addData("Shooter","cycled!");
+        shooter.cycle(telemetry);
+        telemetry.addData("Shooter","cycled!");
     }
     private void feedShooter(){
         shooter.feed(1);

@@ -27,7 +27,16 @@ public class DYNFileReader {
 
     public String readFile(String name){
         if (isOnUSB){
-            return readFromUSB(name);
+            try {
+                return readFromUSB(name);
+            } catch (RuntimeException e){
+                // fallback to asset loading if USB fails
+                try{
+                    return readFromAssets(name);
+                } catch (RuntimeException ex) {
+                    throw new RuntimeException(e);
+                }
+            }
         } else {
             return readFromAssets(name);
         }

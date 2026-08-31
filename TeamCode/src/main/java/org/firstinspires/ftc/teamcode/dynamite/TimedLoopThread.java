@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.dynamite;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 // Made by Claude Sonnet 5
-class TimedLoopThread {
+public class TimedLoopThread {
     private int threadPriotiry = Thread.NORM_PRIORITY;
 
     public double getUpdateRate() {

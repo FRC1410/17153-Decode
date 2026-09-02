@@ -22,7 +22,6 @@ class MoveOp extends ConstructorUtils{
         Token current = givenTokens[i];
         switch (current.type()){
             case TurnTo -> {
-                i++;
                 // check next token for name/literal
                 if(nextIsType(Name)) {
                     i++;
@@ -36,12 +35,11 @@ class MoveOp extends ConstructorUtils{
                         addCommand(new TurnTo(getLine(),(double)givenTokens[i].getValue()));
                         i++;
                     } else {
-                        throwError("Expected a number! got: " + givenTokens[i].getValue());
+                        throwError("Expected a number! got: " + givenTokens[i].type());
                     }
                 } else {
-                    throwError("Expected name/literal! got: " + givenTokens[i].getValue());
+                    throwError("Expected name/number! got: " + givenTokens[i].type());
                 }
-                break;
             }
             case GoTo -> {
                 if (nextIsType(Name)){
@@ -51,96 +49,88 @@ class MoveOp extends ConstructorUtils{
                     i++;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name0 = givenTokens[i];
                     Token name1 = givenTokens[i+2];
                     addCommand(new GoTo(name0.getLine(),(String)name0.getValue(),(String)name1.getValue()));
-                    i+=3;
+                    i+=4;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name = givenTokens[i];
                     Token number = givenTokens[i+2];
                     addCommand(new GoTo(name.getLine(),(String)name.getValue(),(double)number.getValue()));
-                    i+=3;
+                    i+=4;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number = givenTokens[i];
                     Token name = givenTokens[i+2];
                     addCommand(new GoTo(number.getLine(),(double)number.getValue(),(String)name.getValue()));
-                    i+=3;
+                    i+=4;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number0 = givenTokens[i];
                     Token number1 = givenTokens[i+2];
                     addCommand(new GoTo(number0.getLine(),(double)number0.getValue(),(double)number1.getValue()));
-                    i+=3;
+                    i+=4;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name0 = givenTokens[i];
                     Token name1 = givenTokens[i+2];
                     Token name2 = givenTokens[i+4];
                     addCommand(new GoTo(name0.getLine(),(String)name0.getValue(),(String)name1.getValue(),(String)name2.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name0 = givenTokens[i];
                     Token name1 = givenTokens[i+2];
                     Token number = givenTokens[i+4];
                     addCommand(new GoTo(name0.getLine(),(String)name0.getValue(),(String)name1.getValue(),(double)number.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name0 = givenTokens[i];
                     Token number = givenTokens[i+2];
                     Token name1 = givenTokens[i+4];
                     addCommand(new GoTo(name0.getLine(),(String)name0.getValue(),(double)number.getValue(),(String)name1.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number = givenTokens[i];
                     Token name0 = givenTokens[i+2];
                     Token name1 = givenTokens[i+4];
                     addCommand(new GoTo(number.getLine(),(double)number.getValue(),(String)name0.getValue(),(String)name1.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token name = givenTokens[i];
                     Token number0 = givenTokens[i+2];
                     Token number1 = givenTokens[i+4];
                     addCommand(new GoTo(name.getLine(),(String)name.getValue(),(double)number0.getValue(),(double)number1.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number0 = givenTokens[i];
                     Token number1 = givenTokens[i+2];
                     Token name = givenTokens[i+4];
                     addCommand(new GoTo(number0.getLine(),(double)number0.getValue(),(double)number1.getValue(),(String)name.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number0 = givenTokens[i];
                     Token name = givenTokens[i+2];
                     Token number1 = givenTokens[i+4];
                     addCommand(new GoTo(number0.getLine(),(double)number0.getValue(),(String)name.getValue(),(double)number1.getValue()));
-                    i+=5;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
-                    i++;
+                    i+=2;
                     Token number0 = givenTokens[i];
                     Token number1 = givenTokens[i+2];
                     Token number2 = givenTokens[i+4];
                     addCommand(new GoTo(number0.getLine(),(double)number0.getValue(),(double)number1.getValue(),(double)number2.getValue()));
-                    i+=5;
                 }
                 else {
                     // step token by token to find issue
@@ -185,7 +175,6 @@ class MoveOp extends ConstructorUtils{
                         throwError("Expected name/\"(\" | Got: "+givenTokens[i].type());
                     }
                 }
-                break;
             }
             case doBez -> {
                 // pos1 to pos2
@@ -196,639 +185,476 @@ class MoveOp extends ConstructorUtils{
                     addCommand(new DoBezier(name0.getLine(),(String)name0.getValue(),(String)name1.getValue()));
                     i+=3;
                 }
+                // ((x,y), (x,y,z)... (x,y,z))
+                else if (nextIsType(Lparenth,Lparenth)){
+                    i++;
+                    ArrayList<Object[]> touples = new ArrayList<>();
+                    while (true){
+                        Token currentTk = givenTokens[i];
+                        switch (currentTk.type()){
+                            case Rparenth -> {
+                                i++;
+                                addCommand(new DoBezier(getLine(),touples.toArray(new Object[0][])));
+                                return;
+                            }
+                            case Comma -> touples.add(getNextTouple());
+                            default -> throwError("Expected \"(\" | Got: "+currentTk.type());
+                        }
+                    }
+                }
                 // (x,y) to (x,y)
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 // (x,y) to (x,y,h)
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=6;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 // (x,y,h) to (x,y)
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=6;
                 }
                 // (x,y,h) to (x,y,h)
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Name,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Name,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Name,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Name,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Name,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Name,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Number,Comma,Number,Comma,Number,Rparenth,To,Lparenth,Number,Comma,Number,Comma,Number,Rparenth)){
                     Object[] pt1 = getNextTouple();
-                    i+=8;
                     Object[] pt2 = getNextTouple();
                     addCommand(new DoBezier(givenTokens[i].getLine(),new Object[][]{pt1,pt2}));
-                    i+=8;
                 }
                 else if (nextIsType(Lparenth,Lparenth)){
                     ArrayList<Object[]> points = new ArrayList<>();
@@ -1116,7 +942,6 @@ class MoveOp extends ConstructorUtils{
                         throwError("Expected name/\"(\" | Got: "+givenTokens[i].type());
                     }
                 }
-                break;
             }
             default -> {
                 switch (current.type()){

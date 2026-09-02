@@ -1,13 +1,28 @@
 def_path Main start
-    AddData "Shooter state before"
-    jFunc getShooterState to shootState
-    AddData shootState
-    AddData "running shooter cycle."
-    jFunc cycleShoot
-    AddData "jFunc ran"
-    AddData "Shooter state after"
-    jFunc getShooterState to shootState
-    AddData shootState
+    FieldPos startPos (0,0,0)
+    PathStartPosition startPos
+    AddData "Moving!"
+    Update
+
+    GoTo (10,0)
+
+    Sleep 2
+    Clear
+    AddData "Turning!"
+    Update
+
+    TurnTo 90
+
+    Sleep 2
+    Clear
+    AddData "Returning!"
+    Update
+
+    FollowBezier (5,-5) to (0,0)
+
+    Sleep 2
+    Clear
+    AddData "Complete!"
     Update
 end
 

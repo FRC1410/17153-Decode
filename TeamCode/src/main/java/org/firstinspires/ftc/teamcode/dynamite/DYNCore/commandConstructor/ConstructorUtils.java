@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.dynamite.DYNCore.commandConstructor;
 
 import static org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.TokenTypes.Boolean;
-import static org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.TokenTypes.Comma;
 import static org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.TokenTypes.Lparenth;
 import static org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.TokenTypes.Name;
 import static org.firstinspires.ftc.teamcode.dynamite.DYNCore.tokenizer.TokenTypes.Number;
@@ -950,25 +949,25 @@ class ConstructorUtils {
         return givenTokens[i].type()==type;
     }
 
-    protected static Object[] getNextTouple(){ // literally stealing form python
+    protected static Object[] getNextTouple(){ // literally stealing form python\
         if (nextIsType(Lparenth)){
+            i+=2;
             ArrayList<Object> items = new ArrayList<>();
-            while (!nextIsType(Rparenth)){
-                if (nextIsType(Name)||nextIsType(Number)){
-                    i++;
-                    items.add(givenTokens[i].getValue());
-                } else {
-                    i++;
-                    throwError("Expected name/number | Got: "+givenTokens[i].type());
-                }
-                if (nextIsType(Comma)){
-                    i++;
-                } else {
-                    i++;
-                    throwError("Expected comma | Got: "+givenTokens[i].type());
+            while (true){
+                Token currentTk = givenTokens[i];
+                switch (currentTk.type()){
+                    case Name,Number -> {
+                        items.add(currentTk.getValue());
+                        i++;
+                    }
+                    case Rparenth -> {
+                        i++;
+                        return items.toArray(new Object[0]);
+                    }
+                    case Comma -> i++;
+                    default -> throwError("Expected name/number/\")\"/\",\" | Got: "+currentTk.type());
                 }
             }
-            return items.toArray(new Object[0]);
         } else {
             i++;
             throwError("Expected \"(\" | Got: "+givenTokens[i].type());

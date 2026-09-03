@@ -18,7 +18,7 @@ def_path Main start
     AddData "Returning!"
     Update
 
-    FollowBezier (5,-5) to (0,0)
+    FollowBezier ((5,-5), (0,0))
 
     Sleep 2
     Clear

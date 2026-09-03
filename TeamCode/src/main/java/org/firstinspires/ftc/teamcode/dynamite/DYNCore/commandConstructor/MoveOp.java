@@ -189,6 +189,7 @@ class MoveOp extends ConstructorUtils{
                 else if (nextIsType(Lparenth,Lparenth)){
                     i++;
                     ArrayList<Object[]> touples = new ArrayList<>();
+                    touples.add(getNextTouple());
                     while (true){
                         Token currentTk = givenTokens[i];
                         switch (currentTk.type()){

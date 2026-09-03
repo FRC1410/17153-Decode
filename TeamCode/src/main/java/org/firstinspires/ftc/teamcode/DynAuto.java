@@ -35,8 +35,10 @@ public class DynAuto extends DynOpMode {
     }
 
     private volatile double visionFPS = 0; // volatile ensures that all changes form one thread happen for all threads
+    private volatile Pose roboPose;
     @Override
     public void onLoop(){
+        if (roboPose != null) newTelemetry.addData("Pos","X:"+roboPose.getX()+" Y:"+roboPose.getY()+" H:"+Math.toDegrees(roboPose.getHeading()));
         newTelemetry.addData("FPS",visionFPS);
         newTelemetry.update();
     }
@@ -44,6 +46,7 @@ public class DynAuto extends DynOpMode {
     @Override
     public void updateFollower(){
         pedroPather.update();
+        roboPose = new Pose(pedroPather.getPose().getX(),pedroPather.getPose().getY(),pedroPather.getHeading());
         aprilTags.update();
         visionFPS = aprilTags.vision_portal.getFps();
         // because this runs at a much higher rate than vision (50hz vs ~15hz)

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Util.DriverUtil.ControlScheme;
 
 @TeleOp
 public class Robot extends OpMode {
+    // this is the drivetrain class definition
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
     private final Rumbler driverRumbler = new Rumbler();

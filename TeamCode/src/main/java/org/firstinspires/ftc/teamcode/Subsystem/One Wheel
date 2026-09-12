@@ -1,0 +1,4 @@
+public class oneWheel{
+  public double wheelSpeedExample=3
+  this.motorFL.setPower(this.wheelSpeeds[0] * wheelSpeedExample);
+}
